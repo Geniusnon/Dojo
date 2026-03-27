@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - BIG CHARACTER</title>
+    <title>LCB1 HAZARD HUNTER - FULL VIEWPORT</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -11,7 +11,8 @@
         
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100svh; 
-            background: var(--yellow); font-family: 'Itim', cursive; 
+            background: var(--black); /* เปลี่ยนพื้นหลังหลักเป็นสีดำเผื่อรูปไม่เต็ม */
+            font-family: 'Itim', cursive; 
             overflow: hidden; position: fixed; 
         }
 
@@ -35,40 +36,55 @@
         .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
 
-        /* --- Game Interface --- */
-        #game-interface { display: none; width: 100%; height: 100%; flex-direction: row; background: #222; z-index: 1500; }
-
-        /* แถบซ้าย Stats */
-        .side-bar-left { width: 90px; background: #fff; border-right: 5px solid var(--black); display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 5px 0; z-index: 2000; }
-        .side-item { text-align: center; font-family: 'Bangers'; font-size: 14px; line-height: 1; }
-        .side-item span { display: block; font-size: 22px; color: var(--blue); margin-top: 4px; }
-        .side-item.time span { color: var(--red); }
-
-        /* พื้นที่แสดงรูป */
-        #viewport { flex: 1; position: relative; display: flex; justify-content: flex-start; align-items: center; overflow-x: auto; overflow-y: hidden; background: #000; -webkit-overflow-scrolling: touch; }
-        .image-container { position: relative; height: 100%; display: flex; align-items: center; }
-        #main-img { height: 100%; width: auto; display: block; }
-
-        /* --- ปรับปรุง: แถบขวาสำหรับตัวละครตัวใหญ่ --- */
-        #character-area { 
-            width: 140px; /* ขยายความกว้างเพิ่มเล็กน้อย */
-            background: var(--yellow); 
-            border-left: 5px solid var(--black); 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
-            align-items: center; 
-            z-index: 2000; 
-            padding: 10px;
+        /* --- Game Interface (New Layout) --- */
+        #game-interface { 
+            display: none; width: 100%; height: 100%; 
+            position: relative; /* เพื่อให้ Stats และ Character วางทับได้ */
+            background: var(--black); z-index: 1500; 
         }
 
-        /* ปรับให้รูปตัวละครใหญ่ขึ้น */
+        /* --- ปรับปรุง: Viewport เต็มจอ --- */
+        #viewport { 
+            position: absolute; inset: 0; /* เต็มจอ */
+            display: flex; justify-content: center; align-items: center; 
+            overflow-x: auto; overflow-y: hidden; 
+            -webkit-overflow-scrolling: touch; z-index: 1510;
+        }
+        .image-container { position: relative; height: 100%; display: flex; align-items: center; }
+        #main-img { 
+            height: 100%; width: auto; 
+            object-fit: contain; /* ขยายให้ใหญ่ที่สุดโดยไม่ล้น */
+            display: block; 
+        }
+
+        /* --- ปรับปรุง: Stats Bar แบบลอยทับ --- */
+        .side-bar-left { 
+            position: absolute; top: 10px; left: 10px; /* ลอยทับมุมซ้ายบน */
+            width: auto; height: auto; 
+            background: rgba(255, 255, 255, 0.85); /* โปร่งแสงนิดๆ */
+            border: 3px solid var(--black); 
+            border-radius: 10px;
+            display: flex; flex-direction: row; /* เรียงแนวนอน */
+            justify-content: center; align-items: center; 
+            padding: 5px 10px; gap: 15px; z-index: 1520; 
+        }
+        .side-item { text-align: center; font-family: 'Bangers'; font-size: 14px; line-height: 1; color: var(--black); }
+        .side-item span { display: inline; font-size: 18px; color: var(--blue); margin-left: 3px; }
+        .side-item.time span { color: var(--red); }
+
+        /* --- ปรับปรุง: Character แบบลอยทับ --- */
+        #character-area { 
+            position: absolute; bottom: 0; right: 0; /* ลอยทับมุมขวาล่าง */
+            width: 120px; height: auto; 
+            background: transparent; /* พื้นหลังโปร่งใส */
+            border: none; 
+            display: flex; justify-content: center; align-items: flex-end; 
+            z-index: 1520; padding: 0;
+        }
         .big-char {
-            width: 100%; 
-            height: auto; 
-            max-height: 85%; /* ไม่ให้ล้นขอบบนล่างเกินไป */
+            width: 100%; height: auto; 
             object-fit: contain;
-            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.2)); /* เพิ่มมิติให้ตัวละคร */
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)); /* เพิ่มเงาให้ลอยเด่น */
         }
 
         /* Hazards & Effects */
@@ -125,17 +141,17 @@
     </div>
 
     <div id="game-interface">
-        <div class="side-bar-left">
-            <div class="side-item">LV<span id="current-lv">1</span></div>
-            <div class="side-item time">TIME<span id="timer">60</span></div>
-            <div class="side-item">SCORE<span id="total-score">0</span></div>
-        </div>
-        
         <div id="viewport">
             <div class="image-container" id="img-box">
                 <img id="main-img" src="">
                 <div id="hazard-container"></div>
             </div>
+        </div>
+
+        <div class="side-bar-left comic-box">
+            <div class="side-item">LV<span id="current-lv">1</span></div>
+            <div class="side-item time">TIME<span id="timer">60</span></div>
+            <div class="side-item">SCORE<span id="total-score">0</span></div>
         </div>
 
         <div id="character-area">
@@ -244,7 +260,6 @@
             }
         }
 
-        // Penalty System
         document.getElementById('viewport').addEventListener('touchstart', (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             const touch = e.touches[0];
