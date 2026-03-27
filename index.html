@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - FINAL VERSION</title>
+    <title>LCB1 HAZARD HUNTER - JPG VERSION</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -11,42 +11,44 @@
         
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--yellow); font-family: 'Itim', cursive; overflow: hidden; }
 
+        /* --- UI Screens --- */
         .screen { position: fixed; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 15px; z-index: 1000; background: var(--yellow); }
         .active-screen { display: flex; }
-
         .comic-title { font-family: 'Bangers'; font-size: clamp(40px, 10vw, 60px); line-height: 0.85; color: var(--blue); text-shadow: 2px 2px 0px #fff, 4px 4px 0px var(--black); text-align: center; margin-bottom: 15px; transform: rotate(-1.5deg); }
         .box { background: #fff; padding: 30px 20px; border: 5px solid var(--black); box-shadow: 10px 10px 0px var(--black); width: 92%; max-width: 360px; position: relative; display: flex; flex-direction: column; }
         
-        .btn-home-corner { position: fixed; top: 15px; left: 15px; padding: 10px 20px; font-family: 'Bangers'; font-size: 18px; background: #fff; border: 4px solid var(--black); border-radius: 12px; box-shadow: 4px 4px 0px var(--black); cursor: pointer; z-index: 3000; display: none; }
-
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 3px solid var(--black); font-size: 18px; font-family: 'Itim'; outline: none; }
-        .btn { width: 100%; background: var(--red); color: #fff; padding: 15px; font-family: 'Bangers'; font-size: 24px; border: 4px solid var(--black); cursor: pointer; margin: 6px 0; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 3px solid var(--black); font-size: 18px; font-family: 'Itim'; outline: none; border-radius: 0; }
+        .btn { width: 100%; background: var(--red); color: #fff; padding: 15px; font-family: 'Bangers'; font-size: 24px; border: 4px solid var(--black); cursor: pointer; margin: 6px 0; box-shadow: 4px 4px 0px var(--black); }
+        .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--black); }
         .btn-blue { background: var(--blue); }
 
+        /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; flex-direction: column; background: #222; overflow: hidden; z-index: 1500; }
-        .stats-bar { background: #fff; border-bottom: 5px solid var(--black); display: flex; justify-content: space-around; align-items: center; padding: 12px 5px; width: 100%; min-height: 70px; }
-        .stats-item span { color: var(--blue); font-family: 'Bangers'; font-size: 22px; }
+        .stats-bar { background: #fff; border-bottom: 5px solid var(--black); display: flex; justify-content: space-around; align-items: center; padding: 5px; width: 100%; min-height: 70px; z-index: 2000; }
+        .stats-item { text-align: center; font-family: 'Bangers'; font-size: 20px; }
+        .stats-item span { color: var(--blue); font-size: 24px; }
 
-        #viewport { flex: 1; position: relative; overflow-y: auto; background: #000; }
-        .image-container { position: relative; width: 100%; }
-        #main-img { width: 100%; height: auto; display: block; }
+        #viewport { flex: 1; position: relative; overflow-y: auto; background: #000; -webkit-overflow-scrolling: touch; }
+        .image-container { position: relative; width: 100%; display: block; }
+        #main-img { width: 100%; height: auto; display: block; transition: opacity 0.3s ease; }
 
-        /* วงกลมแดงสำหรับทดสอบ (Neon Red) */
-        .hazard { 
-            position: absolute; width: 60px; height: 60px; 
-            transform: translate(-50%, -50%); z-index: 100; 
-            border-radius: 50%; border: 4px solid #ff0000; 
-            background: rgba(255, 0, 0, 0.3); box-shadow: 0 0 15px #ff0000;
-        }
+        /* --- Hazard Points (วงแดงทดสอบ) --- */
+        .hazard { position: absolute; width: 65px; height: 65px; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 4px solid #ff0000; background: rgba(255, 0, 0, 0.3); box-shadow: 0 0 15px #ff0000; }
         .hazard.found { border-color: #00ff00 !important; background: rgba(0, 255, 0, 0.4) !important; box-shadow: 0 0 20px #00ff00 !important; }
 
+        /* --- Anti-Lag Overlay --- */
+        #loading-overlay { position: fixed; inset: 0; background: var(--yellow); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { width: 60px; height: 60px; border: 8px solid #fff; border-top: 8px solid var(--blue); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- Penalty Text Effect --- */
         .penalty-text { position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 50px; z-index: 9999; text-shadow: 3px 3px 0px #000; pointer-events: none; animation: fadeUp 0.8s ease-out forwards; }
         @keyframes fadeUp { 0% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -200%); } }
     </style>
 </head>
 <body>
 
-    <div id="global-home-btn" class="btn-home-corner" onclick="location.reload()">HOME</div>
+    <div id="loading-overlay"><div class="spinner"></div><h2 style="font-family:'Bangers'; margin-top:20px;">LOADING...</h2></div>
 
     <div id="lang-screen" class="screen active-screen">
         <div class="comic-title">HAZARD<br>HUNTER</div>
@@ -57,27 +59,28 @@
     </div>
 
     <div id="login-screen" class="screen">
+        <div class="comic-title">WELCOME</div>
         <div class="box">
-            <input type="text" id="empName" placeholder="ชื่อพนักงาน">
-            <input type="text" id="empID" placeholder="รหัสพนักงาน">
-            <button class="btn" id="start-btn" onclick="startGame()">เริ่มภารกิจ</button>
-            <button class="btn btn-blue" id="rule-btn" onclick="showRules()">กติกา</button>
+            <input type="text" id="empName" placeholder="Name">
+            <input type="text" id="empID" placeholder="Employee ID">
+            <button class="btn" onclick="startGame()" id="start-btn">START</button>
+            <button class="btn btn-blue" onclick="showRules()" id="rule-btn">RULES</button>
         </div>
     </div>
 
     <div id="rules-screen" class="screen">
         <div class="comic-title" id="rule-title">RULES</div>
         <div class="box">
-            <div id="rule-text" style="font-size: 18px; margin-bottom: 15px;"></div>
+            <div id="rule-text" style="font-size: 19px; line-height: 1.4; margin-bottom: 15px;"></div>
             <button class="btn btn-blue" onclick="backToLogin()" id="back-btn">BACK</button>
         </div>
     </div>
 
     <div id="game-interface">
         <div class="stats-bar">
-            <div class="stats-item"><span id="txt-lv">LV</span>: <span id="current-lv">1</span></div>
-            <div class="stats-item"><span id="txt-time">TIME</span>: <span id="timer" style="color:red">60</span>s</div>
-            <div class="stats-item"><span id="txt-score">SCORE</span>: <span id="total-score">0</span></div>
+            <div class="stats-item"><div id="txt-lv">LV</div><span id="current-lv">1</span></div>
+            <div class="stats-item" style="color:red"><div id="txt-time">TIME</div><span id="timer">60</span></div>
+            <div class="stats-item"><div id="txt-score">SCORE</div><span id="total-score">0</span></div>
         </div>
         <div id="viewport">
             <div class="image-container" id="game-canvas">
@@ -90,9 +93,9 @@
     <div id="game-over-screen" class="screen">
         <div class="comic-title" id="go-title">FINISH</div>
         <div class="box" style="text-align: center;">
-            <h2 id="go-msg" style="margin:0;"></h2>
-            <h1 id="go-score" style="font-size: 60px; color: var(--blue); font-family: 'Bangers'; margin: 10px 0;">0</h1>
-            <button class="btn" onclick="location.reload()" style="max-width: 200px; margin: 0 auto;">HOME</button>
+            <h2 id="go-msg" style="margin:0; font-size: 24px;"></h2>
+            <h1 id="go-score" style="font-size: 70px; color: var(--blue); font-family: 'Bangers'; margin: 15px 0;">0</h1>
+            <button class="btn" onclick="location.reload()" style="max-width: 220px; margin: 0 auto;">HOME</button>
         </div>
     </div>
 
@@ -100,21 +103,19 @@
         const langData = {
             th: {
                 placeholderName: "ชื่อพนักงาน", placeholderID: "รหัสพนักงาน", startBtn: "เริ่มภารกิจ", ruleBtn: "กติกาการเล่น", ruleTitle: "กติกา",
-                ruleDesc: "• หาจุดอันตราย 4 จุดต่อภาพ<br>• จิ้มผิดหักเวลา 10 วินาที<br>• คะแนน = เวลาที่เหลือ x 10",
+                ruleDesc: "• หาจุดอันตราย 4 จุดต่อภาพ<br>• จิ้มผิดหักเวลา 10 วินาที<br>• คะแนน = เวลาที่เหลือ x 10<br>• มีทั้งหมด 5 ด่าน",
                 backBtn: "ย้อนกลับ", labelLv: "ด่าน", labelTime: "เวลา", labelScore: "คะแนน",
-                goTimeout: "เวลาหมดแล้ว!", goComplete: "สำเร็จทุกด่าน!", alertLogin: "กรุณากรอกข้อมูล"
+                goTimeout: "เวลาหมดแล้ว!", goComplete: "สำเร็จทุกด่าน!", alertLogin: "กรุณากรอกข้อมูลให้ครบ"
             },
             en: {
-                placeholderName: "Name", placeholderID: "Employee ID", startBtn: "START", ruleBtn: "RULES", ruleTitle: "RULES",
-                ruleDesc: "• Find 4 hazards per image<br>• Wrong tap: -10 seconds<br>• Score = Remaining time x 10",
-                backBtn: "BACK", labelLv: "LV", labelTime: "TIME", labelScore: "SCORE",
-                goTimeout: "TIME OUT!", goComplete: "MISSION CLEAR!", alertLogin: "Please fill info"
+                placeholderName: "Name", placeholderID: "Employee ID", startBtn: "START MISSION", ruleBtn: "RULES", ruleTitle: "RULES",
+                ruleDesc: "• Find 4 hazards per image<br>• Wrong tap: -10 seconds<br>• Score = Remaining time x 10<br>• Total 5 Levels",
+                backBtn: "BACK", labelLv: "LEVEL", labelTime: "TIME", labelScore: "SCORE",
+                goTimeout: "TIME OUT!", goComplete: "MISSION CLEAR!", alertLogin: "Please fill all info"
             }
         };
 
-        let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false;
-
-        // --- พิกัดที่ถูกต้องทั้ง 5 ด่าน ---
+        // --- พิกัดล่าสุดที่คุณระบุ (ใช้ .jpg) ---
         const levelsData = [
             { img: "level1.jpg", points: [{t:89, l:38}, {t:88, l:53}, {t:17, l:65}, {t:66, l:50}] },
             { img: "level2.jpg", points: [{t:84, l:54}, {t:94, l:36}, {t:53, l:27}, {t:90, l:74}] },
@@ -123,11 +124,12 @@
             { img: "level5.jpg", points: [{t:73, l:96}, {t:54, l:55}, {t:37, l:55}, {t:59, l:99}] }
         ];
 
+        let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false;
+
         function selectLang(lang) {
             currentLang = lang; updateTexts();
             document.getElementById('lang-screen').classList.remove('active-screen');
             document.getElementById('login-screen').classList.add('active-screen');
-            document.getElementById('global-home-btn').style.display = 'block';
         }
 
         function updateTexts() {
@@ -155,36 +157,85 @@
         }
 
         function startGame() {
-            if(!document.getElementById('empName').value || !document.getElementById('empID').value) return alert(langData[currentLang].alertLogin);
-            document.getElementById('global-home-btn').style.display = 'none'; 
+            if(!document.getElementById('empName').value || !document.getElementById('empID').value) {
+                return alert(langData[currentLang].alertLogin);
+            }
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'flex';
             loadLevel(1); startTimer();
         }
 
         function loadLevel(lv) {
-            isPlaying = true; foundInLevel = 0; currentLevel = lv;
-            document.getElementById('current-lv').innerText = lv;
-            document.getElementById('main-img').src = `images/${levelsData[lv-1].img}`;
+            isPlaying = false;
+            document.getElementById('loading-overlay').style.display = 'flex';
             const container = document.getElementById('hazard-container');
             container.innerHTML = '';
+            const img = document.getElementById('main-img');
+            img.style.opacity = '0';
+            
+            // ป้องกัน Cache ค้างบน GitHub
+            setTimeout(() => {
+                img.src = `images/${levelsData[lv-1].img}?v=${Date.now()}`;
+                img.onload = () => {
+                    img.style.opacity = '1';
+                    createHazards(lv);
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    isPlaying = true;
+                    foundInLevel = 0;
+                    currentLevel = lv;
+                    document.getElementById('current-lv').innerText = lv;
+                };
+            }, 400);
+        }
+
+        function createHazards(lv) {
+            const container = document.getElementById('hazard-container');
             levelsData[lv-1].points.forEach(p => {
                 const div = document.createElement('div');
                 div.className = 'hazard';
                 div.style.top = p.t + '%'; div.style.left = p.l + '%';
-                div.onclick = (e) => {
-                    e.stopPropagation();
-                    if(!isPlaying || div.classList.contains('found')) return;
-                    div.classList.add('found'); foundInLevel++;
-                    if(foundInLevel === 4) {
-                        totalScore += (timeLeft * 10);
-                        document.getElementById('total-score').innerText = totalScore;
-                        if(currentLevel < 5) { currentLevel++; setTimeout(()=>loadLevel(currentLevel), 500); timeLeft = 60; }
-                        else { gameOver(true); }
-                    }
-                };
+                
+                // ใช้ touchstart สำหรับมือถือให้ตอบสนองไวที่สุด
+                div.addEventListener('touchstart', (e) => {
+                    e.preventDefault(); e.stopPropagation();
+                    handleHit(div);
+                }, {passive: false});
+                
+                div.onclick = (e) => { e.stopPropagation(); handleHit(div); };
                 container.appendChild(div);
             });
+        }
+
+        function handleHit(div) {
+            if(!isPlaying || div.classList.contains('found')) return;
+            div.classList.add('found');
+            foundInLevel++;
+            if(foundInLevel === 4) {
+                totalScore += (timeLeft * 10);
+                document.getElementById('total-score').innerText = totalScore;
+                if(currentLevel < 5) {
+                    setTimeout(() => loadLevel(currentLevel + 1), 600);
+                    timeLeft = 60;
+                } else { gameOver(true); }
+            }
+        }
+
+        // ระบบหักเวลาเมื่อจิ้มผิดบนรูปภาพ
+        document.getElementById('main-img').addEventListener('touchstart', (e) => {
+            if(!isPlaying) return;
+            const touch = e.touches[0];
+            createPenalty(touch.clientX, touch.clientY);
+        }, {passive: false});
+
+        function createPenalty(x, y) {
+            timeLeft -= 10;
+            if(timeLeft < 0) timeLeft = 0;
+            document.getElementById('timer').innerText = timeLeft;
+            const p = document.createElement('div');
+            p.className = 'penalty-text'; p.innerText = '-10s';
+            p.style.left = x + 'px'; p.style.top = y + 'px';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 800);
         }
 
         function startTimer() {
@@ -205,22 +256,6 @@
             document.getElementById('go-msg').innerText = win ? langData[currentLang].goComplete : langData[currentLang].goTimeout;
             document.getElementById('go-score').innerText = totalScore;
         }
-
-        // ระบบจิ้มผิดหักเวลา (สำหรับมือถือ)
-        document.getElementById('main-img').addEventListener('touchstart', (e) => {
-            if(!isPlaying) return;
-            const touch = e.touches[0];
-            timeLeft -= 10;
-            if(timeLeft < 0) timeLeft = 0;
-            document.getElementById('timer').innerText = timeLeft;
-            const p = document.createElement('div');
-            p.className = 'penalty-text'; p.innerText = '-10s';
-            p.style.left = touch.clientX + 'px'; p.style.top = touch.clientY + 'px';
-            document.body.appendChild(p);
-            setTimeout(() => p.remove(), 800);
-        });
     </script>
-</body>
-</html>
 </body>
 </html>
