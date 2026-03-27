@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - FINAL PRO</title>
+    <title>LCB1 HAZARD HUNTER - COMIC TEXT</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -22,44 +22,61 @@
         }
         @media screen and (orientation: portrait) { #rotate-warning { display: flex !important; } }
 
-        /* --- Screens --- */
+        /* --- Screens Base --- */
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); }
         .active-screen { display: flex; }
         .comic-title { font-family: 'Bangers'; font-size: 7vh; color: var(--blue); text-shadow: 2px 2px 0px #fff, 3px 3px 0px var(--black); margin-bottom: 2vh; }
         
-        .box { background: #fff; padding: 15px; border: 4px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 400px; text-align: center; }
-        input { width: 100%; padding: 8px; margin: 4px 0; border: 2px solid var(--black); font-size: 16px; font-family: 'Itim'; text-align: center; outline: none; }
+        .box { background: #fff; padding: 15px; border: 4px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 380px; text-align: center; }
+        input { width: 100%; padding: 8px; margin: 4px 0; border: 2px solid var(--black); font-size: 16px; font-family: 'Itim'; outline: none; text-align: center; }
         
         .btn-row { display: flex; gap: 8px; margin-top: 8px; width: 100%; }
-        .btn { flex: 1; background: var(--red); color: #fff; padding: 10px; font-family: 'Bangers'; font-size: 18px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; text-decoration: none; }
+        .btn { flex: 1; background: var(--red); color: #fff; padding: 10px; font-family: 'Bangers'; font-size: 18px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; text-decoration: none; display: inline-block; }
         .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
 
-        /* --- Game Interface --- */
+        /* --- Game Play Layout (ฉบับแก้ไข: เปลี่ยนแถบดำเป็นตัวอักษร) --- */
         #game-interface { display: none; width: 100%; height: 100%; flex-direction: row; background: #222; z-index: 1500; }
 
-        /* ฝั่งซ้าย (Stats) */
+        /* Left Stats */
         .side-bar-left { width: 90px; background: #fff; border-right: 5px solid var(--black); display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 5px 0; z-index: 2000; }
         .side-item { text-align: center; font-family: 'Bangers'; font-size: 14px; line-height: 1; }
         .side-item span { display: block; font-size: 22px; color: var(--blue); margin-top: 4px; }
         .side-item.time span { color: var(--red); }
 
-        /* ตรงกลาง (Viewport) */
+        /* Viewport (พื้นที่รูปเกม) */
         #viewport { flex: 1; position: relative; display: flex; justify-content: flex-start; align-items: center; overflow-x: auto; overflow-y: hidden; background: #000; -webkit-overflow-scrolling: touch; }
         .image-container { position: relative; height: 100%; display: flex; align-items: center; }
         #main-img { height: 100%; width: auto; display: block; }
 
-        /* ฝั่งขวา (Character Area) */
+        /* --- แก้ไขตรงนี้: เปลี่ยนแถบดำเป็นสีน้ำเงินและใส่ตัวอักษร --- */
         #character-area { 
-            width: 130px; background: var(--yellow); border-left: 5px solid var(--black); 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            z-index: 2000; position: relative; padding: 5px;
+            width: 130px; 
+            background: var(--blue); /* เปลี่ยนพื้นหลังแถบซ้ายเป็นสีน้ำเงิน */
+            border-left: 5px solid var(--black); /* รักษาเส้นขอบดำไว้ */
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-around; /* จัดวางองค์ประกอบให้กระจายตัวพอดี */
+            align-items: center; 
+            z-index: 2000; 
+            position: relative; 
+            padding: 10px 0; /* เพิ่มพื้นที่ว่างด้านบนและล่าง */
         }
 
-        /* Hazards & Effects */
+        /* สไตล์ตัวอักษรแนวตั้งสีเหลือง */
+        .comic-text-vertical { 
+            font-family: 'Bangers'; 
+            color: var(--yellow); /* เปลี่ยนสีตัวอักษรเป็นสีเหลืองเพื่อให้ตัดกับสีน้ำเงิน */
+            font-size: 40px; 
+            line-height: 0.9; /* ลดระยะห่างบรรทัดให้ตัวอักษรอยู่ชิดกันแบบคอมมิค */
+            text-shadow: 2px 2px 0px var(--black); /* ใส่เงาซ้อนดำให้ดูมีมิติ */
+            text-align: center;
+        }
+
+        /* --- Hazards & Effects --- */
         .hazard { position: absolute; width: 8vh; height: 8vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 3px solid #ff0000; background: rgba(255, 0, 0, 0.2); }
         .hazard.found { border-color: #00ff00 !important; background: rgba(0, 255, 0, 0.3) !important; }
-        .penalty-text { position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 40px; z-index: 9999; text-shadow: 2px 2px 0px #000; pointer-events: none; animation: fadeUp 0.8s forwards; }
+        .penalty-text { position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 45px; z-index: 9999; text-shadow: 2px 2px 0px #000; pointer-events: none; animation: fadeUp 0.8s forwards; }
         @keyframes fadeUp { 0% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -150%); } }
 
         #loading-overlay { position: fixed; inset: 0; background: var(--yellow); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
@@ -76,7 +93,7 @@
     <div id="loading-overlay"><h2 style="font-family:'Bangers'">LOADING...</h2></div>
 
     <div id="lang-screen" class="screen active-screen">
-        <div class="comic-title">HAZARD HUNTER</div>
+        <div class="comic-title">HAZARD Hunter</div>
         <div class="btn-row" style="width: 260px;">
             <div class="btn" onclick="selectLang('th')">ไทย</div>
             <div class="btn btn-blue" onclick="selectLang('en')">EN</div>
@@ -119,7 +136,11 @@
         </div>
 
         <div id="character-area">
-            <img src="images/character.png" alt="Character" style="max-width: 100%; height: auto; object-fit: contain;">
+            <div class="comic-text-vertical">H<br>A<br>Z<br>A<br>R<br>D</div>
+            
+            <img src="images/character.png" alt="Character" style="max-width: 90%; height: auto; object-fit: contain;">
+            
+            <div class="comic-text-vertical">H<br>U<br>N<br>T<br>E<br>R</div>
         </div>
     </div>
 
@@ -233,7 +254,7 @@
             }
         }
 
-        // --- ระบบหักเวลาเมื่อจิ้มผิด (คงไว้แน่นอน) ---
+        // ระบบหักเวลาเมื่อจิ้มผิด
         document.getElementById('viewport').addEventListener('touchstart', (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             const touch = e.touches[0];
