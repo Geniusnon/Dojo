@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - COMIC TEXT</title>
+    <title>LCB1 HAZARD HUNTER - COMIC VERTICAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -22,7 +22,7 @@
         }
         @media screen and (orientation: portrait) { #rotate-warning { display: flex !important; } }
 
-        /* --- Screens Base --- */
+        /* --- UI Screens --- */
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); }
         .active-screen { display: flex; }
         .comic-title { font-family: 'Bangers'; font-size: 7vh; color: var(--blue); text-shadow: 2px 2px 0px #fff, 3px 3px 0px var(--black); margin-bottom: 2vh; }
@@ -31,51 +31,57 @@
         input { width: 100%; padding: 8px; margin: 4px 0; border: 2px solid var(--black); font-size: 16px; font-family: 'Itim'; outline: none; text-align: center; }
         
         .btn-row { display: flex; gap: 8px; margin-top: 8px; width: 100%; }
-        .btn { flex: 1; background: var(--red); color: #fff; padding: 10px; font-family: 'Bangers'; font-size: 18px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; text-decoration: none; display: inline-block; }
+        .btn { flex: 1; background: var(--red); color: #fff; padding: 10px; font-family: 'Bangers'; font-size: 18px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; text-decoration: none; }
         .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
 
-        /* --- Game Play Layout (ฉบับแก้ไข: เปลี่ยนแถบดำเป็นตัวอักษร) --- */
+        /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; flex-direction: row; background: #222; z-index: 1500; }
 
-        /* Left Stats */
+        /* แถบซ้าย Stats */
         .side-bar-left { width: 90px; background: #fff; border-right: 5px solid var(--black); display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 5px 0; z-index: 2000; }
         .side-item { text-align: center; font-family: 'Bangers'; font-size: 14px; line-height: 1; }
         .side-item span { display: block; font-size: 22px; color: var(--blue); margin-top: 4px; }
         .side-item.time span { color: var(--red); }
 
-        /* Viewport (พื้นที่รูปเกม) */
+        /* พื้นที่แสดงรูป */
         #viewport { flex: 1; position: relative; display: flex; justify-content: flex-start; align-items: center; overflow-x: auto; overflow-y: hidden; background: #000; -webkit-overflow-scrolling: touch; }
         .image-container { position: relative; height: 100%; display: flex; align-items: center; }
         #main-img { height: 100%; width: auto; display: block; }
 
-        /* --- แก้ไขตรงนี้: เปลี่ยนแถบดำเป็นสีน้ำเงินและใส่ตัวอักษร --- */
+        /* แถบขวา (ตัวละคร + ตัวอักษรแนวตั้ง) */
         #character-area { 
             width: 130px; 
-            background: var(--blue); /* เปลี่ยนพื้นหลังแถบซ้ายเป็นสีน้ำเงิน */
-            border-left: 5px solid var(--black); /* รักษาเส้นขอบดำไว้ */
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-around; /* จัดวางองค์ประกอบให้กระจายตัวพอดี */
+            background: var(--yellow); 
+            border-left: 5px solid var(--black); 
+            display: flex; flex-direction: column; 
+            justify-content: space-between; 
             align-items: center; 
             z-index: 2000; 
-            position: relative; 
-            padding: 10px 0; /* เพิ่มพื้นที่ว่างด้านบนและล่าง */
+            padding: 10px 0;
         }
 
-        /* สไตล์ตัวอักษรแนวตั้งสีเหลือง */
+        /* ปรับสไตล์ตัวอักษรให้เป็น 1 บรรทัดต่อ 1 ตัว */
         .comic-text-vertical { 
             font-family: 'Bangers'; 
-            color: var(--yellow); /* เปลี่ยนสีตัวอักษรเป็นสีเหลืองเพื่อให้ตัดกับสีน้ำเงิน */
-            font-size: 40px; 
-            line-height: 0.9; /* ลดระยะห่างบรรทัดให้ตัวอักษรอยู่ชิดกันแบบคอมมิค */
-            text-shadow: 2px 2px 0px var(--black); /* ใส่เงาซ้อนดำให้ดูมีมิติ */
+            color: var(--blue); 
+            font-size: 32px; 
+            line-height: 0.8; /* ให้ตัวอักษรชิดกันขึ้น */
+            text-shadow: 1px 1px 0px #fff;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* --- Hazards & Effects --- */
-        .hazard { position: absolute; width: 8vh; height: 8vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 3px solid #ff0000; background: rgba(255, 0, 0, 0.2); }
-        .hazard.found { border-color: #00ff00 !important; background: rgba(0, 255, 0, 0.3) !important; }
+        /* Hazards & Effects */
+        .hazard { 
+            position: absolute; width: 8vh; height: 8vh; transform: translate(-50%, -50%); 
+            z-index: 100; border-radius: 50%; border: 3px solid transparent; 
+            background: rgba(255, 0, 0, 0); 
+        }
+        .hazard.found { border-color: #00ff00 !important; background: rgba(0, 255, 0, 0.4) !important; }
+
         .penalty-text { position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 45px; z-index: 9999; text-shadow: 2px 2px 0px #000; pointer-events: none; animation: fadeUp 0.8s forwards; }
         @keyframes fadeUp { 0% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -150%); } }
 
@@ -93,7 +99,7 @@
     <div id="loading-overlay"><h2 style="font-family:'Bangers'">LOADING...</h2></div>
 
     <div id="lang-screen" class="screen active-screen">
-        <div class="comic-title">HAZARD Hunter</div>
+        <div class="comic-title">HAZARD HUNTER</div>
         <div class="btn-row" style="width: 260px;">
             <div class="btn" onclick="selectLang('th')">ไทย</div>
             <div class="btn btn-blue" onclick="selectLang('en')">EN</div>
@@ -136,11 +142,15 @@
         </div>
 
         <div id="character-area">
-            <div class="comic-text-vertical">H<br>A<br>Z<br>A<br>R<br>D</div>
+            <div class="comic-text-vertical">
+                <span>H</span><span>A</span><span>Z</span><span>A</span><span>R</span><span>D</span>
+            </div>
             
             <img src="images/character.png" alt="Character" style="max-width: 90%; height: auto; object-fit: contain;">
             
-            <div class="comic-text-vertical">H<br>U<br>N<br>T<br>E<br>R</div>
+            <div class="comic-text-vertical">
+                <span>H</span><span>U</span><span>N</span><span>T</span><span>E</span><span>R</span>
+            </div>
         </div>
     </div>
 
@@ -170,13 +180,11 @@
         let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false;
 
         function selectLang(l) { 
-            currentLang = l; 
-            updateTexts(); 
+            currentLang = l; updateTexts(); 
             document.getElementById('lang-screen').classList.remove('active-screen'); 
             document.getElementById('login-screen').classList.add('active-screen'); 
         }
 
-        // ฟังก์ชันกลับหน้าเลือกภาษา
         function backToLang() {
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('lang-screen').classList.add('active-screen');
@@ -197,8 +205,7 @@
             if(!document.getElementById('empName').value) return alert(langData[currentLang].alertLogin);
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'flex';
-            loadLevel(1); 
-            startTimer();
+            loadLevel(1); startTimer();
         }
 
         function loadLevel(lv) {
@@ -218,9 +225,7 @@
                     imgBox.style.height = img.clientHeight + "px";
                     createHazards(lv);
                     document.getElementById('loading-overlay').style.display = 'none';
-                    isPlaying = true; 
-                    foundInLevel = 0; 
-                    currentLevel = lv;
+                    isPlaying = true; foundInLevel = 0; currentLevel = lv;
                     document.getElementById('current-lv').innerText = lv;
                     document.getElementById('viewport').scrollLeft = 0;
                 };
@@ -241,51 +246,36 @@
 
         function handleHit(div) {
             if(!isPlaying || div.classList.contains('found')) return;
-            div.classList.add('found'); 
-            foundInLevel++;
+            div.classList.add('found'); foundInLevel++;
             if(foundInLevel === 4) {
                 totalScore += (timeLeft * 10);
                 document.getElementById('total-score').innerText = totalScore;
-                if(currentLevel < 5) { 
-                    setTimeout(() => { timeLeft = 60; loadLevel(currentLevel + 1); }, 600); 
-                } else { 
-                    gameOver(true); 
-                }
+                if(currentLevel < 5) { setTimeout(() => { timeLeft = 60; loadLevel(currentLevel + 1); }, 600); }
+                else { gameOver(true); }
             }
         }
 
-        // ระบบหักเวลาเมื่อจิ้มผิด
+        // Penalty System
         document.getElementById('viewport').addEventListener('touchstart', (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             const touch = e.touches[0];
-            
-            timeLeft -= 10; 
-            if(timeLeft < 0) timeLeft = 0;
+            timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
             document.getElementById('timer').innerText = timeLeft;
-
             const p = document.createElement('div');
             p.className = 'penalty-text'; p.innerText = '-10s';
             p.style.left = touch.clientX + 'px'; p.style.top = touch.clientY + 'px';
             document.body.appendChild(p);
             setTimeout(() => p.remove(), 800);
-            
             if(timeLeft <= 0) gameOver(false);
         }, {passive: false});
 
         function startTimer() {
             if(timerObj) clearInterval(timerObj);
-            timerObj = setInterval(() => { 
-                if(isPlaying) { 
-                    timeLeft--; 
-                    document.getElementById('timer').innerText = timeLeft; 
-                    if(timeLeft <= 0) gameOver(false); 
-                } 
-            }, 1000);
+            timerObj = setInterval(() => { if(isPlaying) { timeLeft--; document.getElementById('timer').innerText = timeLeft; if(timeLeft <= 0) gameOver(false); } }, 1000);
         }
 
         function gameOver(win) {
-            isPlaying = false; 
-            clearInterval(timerObj);
+            isPlaying = false; clearInterval(timerObj);
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
             document.getElementById('go-msg').innerText = win ? langData[currentLang].goComplete : langData[currentLang].goTimeout;
