@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - FULL VIEWPORT</title>
+    <title>LCB1 HAZARD HUNTER - EASY TAP</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -11,7 +11,7 @@
         
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100svh; 
-            background: var(--black); /* เปลี่ยนพื้นหลังหลักเป็นสีดำเผื่อรูปไม่เต็ม */
+            background: var(--black); 
             font-family: 'Itim', cursive; 
             overflow: hidden; position: fixed; 
         }
@@ -36,16 +36,16 @@
         .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
 
-        /* --- Game Interface (New Layout) --- */
+        /* --- Game Interface --- */
         #game-interface { 
             display: none; width: 100%; height: 100%; 
-            position: relative; /* เพื่อให้ Stats และ Character วางทับได้ */
+            position: relative; 
             background: var(--black); z-index: 1500; 
         }
 
-        /* --- ปรับปรุง: Viewport เต็มจอ --- */
+        /* Viewport เต็มจอ */
         #viewport { 
-            position: absolute; inset: 0; /* เต็มจอ */
+            position: absolute; inset: 0; 
             display: flex; justify-content: center; align-items: center; 
             overflow-x: auto; overflow-y: hidden; 
             -webkit-overflow-scrolling: touch; z-index: 1510;
@@ -53,18 +53,18 @@
         .image-container { position: relative; height: 100%; display: flex; align-items: center; }
         #main-img { 
             height: 100%; width: auto; 
-            object-fit: contain; /* ขยายให้ใหญ่ที่สุดโดยไม่ล้น */
+            object-fit: contain; 
             display: block; 
         }
 
-        /* --- ปรับปรุง: Stats Bar แบบลอยทับ --- */
+        /* Stats Bar แบบลอยทับ */
         .side-bar-left { 
-            position: absolute; top: 10px; left: 10px; /* ลอยทับมุมซ้ายบน */
+            position: absolute; top: 10px; left: 10px; 
             width: auto; height: auto; 
-            background: rgba(255, 255, 255, 0.85); /* โปร่งแสงนิดๆ */
+            background: rgba(255, 255, 255, 0.85); 
             border: 3px solid var(--black); 
             border-radius: 10px;
-            display: flex; flex-direction: row; /* เรียงแนวนอน */
+            display: flex; flex-direction: row; 
             justify-content: center; align-items: center; 
             padding: 5px 10px; gap: 15px; z-index: 1520; 
         }
@@ -72,11 +72,11 @@
         .side-item span { display: inline; font-size: 18px; color: var(--blue); margin-left: 3px; }
         .side-item.time span { color: var(--red); }
 
-        /* --- ปรับปรุง: Character แบบลอยทับ --- */
+        /* Character แบบลอยทับ */
         #character-area { 
-            position: absolute; bottom: 0; right: 0; /* ลอยทับมุมขวาล่าง */
+            position: absolute; bottom: 0; right: 0; 
             width: 120px; height: auto; 
-            background: transparent; /* พื้นหลังโปร่งใส */
+            background: transparent; 
             border: none; 
             display: flex; justify-content: center; align-items: flex-end; 
             z-index: 1520; padding: 0;
@@ -84,16 +84,26 @@
         .big-char {
             width: 100%; height: auto; 
             object-fit: contain;
-            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)); /* เพิ่มเงาให้ลอยเด่น */
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)); 
         }
 
-        /* Hazards & Effects */
+        /* --- แก้ไขใหม่: ขยายขนาดวงกลมให้ใหญ่ขึ้น 2 เท่า --- */
         .hazard { 
-            position: absolute; width: 8vh; height: 8vh; transform: translate(-50%, -50%); 
-            z-index: 100; border-radius: 50%; border: 3px solid transparent; 
-            background: rgba(255, 0, 0, 0); 
+            position: absolute; 
+            width: 16vh;  /* ขยายจาก 8vh เป็น 16vh */
+            height: 16vh; /* ขยายจาก 8vh เป็น 16vh */
+            transform: translate(-50%, -50%); 
+            z-index: 100; 
+            border-radius: 50%; 
+            border: 4px solid transparent; /* ซ่อนขอบไว้ */
+            background: rgba(255, 0, 0, 0); /* ซ่อนสีพื้นหลังไว้ */
         }
-        .hazard.found { border-color: #00ff00 !important; background: rgba(0, 255, 0, 0.4) !important; }
+        
+        /* โชว์ขึ้นมาเป็นสีเขียวเมื่อหาเจอ */
+        .hazard.found { 
+            border-color: #00ff00 !important; 
+            background: rgba(0, 255, 0, 0.4) !important; 
+        }
 
         .penalty-text { position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 45px; z-index: 9999; text-shadow: 2px 2px 0px #000; pointer-events: none; animation: fadeUp 0.8s forwards; }
         @keyframes fadeUp { 0% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -150%); } }
@@ -148,7 +158,7 @@
             </div>
         </div>
 
-        <div class="side-bar-left comic-box">
+        <div class="side-bar-left">
             <div class="side-item">LV<span id="current-lv">1</span></div>
             <div class="side-item time">TIME<span id="timer">60</span></div>
             <div class="side-item">SCORE<span id="total-score">0</span></div>
@@ -286,7 +296,5 @@
             document.getElementById('go-score').innerText = totalScore;
         }
     </script>
-</body>
-</html>
 </body>
 </html>
