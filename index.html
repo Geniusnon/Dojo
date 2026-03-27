@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - LEFT STATS</title>
+    <title>LCB1 HAZARD HUNTER - COMPLETE</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -15,14 +15,14 @@
             overflow: hidden; position: fixed; 
         }
 
-        /* --- Rotate Warning --- */
+        /* --- 1. หน้าจอเตือนหมุนจอ (ทำงานทันที) --- */
         #rotate-warning {
             position: fixed; inset: 0; background: var(--blue); color: white; z-index: 99999;
             display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
         }
         @media screen and (orientation: portrait) { #rotate-warning { display: flex !important; } }
 
-        /* --- UI Screens --- */
+        /* --- 2. หน้าจอเมนูต่างๆ --- */
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); }
         .active-screen { display: flex; }
         .comic-title { font-family: 'Bangers'; font-size: 7vh; color: var(--blue); text-shadow: 2px 2px 0px #fff, 3px 3px 0px var(--black); margin-bottom: 2vh; }
@@ -35,13 +35,13 @@
         .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
 
-        /* --- Game Interface (Left Stats Layout) --- */
+        /* --- 3. Game Interface (โครงสร้างที่คุณต้องการ) --- */
         #game-interface { 
             display: none; width: 100%; height: 100%; 
             flex-direction: row; background: #222; z-index: 1500; 
         }
 
-        /* แถบด้านซ้าย (Stats) */
+        /* [ฝั่งซ้าย] แถบตัวเลขสถานะ */
         .side-bar-left { 
             width: 90px; background: #fff; border-right: 5px solid var(--black); 
             display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 5px 0; z-index: 2000;
@@ -50,7 +50,7 @@
         .side-item span { display: block; font-size: 22px; color: var(--blue); margin-top: 4px; }
         .side-item.time span { color: var(--red); }
 
-        /* พื้นที่แสดงรูป (กลาง) */
+        /* [ตรงกลาง] พื้นที่แสดงรูปภาพ */
         #viewport { 
             flex: 1; position: relative; display: flex; 
             justify-content: flex-start; align-items: center; 
@@ -60,7 +60,7 @@
         .image-container { position: relative; height: 100%; display: flex; align-items: center; }
         #main-img { height: 100%; width: auto; display: block; }
 
-        /* แถบด้านขวา (คำว่า "เลื่อน") */
+        /* [ฝั่งขวา] คำว่าเลื่อน */
         .side-hint-right { 
             width: 40px; background: var(--blue); border-left: 3px solid var(--black); 
             display: flex; justify-content: center; align-items: center; z-index: 2000;
@@ -72,14 +72,19 @@
         }
         @keyframes bounceLeftRight { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
 
-        /* --- Hazard Point --- */
+        /* --- 4. Hazards & Effects --- */
         .hazard { 
             position: absolute; width: 8vh; height: 8vh; transform: translate(-50%, -50%); 
             z-index: 100; border-radius: 50%; border: 3px solid #ff0000; background: rgba(255, 0, 0, 0.2); 
         }
         .hazard.found { border-color: #00ff00 !important; background: rgba(0, 255, 0, 0.3) !important; }
 
-        .penalty-text { position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 40px; z-index: 9999; text-shadow: 2px 2px 0px #000; pointer-events: none; animation: fadeUp 0.8s forwards; }
+        /* ตัวหนังสือลบเวลาตอนกดผิด */
+        .penalty-text { 
+            position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 40px; 
+            z-index: 9999; text-shadow: 2px 2px 0px #000; pointer-events: none; 
+            animation: fadeUp 0.8s forwards; 
+        }
         @keyframes fadeUp { 0% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -150%); } }
 
         #loading-overlay { position: fixed; inset: 0; background: var(--yellow); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
@@ -90,7 +95,7 @@
     <div id="rotate-warning">
         <div style="font-size: 60px;">🔄</div>
         <h2 style="font-family:'Bangers'">LANDSCAPE ONLY</h2>
-        <p>กรุณาหมุนจอเพื่อเล่น</p>
+        <p>กรุณาหมุนโทรศัพท์แนวนอน</p>
     </div>
 
     <div id="loading-overlay"><h2 style="font-family:'Bangers'">LOADING...</h2></div>
@@ -150,8 +155,8 @@
 
     <script>
         const langData = {
-            th: { startBtn: "เริ่ม", ruleBtn: "กติกา", ruleDesc: "• หาจุดอันตราย 4 จุดต่อภาพ<br>• จิ้มผิดหักเวลา 10 วินาที<br>• คะแนน = เวลาที่เหลือ x 10", backBtn: "ย้อนกลับ", alertLogin: "กรอกชื่อก่อนครับ", goComplete: "สำเร็จ!", goTimeout: "เวลาหมด!" },
-            en: { startBtn: "START", ruleBtn: "RULES", ruleDesc: "• Find 4 hazards per image<br>• Wrong tap: -10s<br>• Score = Time x 10", backBtn: "BACK", alertLogin: "Enter Name", goComplete: "CLEAR!", goTimeout: "TIME OUT!" }
+            th: { startBtn: "เริ่ม", ruleBtn: "กติกา", ruleDesc: "• หาจุดอันตราย 4 จุดต่อภาพ<br>• จิ้มผิดหักเวลา 10 วินาที<br>• คะแนน = เวลาที่เหลือ x 10", backBtn: "ย้อนกลับ", alertLogin: "กรอกข้อมูล!", goComplete: "สำเร็จ!", goTimeout: "เวลาหมด!" },
+            en: { startBtn: "START", ruleBtn: "RULES", ruleDesc: "• Find 4 hazards per image<br>• Wrong tap: -10s<br>• Score = Time x 10", backBtn: "BACK", alertLogin: "Fill Info!", goComplete: "CLEAR!", goTimeout: "TIME OUT!" }
         };
 
         const levelsData = [
@@ -201,7 +206,6 @@
                     document.getElementById('loading-overlay').style.display = 'none';
                     isPlaying = true; foundInLevel = 0; currentLevel = lv;
                     document.getElementById('current-lv').innerText = lv;
-                    // Reset scroll position to left
                     document.getElementById('viewport').scrollLeft = 0;
                 };
             }, 400);
@@ -230,11 +234,17 @@
             }
         }
 
+        // --- ระบบหักเวลาเมื่อจิ้มผิด (รักษาไว้แน่นอน) ---
         document.getElementById('viewport').addEventListener('touchstart', (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             const touch = e.touches[0];
-            timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
+            
+            // หักเวลาจริง
+            timeLeft -= 10; 
+            if(timeLeft < 0) timeLeft = 0;
             document.getElementById('timer').innerText = timeLeft;
+
+            // แสดงเอฟเฟกต์ตัวเลขลอย
             const p = document.createElement('div');
             p.className = 'penalty-text'; p.innerText = '-10s';
             p.style.left = touch.clientX + 'px'; p.style.top = touch.clientY + 'px';
