@@ -3,74 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER</title>
+    <title>LCB1 HAZARD HUNTER - CONSOLE</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
         * { box-sizing: border-box; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
-        
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--yellow); font-family: 'Itim', cursive; overflow: hidden; }
 
-        /* --- 1. หน้าจอเตือนให้หมุนจอ (ทำงานทันที) --- */
+        /* --- Rotate Warning --- */
         #rotate-warning {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: var(--blue); color: white; z-index: 99999;
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; padding: 20px;
+            position: fixed; inset: 0; background: var(--blue); color: white; z-index: 99999;
+            display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
         }
-        @media screen and (orientation: portrait) {
-            #rotate-warning { display: flex !important; }
-        }
-        @keyframes rotateAnim { 0% { transform: rotate(0deg); } 50% { transform: rotate(90deg); } 100% { transform: rotate(0deg); } }
+        @media screen and (orientation: portrait) { #rotate-warning { display: flex !important; } }
 
-        /* --- 2. UI Screens --- */
-        .screen { position: fixed; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 15px; z-index: 1000; background: var(--yellow); }
+        /* --- UI Screens (Landscape Optimized) --- */
+        .screen { position: fixed; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; padding: 10px; z-index: 1000; background: var(--yellow); }
         .active-screen { display: flex; }
-        .comic-title { font-family: 'Bangers'; font-size: clamp(40px, 8vw, 60px); line-height: 0.85; color: var(--blue); text-shadow: 2px 2px 0px #fff, 4px 4px 0px var(--black); text-align: center; margin-bottom: 10px; }
-        .box { background: #fff; padding: 20px; border: 5px solid var(--black); box-shadow: 8px 8px 0px var(--black); width: 95%; max-width: 450px; display: flex; flex-direction: column; }
+        .comic-title { font-family: 'Bangers'; font-size: clamp(30px, 6vw, 50px); color: var(--blue); text-shadow: 2px 2px 0px #fff, 3px 3px 0px var(--black); margin-bottom: 10px; }
         
-        input { width: 100%; padding: 10px; margin: 5px 0; border: 3px solid var(--black); font-size: 18px; font-family: 'Itim'; border-radius: 0; outline: none; }
-        .btn { width: 100%; background: var(--red); color: #fff; padding: 12px; font-family: 'Bangers'; font-size: 22px; border: 4px solid var(--black); cursor: pointer; margin: 5px 0; box-shadow: 4px 4px 0px var(--black); text-align: center; }
-        .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--black); }
+        /* ปรับขนาดกล่อง Login ให้ไม่ล้นแนวนอน */
+        .box { background: #fff; padding: 15px; border: 4px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 80%; max-width: 400px; }
+        input { width: 100%; padding: 8px; margin: 4px 0; border: 2px solid var(--black); font-size: 16px; font-family: 'Itim'; }
+        
+        .btn-row { display: flex; gap: 8px; margin-top: 8px; }
+        .btn { flex: 1; background: var(--red); color: #fff; padding: 10px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; }
+        .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
 
-        /* --- 3. Game Interface --- */
-        #game-interface { display: none; width: 100%; height: 100%; flex-direction: column; background: var(--yellow); overflow: hidden; z-index: 1500; }
-        .stats-bar { background: #fff; border-bottom: 5px solid var(--black); display: flex; justify-content: space-around; align-items: center; height: 60px; z-index: 2000; }
-        .stats-item { font-family: 'Bangers'; font-size: 18px; }
-        .stats-item span { color: var(--blue); font-size: 22px; }
+        /* --- Game Interface (Side-Bar Layout) --- */
+        #game-interface { display: none; width: 100%; height: 100%; flex-direction: row; background: #111; overflow: hidden; z-index: 1500; }
+        
+        #viewport { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: #000; overflow: hidden; }
+        .image-container { position: relative; height: 100%; display: flex; align-items: center; }
+        #main-img { height: 100%; width: auto; object-fit: contain; display: block; }
 
-        #viewport { flex: 1; position: relative; overflow: auto; background: #222; display: flex; justify-content: center; align-items: center; }
-        .image-container { position: relative; display: inline-block; }
-        #main-img { max-height: calc(100vh - 60px); width: auto; display: block; transition: opacity 0.3s; }
+        /* แถบด้านข้าง (Side Bar) แทนแถบบน เพื่อประหยัดพื้นที่แนวตั้ง */
+        .side-bar { width: 100px; background: #fff; border-left: 4px solid var(--black); display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 10px 0; }
+        .side-item { text-align: center; font-family: 'Bangers'; font-size: 14px; line-height: 1; }
+        .side-item span { display: block; font-size: 22px; color: var(--blue); margin-top: 5px; }
+        .side-item.time span { color: var(--red); }
 
-        /* --- 4. Hazard & Effects --- */
-        .hazard { position: absolute; width: 60px; height: 60px; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 4px solid #ff0000; background: rgba(255, 0, 0, 0.2); }
+        /* --- Hazards & Effects --- */
+        .hazard { position: absolute; width: 8vh; height: 8vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 3px solid #ff0000; background: rgba(255, 0, 0, 0.2); }
         .hazard.found { border-color: #00ff00 !important; background: rgba(0, 255, 0, 0.3) !important; }
-        .penalty-text { position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 45px; z-index: 9999; text-shadow: 2px 2px 0px #000; pointer-events: none; animation: fadeUp 0.8s forwards; }
+        .penalty-text { position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 40px; z-index: 9999; text-shadow: 2px 2px 0px #000; pointer-events: none; animation: fadeUp 0.8s forwards; }
         @keyframes fadeUp { 0% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -150%); } }
 
-        /* --- 5. Loading Overlay --- */
         #loading-overlay { position: fixed; inset: 0; background: var(--yellow); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .spinner { width: 50px; height: 50px; border: 6px solid #fff; border-top: 6px solid var(--blue); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div id="rotate-warning">
-        <div style="font-size: 80px; animation: rotateAnim 2s infinite;">🔄</div>
-        <h2 style="font-family:'Bangers'; font-size: 32px; margin: 10px 0;">PLEASE ROTATE</h2>
-        <p style="font-size: 20px;">กรุณาหมุนโทรศัพท์แนวนอนเพื่อเข้าสู่เกม</p>
+        <div style="font-size: 60px; animation: rotateAnim 2s infinite;">🔄</div>
+        <h2 style="font-family:'Bangers'">LANDSCAPE ONLY</h2>
+        <p>กรุณาใช้งานในแนวนอน</p>
     </div>
+    <style>@keyframes rotateAnim { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(90deg); } }</style>
 
-    <div id="loading-overlay"><div class="spinner"></div><h2 style="font-family:'Bangers'; margin-top:15px;">LOADING...</h2></div>
+    <div id="loading-overlay"><h2 style="font-family:'Bangers'">LOADING MISSION...</h2></div>
 
     <div id="lang-screen" class="screen active-screen">
-        <div class="comic-title">HAZARD<br>HUNTER</div>
-        <div style="display: flex; gap: 10px; width: 90%; max-width: 400px;">
+        <div class="comic-title">HAZARD HUNTER</div>
+        <div class="btn-row" style="width: 250px;">
             <div class="btn" onclick="selectLang('th')">ไทย</div>
-            <div class="btn btn-blue" onclick="selectLang('en')">ENGLISH</div>
+            <div class="btn btn-blue" onclick="selectLang('en')">EN</div>
         </div>
     </div>
 
@@ -78,53 +76,46 @@
         <div class="box">
             <input type="text" id="empName" placeholder="Name">
             <input type="text" id="empID" placeholder="ID">
-            <div class="btn" onclick="startGame()" id="start-btn">START</div>
-            <div class="btn btn-blue" onclick="showRules()" id="rule-btn">RULES</div>
+            <div class="btn-row">
+                <div class="btn" onclick="startGame()" id="start-btn">START</div>
+                <div class="btn btn-blue" onclick="showRules()" id="rule-btn">RULES</div>
+            </div>
         </div>
     </div>
 
     <div id="rules-screen" class="screen">
-        <div class="box">
-            <h2 id="rule-title" style="font-family:'Bangers'; margin:0">RULES</h2>
-            <div id="rule-text" style="margin: 15px 0; font-size: 18px;"></div>
+        <div class="box" style="max-width: 500px;">
+            <div id="rule-text" style="font-size: 16px; margin-bottom: 10px;"></div>
             <div class="btn btn-blue" onclick="backToLogin()" id="back-btn">BACK</div>
         </div>
     </div>
 
     <div id="game-interface">
-        <div class="stats-bar">
-            <div class="stats-item">LV: <span id="current-lv">1</span></div>
-            <div class="stats-item" style="color:red">TIME: <span id="timer">60</span></div>
-            <div class="stats-item">SCORE: <span id="total-score">0</span></div>
-        </div>
         <div id="viewport">
             <div class="image-container">
                 <img id="main-img" src="">
                 <div id="hazard-container"></div>
             </div>
         </div>
+        <div class="side-bar">
+            <div class="side-item">LV<span id="current-lv">1</span></div>
+            <div class="side-item time">TIME<span id="timer">60</span></div>
+            <div class="side-item">SCORE<span id="total-score">0</span></div>
+        </div>
     </div>
 
     <div id="game-over-screen" class="screen">
-        <div class="box" style="text-align: center;">
-            <h2 id="go-msg" style="margin:0; font-size: 24px;"></h2>
-            <h1 id="go-score" style="font-size: 70px; color: var(--blue); font-family: 'Bangers'; margin: 15px 0;">0</h1>
-            <div class="btn" onclick="location.reload()" style="max-width: 200px; margin: 0 auto;">HOME</div>
+        <div class="box" style="text-align: center; max-width: 300px;">
+            <h2 id="go-msg" style="margin:0; font-size: 20px;"></h2>
+            <h1 id="go-score" style="font-size: 50px; color: var(--blue); font-family: 'Bangers'; margin: 5px 0;">0</h1>
+            <div class="btn" onclick="location.reload()">HOME</div>
         </div>
     </div>
 
     <script>
         const langData = {
-            th: {
-                placeholderName: "ชื่อพนักงาน", placeholderID: "รหัสพนักงาน", startBtn: "เริ่มภารกิจ", ruleBtn: "กติกา", ruleTitle: "กติกาการเล่น",
-                ruleDesc: "• หาจุดอันตราย 4 จุดต่อภาพ (แนวนอน)<br>• จิ้มผิดหักเวลา 10 วินาที<br>• คะแนน = เวลาที่เหลือ x 10",
-                backBtn: "ย้อนกลับ", goTimeout: "เวลาหมด!", goComplete: "สำเร็จ!", alertLogin: "กรุณากรอกข้อมูล"
-            },
-            en: {
-                placeholderName: "Name", placeholderID: "ID", startBtn: "START", ruleBtn: "RULES", ruleTitle: "RULES",
-                ruleDesc: "• Find 4 hazards per image<br>• Wrong tap: -10s<br>• Score = Time x 10",
-                backBtn: "BACK", goTimeout: "TIME OUT!", goComplete: "CLEAR!", alertLogin: "Please fill info"
-            }
+            th: { startBtn: "เริ่ม", ruleBtn: "กติกา", ruleTitle: "กติกา", ruleDesc: "• หาจุดอันตราย 4 จุดต่อภาพ<br>• จิ้มผิดหักเวลา 10 วินาที<br>• คะแนน = เวลาที่เหลือ x 10", backBtn: "ย้อนกลับ", alertLogin: "กรุณากรอกข้อมูล", goComplete: "สำเร็จ!", goTimeout: "เวลาหมด!" },
+            en: { startBtn: "START", ruleBtn: "RULES", ruleTitle: "RULES", ruleDesc: "• Find 4 hazards per image<br>• Wrong tap: -10s<br>• Score = Time x 10", backBtn: "BACK", alertLogin: "Fill Info", goComplete: "CLEAR!", goTimeout: "TIME OUT!" }
         };
 
         const levelsData = [
@@ -137,28 +128,19 @@
 
         let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false;
 
-        function selectLang(l) { 
-            currentLang = l; updateTexts(); 
-            document.getElementById('lang-screen').classList.remove('active-screen'); 
-            document.getElementById('login-screen').classList.add('active-screen'); 
-        }
-
+        function selectLang(l) { currentLang = l; updateTexts(); document.getElementById('lang-screen').classList.remove('active-screen'); document.getElementById('login-screen').classList.add('active-screen'); }
         function updateTexts() {
             const d = langData[currentLang];
-            document.getElementById('empName').placeholder = d.placeholderName;
-            document.getElementById('empID').placeholder = d.placeholderID;
             document.getElementById('start-btn').innerText = d.startBtn;
             document.getElementById('rule-btn').innerText = d.ruleBtn;
-            document.getElementById('rule-title').innerText = d.ruleTitle;
             document.getElementById('rule-text').innerHTML = d.ruleDesc;
             document.getElementById('back-btn').innerText = d.backBtn;
         }
-
         function showRules() { document.getElementById('login-screen').classList.remove('active-screen'); document.getElementById('rules-screen').classList.add('active-screen'); }
         function backToLogin() { document.getElementById('rules-screen').classList.remove('active-screen'); document.getElementById('login-screen').classList.add('active-screen'); }
 
         function startGame() {
-            if(!document.getElementById('empName').value || !document.getElementById('empID').value) return alert(langData[currentLang].alertLogin);
+            if(!document.getElementById('empName').value) return alert(langData[currentLang].alertLogin);
             if (screen.orientation && screen.orientation.lock) { screen.orientation.lock('landscape').catch(() => {}); }
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'flex';
