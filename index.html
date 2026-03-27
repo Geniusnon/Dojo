@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - COMIC VERTICAL</title>
+    <title>LCB1 HAZARD HUNTER - BIG CHARACTER</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -49,29 +49,26 @@
         .image-container { position: relative; height: 100%; display: flex; align-items: center; }
         #main-img { height: 100%; width: auto; display: block; }
 
-        /* แถบขวา (ตัวละคร + ตัวอักษรแนวตั้ง) */
+        /* --- ปรับปรุง: แถบขวาสำหรับตัวละครตัวใหญ่ --- */
         #character-area { 
-            width: 130px; 
+            width: 140px; /* ขยายความกว้างเพิ่มเล็กน้อย */
             background: var(--yellow); 
             border-left: 5px solid var(--black); 
-            display: flex; flex-direction: column; 
-            justify-content: space-between; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
             align-items: center; 
             z-index: 2000; 
-            padding: 10px 0;
+            padding: 10px;
         }
 
-        /* ปรับสไตล์ตัวอักษรให้เป็น 1 บรรทัดต่อ 1 ตัว */
-        .comic-text-vertical { 
-            font-family: 'Bangers'; 
-            color: var(--blue); 
-            font-size: 32px; 
-            line-height: 0.8; /* ให้ตัวอักษรชิดกันขึ้น */
-            text-shadow: 1px 1px 0px #fff;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        /* ปรับให้รูปตัวละครใหญ่ขึ้น */
+        .big-char {
+            width: 100%; 
+            height: auto; 
+            max-height: 85%; /* ไม่ให้ล้นขอบบนล่างเกินไป */
+            object-fit: contain;
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.2)); /* เพิ่มมิติให้ตัวละคร */
         }
 
         /* Hazards & Effects */
@@ -142,15 +139,7 @@
         </div>
 
         <div id="character-area">
-            <div class="comic-text-vertical">
-                <span>H</span><span>A</span><span>Z</span><span>A</span><span>R</span><span>D</span>
-            </div>
-            
-            <img src="images/character.png" alt="Character" style="max-width: 90%; height: auto; object-fit: contain;">
-            
-            <div class="comic-text-vertical">
-                <span>H</span><span>U</span><span>N</span><span>T</span><span>E</span><span>R</span>
-            </div>
+            <img src="images/character.png" alt="Character" class="big-char">
         </div>
     </div>
 
@@ -282,5 +271,7 @@
             document.getElementById('go-score').innerText = totalScore;
         }
     </script>
+</body>
+</html>
 </body>
 </html>
