@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - COMPLETE</title>
+    <title>LCB1 HAZARD HUNTER - REPAIR VERSION</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -15,76 +15,49 @@
             overflow: hidden; position: fixed; 
         }
 
-        /* --- 1. หน้าจอเตือนหมุนจอ (ทำงานทันที) --- */
+        /* --- Rotate Warning --- */
         #rotate-warning {
             position: fixed; inset: 0; background: var(--blue); color: white; z-index: 99999;
             display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
         }
         @media screen and (orientation: portrait) { #rotate-warning { display: flex !important; } }
 
-        /* --- 2. หน้าจอเมนูต่างๆ --- */
+        /* --- Screen Base --- */
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); }
         .active-screen { display: flex; }
         .comic-title { font-family: 'Bangers'; font-size: 7vh; color: var(--blue); text-shadow: 2px 2px 0px #fff, 3px 3px 0px var(--black); margin-bottom: 2vh; }
         
-        .box { background: #fff; padding: 15px; border: 4px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 380px; }
-        input { width: 100%; padding: 8px; margin: 4px 0; border: 2px solid var(--black); font-size: 16px; font-family: 'Itim'; outline: none; }
+        .box { background: #fff; padding: 15px; border: 4px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 380px; text-align: center; }
+        input { width: 100%; padding: 8px; margin: 4px 0; border: 2px solid var(--black); font-size: 16px; font-family: 'Itim'; outline: none; text-align: center; }
         
-        .btn-row { display: flex; gap: 8px; margin-top: 8px; }
-        .btn { flex: 1; background: var(--red); color: #fff; padding: 10px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; }
+        .btn-row { display: flex; gap: 8px; margin-top: 8px; width: 100%; }
+        .btn { flex: 1; background: var(--red); color: #fff; padding: 10px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; text-decoration: none; display: inline-block; }
         .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
 
-        /* --- 3. Game Interface (โครงสร้างที่คุณต้องการ) --- */
-        #game-interface { 
-            display: none; width: 100%; height: 100%; 
-            flex-direction: row; background: #222; z-index: 1500; 
-        }
+        /* --- Game Play Interface --- */
+        #game-interface { display: none; width: 100%; height: 100%; flex-direction: row; background: #222; z-index: 1500; }
 
-        /* [ฝั่งซ้าย] แถบตัวเลขสถานะ */
-        .side-bar-left { 
-            width: 90px; background: #fff; border-right: 5px solid var(--black); 
-            display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 5px 0; z-index: 2000;
-        }
+        /* Left Stats */
+        .side-bar-left { width: 90px; background: #fff; border-right: 5px solid var(--black); display: flex; flex-direction: column; justify-content: space-around; align-items: center; padding: 5px 0; z-index: 2000; }
         .side-item { text-align: center; font-family: 'Bangers'; font-size: 14px; line-height: 1; }
         .side-item span { display: block; font-size: 22px; color: var(--blue); margin-top: 4px; }
         .side-item.time span { color: var(--red); }
 
-        /* [ตรงกลาง] พื้นที่แสดงรูปภาพ */
-        #viewport { 
-            flex: 1; position: relative; display: flex; 
-            justify-content: flex-start; align-items: center; 
-            overflow-x: auto; overflow-y: hidden; background: #000;
-            -webkit-overflow-scrolling: touch;
-        }
+        /* Viewport */
+        #viewport { flex: 1; position: relative; display: flex; justify-content: flex-start; align-items: center; overflow-x: auto; overflow-y: hidden; background: #000; -webkit-overflow-scrolling: touch; }
         .image-container { position: relative; height: 100%; display: flex; align-items: center; }
         #main-img { height: 100%; width: auto; display: block; }
 
-        /* [ฝั่งขวา] คำว่าเลื่อน */
-        .side-hint-right { 
-            width: 40px; background: var(--blue); border-left: 3px solid var(--black); 
-            display: flex; justify-content: center; align-items: center; z-index: 2000;
-        }
-        .scroll-text { 
-            writing-mode: vertical-rl; text-orientation: mixed;
-            font-family: 'Itim'; color: #fff; font-size: 18px; letter-spacing: 5px;
-            animation: bounceLeftRight 1.5s infinite;
-        }
-        @keyframes bounceLeftRight { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
+        /* Right Hint */
+        .side-hint-right { width: 40px; background: var(--blue); border-left: 3px solid var(--black); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+        .scroll-text { writing-mode: vertical-rl; text-orientation: mixed; font-family: 'Itim'; color: #fff; font-size: 18px; letter-spacing: 5px; animation: bounce 1.5s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-5px); } }
 
-        /* --- 4. Hazards & Effects --- */
-        .hazard { 
-            position: absolute; width: 8vh; height: 8vh; transform: translate(-50%, -50%); 
-            z-index: 100; border-radius: 50%; border: 3px solid #ff0000; background: rgba(255, 0, 0, 0.2); 
-        }
+        /* Game Elements */
+        .hazard { position: absolute; width: 8vh; height: 8vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 3px solid #ff0000; background: rgba(255, 0, 0, 0.2); }
         .hazard.found { border-color: #00ff00 !important; background: rgba(0, 255, 0, 0.3) !important; }
-
-        /* ตัวหนังสือลบเวลาตอนกดผิด */
-        .penalty-text { 
-            position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 40px; 
-            z-index: 9999; text-shadow: 2px 2px 0px #000; pointer-events: none; 
-            animation: fadeUp 0.8s forwards; 
-        }
+        .penalty-text { position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 40px; z-index: 9999; text-shadow: 2px 2px 0px #000; pointer-events: none; animation: fadeUp 0.8s forwards; }
         @keyframes fadeUp { 0% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -150%); } }
 
         #loading-overlay { position: fixed; inset: 0; background: var(--yellow); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
@@ -95,7 +68,7 @@
     <div id="rotate-warning">
         <div style="font-size: 60px;">🔄</div>
         <h2 style="font-family:'Bangers'">LANDSCAPE ONLY</h2>
-        <p>กรุณาหมุนโทรศัพท์แนวนอน</p>
+        <p>กรุณาหมุนจอเป็นแนวนอน</p>
     </div>
 
     <div id="loading-overlay"><h2 style="font-family:'Bangers'">LOADING...</h2></div>
@@ -110,8 +83,8 @@
 
     <div id="login-screen" class="screen">
         <div class="box">
-            <input type="text" id="empName" placeholder="Name">
-            <input type="text" id="empID" placeholder="ID">
+            <input type="text" id="empName" placeholder="ชื่อพนักงาน / Name">
+            <input type="text" id="empID" placeholder="รหัสพนักงาน / ID">
             <div class="btn-row">
                 <div class="btn" onclick="startGame()" id="start-btn">START</div>
                 <div class="btn btn-blue" onclick="showRules()" id="rule-btn">RULES</div>
@@ -121,7 +94,7 @@
 
     <div id="rules-screen" class="screen">
         <div class="box">
-            <div id="rule-text" style="font-size: 15px; margin-bottom: 10px;"></div>
+            <div id="rule-text" style="font-size: 15px; margin-bottom: 15px; text-align: left;"></div>
             <div class="btn btn-blue" onclick="backToLogin()" id="back-btn">BACK</div>
         </div>
     </div>
@@ -132,31 +105,28 @@
             <div class="side-item time">TIME<span id="timer">60</span></div>
             <div class="side-item">SCORE<span id="total-score">0</span></div>
         </div>
-        
         <div id="viewport">
             <div class="image-container" id="img-box">
                 <img id="main-img" src="">
                 <div id="hazard-container"></div>
             </div>
         </div>
-
-        <div class="side-hint-right">
-            <div class="scroll-text">เลื่อน >>></div>
-        </div>
+        <div class="side-hint-right"><div class="scroll-text">เลื่อน >>></div></div>
     </div>
 
     <div id="game-over-screen" class="screen">
-        <div class="box" style="text-align: center; max-width: 300px;">
-            <h2 id="go-msg" style="margin:0;"></h2>
-            <h1 id="go-score" style="font-size: 50px; color: var(--blue); font-family: 'Bangers'; margin: 10px 0;">0</h1>
-            <div class="btn" onclick="location.reload()">HOME</div>
+        <div class="box">
+            <h2 id="go-msg" style="margin:0; font-family:'Bangers'; font-size: 28px;"></h2>
+            <div style="font-size: 18px; margin-top: 10px;">TOTAL SCORE</div>
+            <h1 id="go-score" style="font-size: 60px; color: var(--blue); font-family: 'Bangers'; margin: 5px 0;">0</h1>
+            <div class="btn" onclick="location.reload()" style="width: 150px; margin-top: 10px;">HOME</div>
         </div>
     </div>
 
     <script>
         const langData = {
-            th: { startBtn: "เริ่ม", ruleBtn: "กติกา", ruleDesc: "• หาจุดอันตราย 4 จุดต่อภาพ<br>• จิ้มผิดหักเวลา 10 วินาที<br>• คะแนน = เวลาที่เหลือ x 10", backBtn: "ย้อนกลับ", alertLogin: "กรอกข้อมูล!", goComplete: "สำเร็จ!", goTimeout: "เวลาหมด!" },
-            en: { startBtn: "START", ruleBtn: "RULES", ruleDesc: "• Find 4 hazards per image<br>• Wrong tap: -10s<br>• Score = Time x 10", backBtn: "BACK", alertLogin: "Fill Info!", goComplete: "CLEAR!", goTimeout: "TIME OUT!" }
+            th: { startBtn: "เริ่มภารกิจ", ruleBtn: "กติกา", ruleDesc: "• หาจุดอันตราย 4 จุดต่อภาพ<br>• หากจิ้มผิดจะหักเวลา 10 วินาที<br>• คะแนน = เวลาที่เหลือ x 10<br>• มีทั้งหมด 5 ด่าน", backBtn: "ย้อนกลับ", alertLogin: "กรุณากรอกข้อมูลให้ครบ", goComplete: "ภารกิจสำเร็จ!", goTimeout: "เวลาหมดแล้ว!" },
+            en: { startBtn: "START", ruleBtn: "RULES", ruleDesc: "• Find 4 hazards per image<br>• Wrong tap: -10 seconds<br>• Score = Remaining Time x 10<br>• 5 Levels total", backBtn: "BACK", alertLogin: "Please fill info", goComplete: "MISSION CLEAR!", goTimeout: "TIME OUT!" }
         };
 
         const levelsData = [
@@ -169,7 +139,13 @@
 
         let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false;
 
-        function selectLang(l) { currentLang = l; updateTexts(); document.getElementById('lang-screen').classList.remove('active-screen'); document.getElementById('login-screen').classList.add('active-screen'); }
+        function selectLang(l) { 
+            currentLang = l; 
+            updateTexts(); 
+            document.getElementById('lang-screen').classList.remove('active-screen'); 
+            document.getElementById('login-screen').classList.add('active-screen'); 
+        }
+
         function updateTexts() {
             const d = langData[currentLang];
             document.getElementById('start-btn').innerText = d.startBtn;
@@ -177,14 +153,16 @@
             document.getElementById('rule-text').innerHTML = d.ruleDesc;
             document.getElementById('back-btn').innerText = d.backBtn;
         }
+
         function showRules() { document.getElementById('login-screen').classList.remove('active-screen'); document.getElementById('rules-screen').classList.add('active-screen'); }
         function backToLogin() { document.getElementById('rules-screen').classList.remove('active-screen'); document.getElementById('login-screen').classList.add('active-screen'); }
 
         function startGame() {
-            if(!document.getElementById('empName').value) return alert(langData[currentLang].alertLogin);
+            if(!document.getElementById('empName').value || !document.getElementById('empID').value) return alert(langData[currentLang].alertLogin);
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'flex';
-            loadLevel(1); startTimer();
+            loadLevel(1); 
+            startTimer();
         }
 
         function loadLevel(lv) {
@@ -204,7 +182,9 @@
                     imgBox.style.height = img.clientHeight + "px";
                     createHazards(lv);
                     document.getElementById('loading-overlay').style.display = 'none';
-                    isPlaying = true; foundInLevel = 0; currentLevel = lv;
+                    isPlaying = true; 
+                    foundInLevel = 0; 
+                    currentLevel = lv;
                     document.getElementById('current-lv').innerText = lv;
                     document.getElementById('viewport').scrollLeft = 0;
                 };
@@ -225,40 +205,50 @@
 
         function handleHit(div) {
             if(!isPlaying || div.classList.contains('found')) return;
-            div.classList.add('found'); foundInLevel++;
+            div.classList.add('found'); 
+            foundInLevel++;
             if(foundInLevel === 4) {
                 totalScore += (timeLeft * 10);
                 document.getElementById('total-score').innerText = totalScore;
-                if(currentLevel < 5) { setTimeout(() => loadLevel(currentLevel + 1), 600); timeLeft = 60; }
-                else { gameOver(true); }
+                if(currentLevel < 5) { 
+                    setTimeout(() => { timeLeft = 60; loadLevel(currentLevel + 1); }, 600); 
+                } else { 
+                    gameOver(true); 
+                }
             }
         }
 
-        // --- ระบบหักเวลาเมื่อจิ้มผิด (รักษาไว้แน่นอน) ---
+        // Penalty System
         document.getElementById('viewport').addEventListener('touchstart', (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             const touch = e.touches[0];
             
-            // หักเวลาจริง
             timeLeft -= 10; 
             if(timeLeft < 0) timeLeft = 0;
             document.getElementById('timer').innerText = timeLeft;
 
-            // แสดงเอฟเฟกต์ตัวเลขลอย
             const p = document.createElement('div');
             p.className = 'penalty-text'; p.innerText = '-10s';
             p.style.left = touch.clientX + 'px'; p.style.top = touch.clientY + 'px';
             document.body.appendChild(p);
             setTimeout(() => p.remove(), 800);
+            if(timeLeft <= 0) gameOver(false);
         }, {passive: false});
 
         function startTimer() {
             if(timerObj) clearInterval(timerObj);
-            timerObj = setInterval(() => { if(isPlaying) { timeLeft--; document.getElementById('timer').innerText = timeLeft; if(timeLeft <= 0) gameOver(false); } }, 1000);
+            timerObj = setInterval(() => { 
+                if(isPlaying) { 
+                    timeLeft--; 
+                    document.getElementById('timer').innerText = timeLeft; 
+                    if(timeLeft <= 0) gameOver(false); 
+                } 
+            }, 1000);
         }
 
         function gameOver(win) {
-            isPlaying = false; clearInterval(timerObj);
+            isPlaying = false; 
+            clearInterval(timerObj);
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
             document.getElementById('go-msg').innerText = win ? langData[currentLang].goComplete : langData[currentLang].goTimeout;
