@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - MASCOT FIXED</title>
+    <title>LCB1 HAZARD HUNTER - FULL RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -15,15 +15,16 @@
             overflow: hidden; position: fixed; 
         }
 
-        /* --- Animation: Mascot บินวนลูป (คุมระยะไม่ให้หลุดจอ) --- */
-        @keyframes flyAround {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(10px, -5px) rotate(3deg); }
-            50% { transform: translate(0, -15px) rotate(0deg); }
-            75% { transform: translate(-10px, -5px) rotate(-3deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
+        /* --- Mascot: นิ่งถาวรที่มุมขวาบน ไม่บังหน้าจอ --- */
+        .mascot-fixed { 
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            width: 80px; 
+            height: auto; 
+            z-index: 5000; 
+            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3));
         }
-        .flying-mascot { animation: flyAround 5s ease-in-out infinite; }
 
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
@@ -33,7 +34,7 @@
         }
         .shake-effect { animation: shake 0.3s !important; }
 
-        /* --- Rotate Warning (หมุนหน้าจอ) --- */
+        /* --- Rotate Warning --- */
         #rotate-warning {
             position: fixed; inset: 0; background: var(--blue); color: white; z-index: 99999;
             display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px;
@@ -44,23 +45,21 @@
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); }
         .active-screen { display: flex; }
         
-        /* ปรับหัวข้อหน้าแรกขยับลงมา (margin-top) ให้สมดุล */
         .comic-title { 
-            font-family: 'Bangers'; font-size: 7vh; color: var(--blue); 
-            text-shadow: 2px 2px 0px #fff, 3px 3px 0px var(--black); 
-            margin-top: 5vh; margin-bottom: 2vh; 
+            font-family: 'Bangers'; font-size: 8vh; color: var(--blue); 
+            text-shadow: 2px 2px 0px #fff, 4px 4px 0px var(--black); 
+            margin-bottom: 4vh; 
         }
         
-        .box { background: #fff; padding: 20px; border: 4px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 400px; text-align: center; position: relative; }
-        input { width: 100%; padding: 10px; margin: 8px 0; border: 2px solid var(--black); font-size: 18px; font-family: 'Itim'; outline: none; text-align: center; border-radius: 8px; }
+        .box { background: #fff; padding: 25px; border: 4px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 400px; text-align: center; position: relative; border-radius: 15px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 3px solid var(--black); font-size: 18px; font-family: 'Itim'; outline: none; text-align: center; border-radius: 10px; }
         
-        .btn-row { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
-        .btn { flex: 1; background: var(--red); color: #fff; padding: 12px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 10px; text-decoration: none; }
-        .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
+        .btn-row { display: flex; gap: 10px; margin-top: 15px; width: 100%; }
+        .btn { flex: 1; background: var(--red); color: #fff; padding: 15px; font-family: 'Bangers'; font-size: 22px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 12px; }
+        .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
-        .btn-rules { background: #555; }
 
-        /* Sound Toggle */
+        /* Sound Toggle (ล่างซ้าย) */
         #sound-toggle {
             position: fixed; bottom: 20px; left: 20px; 
             width: 70px; height: 60px;
@@ -70,39 +69,13 @@
             z-index: 9000; cursor: pointer;
             font-family: 'Bangers'; font-size: 26px;
             box-shadow: 4px 4px 0px var(--black);
-            transition: 0.1s;
         }
-        #sound-toggle:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--black); }
 
-        /* Modal Rules */
-        #rules-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 8000;
-            display: none; justify-content: center; align-items: center;
-        }
-        .rules-box { background: #fff; width: 85%; max-width: 400px; padding: 20px; border: 4px solid var(--black); box-shadow: 8px 8px 0px var(--black); border-radius: 15px; }
-
-        /* --- Game Interface --- */
-        #game-interface { display: none; width: 100%; height: 100%; position: relative; background: var(--black); z-index: 1500; }
-        #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow-x: auto; overflow-y: hidden; z-index: 1510; }
-        .image-container { position: relative; height: 100%; display: flex; align-items: center; }
-        #main-img { height: 100%; width: auto; object-fit: contain; display: block; }
-
-        .side-bar-left { 
-            position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.9); 
-            border: 3px solid var(--black); border-radius: 10px; display: flex; padding: 8px 15px; gap: 20px; z-index: 1520; 
-        }
-        .side-item { text-align: center; font-family: 'Bangers'; font-size: 16px; line-height: 1; color: var(--black); }
-        .side-item span { display: inline; font-size: 20px; color: var(--blue); margin-left: 5px; }
-
-        #character-area { position: absolute; bottom: 0; right: 0; width: 130px; z-index: 1520; pointer-events: none; }
-        .big-char { width: 100%; height: auto; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)); }
-
-        /* --- ปรับแต่งวงกลมจิ้ม: แสดงสีแดงเพื่อให้ปรับตำแหน่งง่าย --- */
+        /* --- วงกลมแดง (มองเห็นเพื่อให้ปรับพิกัดง่าย) --- */
         .hazard { 
             position: absolute; width: 12vh; height: 12vh; 
             transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; 
-            border: 3px solid #ff0000; /* ขอบแดงเห็นชัด */
-            background: rgba(255, 0, 0, 0.2); /* พื้นแดงจางๆ */
+            border: 3px solid #ff0000; background: rgba(255, 0, 0, 0.2); 
         }
         .hazard.found { 
             border: 5px solid #00ff00 !important; 
@@ -110,6 +83,16 @@
             box-shadow: 0 0 15px #00ff00;
         }
 
+        /* --- Game Interface --- */
+        #game-interface { display: none; width: 100%; height: 100%; position: relative; background: var(--black); z-index: 1500; }
+        #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow-x: auto; overflow-y: hidden; z-index: 1510; }
+        .image-container { position: relative; height: 100%; display: flex; align-items: center; }
+        #main-img { height: 100%; width: auto; display: block; }
+        .side-bar-left { position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.9); border: 3px solid var(--black); border-radius: 10px; display: flex; padding: 5px 15px; gap: 20px; z-index: 1520; }
+        .side-item { font-family: 'Bangers'; font-size: 16px; color: #000; }
+        .side-item span { font-size: 20px; color: var(--blue); margin-left: 5px; }
+        #character-area { position: absolute; bottom: 0; right: 0; width: 120px; z-index: 1520; pointer-events: none; }
+        .big-char { width: 100%; height: auto; }
         #loading-overlay { position: fixed; inset: 0; background: var(--yellow); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
     </style>
 </head>
@@ -120,31 +103,19 @@
     <audio id="snd-miss" src="https://assets.mixkit.co/active_storage/sfx/2021/2021-preview.mp3" preload="auto"></audio>
     <audio id="snd-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
 
+    <img id="mascot-ui" src="images/mascot.png" class="mascot-fixed" alt="Mascot">
+
     <div id="sound-toggle" onclick="toggleMute()">ON</div>
 
     <div id="rotate-warning">
-        <div style="font-size: 60px;">🔄</div>
-        <h2 style="font-family:'Bangers'; margin: 10px 0;">LANDSCAPE ONLY</h2>
-        <h3 style="font-family:'Itim'; margin: 0;">หมุนหน้าจอเพื่อเล่น</h3>
+        <h2 style="font-family:'Bangers'">LANDSCAPE ONLY</h2>
+        <h3 style="font-family:'Itim'">หมุนหน้าจอเป็นแนวนอนเพื่อเล่น</h3>
     </div>
 
     <div id="loading-overlay"><h2 style="font-family:'Bangers'">LOADING...</h2></div>
 
-    <div id="rules-modal">
-        <div class="rules-box">
-            <h2 id="rules-title" style="font-family:'Bangers'; color:var(--blue); margin:0;">RULES</h2>
-            <p id="rules-desc" style="font-size: 18px; line-height: 1.4;"></p>
-            <div class="btn" onclick="closeRules()">OK!</div>
-        </div>
-    </div>
-
     <div id="lang-screen" class="screen active-screen">
         <div class="comic-title">HAZARD HUNTER</div>
-        
-        <div style="position: relative; width: 150px; height: 150px; margin-top: 3vh; margin-bottom: 2vh;">
-            <img src="images/mascot.png" alt="Mascot" class="flying-mascot" style="width: 100%; height: auto; filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.2));">
-        </div>
-
         <div class="btn-row" style="width: 280px;">
             <div class="btn" onclick="selectLang('th')">ไทย</div>
             <div class="btn btn-blue" onclick="selectLang('en')">EN</div>
@@ -153,14 +124,10 @@
 
     <div id="login-screen" class="screen">
         <div class="box">
-            <div style="position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 110px; z-index: -1;">
-                <img src="images/mascot.png" alt="Mascot" class="flying-mascot" style="width: 100%; height: auto; filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.2));">
-            </div>
             <input type="text" id="empName" placeholder="">
             <input type="text" id="empID" placeholder="">
             <div class="btn-row">
-                <div class="btn" onclick="startGame()" id="start-btn">START</div>
-                <div class="btn btn-rules" onclick="showRules()" id="rules-btn">RULES</div>
+                <div class="btn" onclick="startGame()" id="start-btn">เริ่ม / START</div>
             </div>
         </div>
     </div>
@@ -174,45 +141,25 @@
         </div>
         <div class="side-bar-left">
             <div class="side-item">LV<span id="current-lv">1</span></div>
-            <div class="side-item"><span id="ui-time">TIME</span><span id="timer" style="color:red">60</span></div>
-            <div class="side-item"><span id="ui-score">SCORE</span><span id="total-score">0</span></div>
+            <div class="side-item">TIME<span id="timer" style="color:red">60</span></div>
+            <div class="side-item">SCORE<span id="total-score">0</span></div>
         </div>
         <div id="character-area"><img src="images/character.png" class="big-char"></div>
     </div>
 
     <div id="game-over-screen" class="screen">
         <div class="box">
-            <h2 id="go-msg" style="margin:0; font-family:'Bangers'; font-size: 35px;"></h2>
-            <div id="rank-display" style="font-family:'Bangers'; font-size: 28px; margin-top: 15px;"></div>
+            <h2 id="go-msg" style="font-family:'Bangers'; font-size: 35px; margin:0;"></h2>
+            <div id="rank-display" style="font-family:'Bangers'; font-size: 24px; margin: 15px 0;"></div>
             <h1 id="go-score" style="font-size: 65px; color: var(--blue); font-family: 'Bangers'; margin: 5px 0;">0</h1>
-            <div class="btn" onclick="location.reload()" id="home-btn" style="max-width: 180px; margin: 15px auto 0;">HOME</div>
+            <div class="btn" onclick="location.reload()">หน้าแรก / HOME</div>
         </div>
     </div>
 
     <script>
         const translations = {
-            th: {
-                placeholder: "กรอกชื่อของคุณ", idPlaceholder: "กรอกรหัสพนักงาน", startBtn: "เริ่มภารกิจ", rulesBtn: "กติกา",
-                rulesTitle: "วิธีเล่น", rulesDesc: "1. ค้นหาจุดอันตราย 4 จุดในแต่ละภาพ<br>2. จิ้มที่จุดเพื่อรับคะแนน<br>3. จิ้มผิดหัก 10 วินาที!<br>4. คะแนน = เวลาที่เหลือ x 10",
-                timeLabel: "เวลา", scoreLabel: "คะแนน", goSuccess: "สำเร็จ!", goTimeout: "เวลาหมด!", rankTitle: "ฉายา: ",
-                ranks: [
-                    { min: 1800, text: "ปรมาจารย์ความปลอดภัย 👑", color: "#ffde03" },
-                    { min: 1200, text: "นักล่าอันตรายขั้นสูง 🛡️", color: "#0336ff" },
-                    { min: 600, text: "นักล่าอันตรายชั้นต้น 🏹", color: "#ff0266" },
-                    { min: 0, text: "นักล่าอันตรายฝึกหัด 🔍", color: "#666" }
-                ]
-            },
-            en: {
-                placeholder: "Employee Name", idPlaceholder: "Employee ID", startBtn: "START", rulesBtn: "RULES",
-                rulesTitle: "HOW TO PLAY", rulesDesc: "1. Find 4 hazards per level.<br>2. Tap hazards to score.<br>3. Wrong tap reduces 10s!<br>4. Time converts to bonus points.",
-                timeLabel: "TIME", scoreLabel: "SCORE", goSuccess: "MISSION CLEAR!", goTimeout: "TIME OUT!", rankTitle: "RANK: ",
-                ranks: [
-                    { min: 1800, text: "Safety Master 👑", color: "#ffde03" },
-                    { min: 1200, text: "Elite Hunter 🛡️", color: "#0336ff" },
-                    { min: 600, text: "Junior Hunter 🏹", color: "#ff0266" },
-                    { min: 0, text: "Trainee Hunter 🔍", color: "#666" }
-                ]
-            }
+            th: { pl: "ชื่อพนักงาน", id: "รหัสพนักงาน", st: "เริ่มล่า", win: "สำเร็จ!", lose: "เวลาหมด!", rank: "ฉายา: ", ranks: [{m:1800, t:"ปรมาจารย์ความปลอดภัย 👑"}, {m:1200, t:"นักล่าอันตรายขั้นสูง 🛡️"}, {m:600, t:"นักล่าอันตรายชั้นต้น 🏹"}, {m:0, t:"นักล่าอันตรายฝึกหัด 🔍"}]},
+            en: { pl: "Employee Name", id: "Employee ID", st: "START", win: "MISSION CLEAR!", lose: "TIME OUT!", rank: "RANK: ", ranks: [{m:1800, t:"Safety Master 👑"}, {m:1200, t:"Elite Hunter 🛡️"}, {m:600, t:"Junior Hunter 🏹"}, {m:0, t:"Trainee Hunter 🔍"}]}
         };
 
         const levelsData = [
@@ -226,62 +173,47 @@
         let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false, isMuted = false;
         const bgm = document.getElementById('bgm');
 
-        function selectLang(l) { 
-            currentLang = l; 
-            const t = translations[l];
-            document.getElementById('empName').placeholder = t.placeholder;
-            document.getElementById('empID').placeholder = t.idPlaceholder;
-            document.getElementById('start-btn').innerText = t.startBtn;
-            document.getElementById('rules-btn').innerText = t.rulesBtn;
-            document.getElementById('ui-time').innerText = t.timeLabel;
-            document.getElementById('ui-score').innerText = t.scoreLabel;
-            document.getElementById('rules-title').innerText = t.rulesTitle;
-            document.getElementById('rules-desc').innerHTML = t.rulesDesc;
-
-            bgm.volume = 0.3; bgm.play().catch(() => {});
-            document.getElementById('lang-screen').classList.remove('active-screen'); 
-            document.getElementById('login-screen').classList.add('active-screen'); 
+        function selectLang(l) {
+            currentLang = l;
+            document.getElementById('empName').placeholder = translations[l].pl;
+            document.getElementById('empID').placeholder = translations[l].id;
+            document.getElementById('start-btn').innerText = translations[l].st;
+            bgm.volume = 0.3; bgm.play().catch(()=>{});
+            document.getElementById('lang-screen').classList.remove('active-screen');
+            document.getElementById('login-screen').classList.add('active-screen');
         }
-
-        function showRules() { document.getElementById('rules-modal').style.display = 'flex'; }
-        function closeRules() { document.getElementById('rules-modal').style.display = 'none'; }
 
         function toggleMute() {
             isMuted = !isMuted; bgm.muted = isMuted;
-            const btn = document.getElementById('sound-toggle');
-            btn.innerText = isMuted ? "OFF" : "ON";
-            btn.style.background = isMuted ? "#555" : "var(--red)";
+            document.getElementById('sound-toggle').innerText = isMuted ? "OFF" : "ON";
+            document.getElementById('sound-toggle').style.background = isMuted ? "#555" : "var(--red)";
         }
 
         function startGame() {
             if(!document.getElementById('empName').value || !document.getElementById('empID').value) return alert("กรุณากรอกข้อมูล");
             document.getElementById('login-screen').classList.remove('active-screen');
+            document.getElementById('mascot-ui').style.display = 'none'; 
             document.getElementById('game-interface').style.display = 'block';
             loadLevel(1); startTimer();
         }
 
         function loadLevel(lv) {
-            isPlaying = false;
-            document.getElementById('loading-overlay').style.display = 'flex';
-            const container = document.getElementById('hazard-container');
-            container.innerHTML = '';
+            isPlaying = false; document.getElementById('loading-overlay').style.display = 'flex';
+            const container = document.getElementById('hazard-container'); container.innerHTML = '';
             const img = document.getElementById('main-img');
             img.src = `images/${levelsData[lv-1].img}?v=${Date.now()}`;
             img.onload = () => {
                 document.getElementById('img-box').style.width = img.clientWidth + "px";
                 levelsData[lv-1].points.forEach(p => {
                     const div = document.createElement('div');
-                    div.className = 'hazard';
-                    div.style.top = p.t + '%'; div.style.left = p.l + '%';
-                    div.onclick = (e) => {
-                        e.stopPropagation();
-                        if(!isPlaying || div.classList.contains('found')) return;
+                    div.className = 'hazard'; div.style.top = p.t + '%'; div.style.left = p.l + '%';
+                    div.onclick = (e) => { e.stopPropagation(); if(!isPlaying || div.classList.contains('found')) return;
                         if(!isMuted) document.getElementById('snd-hit').play();
                         div.classList.add('found'); foundInLevel++;
-                        if(foundInLevel === 4) {
-                            totalScore += (timeLeft * 10);
+                        if(foundInLevel === 4) { 
+                            totalScore += (timeLeft * 10); 
                             document.getElementById('total-score').innerText = totalScore;
-                            if(currentLevel < 5) { setTimeout(() => loadLevel(++currentLevel), 600); } else { gameOver(true); }
+                            if(currentLevel < 5) { setTimeout(()=>loadLevel(++currentLevel), 600); } else { gameOver(true); }
                         }
                     };
                     container.appendChild(div);
@@ -298,28 +230,31 @@
             timerObj = setInterval(() => { if(isPlaying) { timeLeft--; document.getElementById('timer').innerText = timeLeft; if(timeLeft <= 0) gameOver(false); } }, 1000);
         }
 
+        document.getElementById('viewport').onclick = (e) => {
+            if(!isPlaying || e.target.classList.contains('hazard')) return;
+            if(!isMuted) document.getElementById('snd-miss').play();
+            timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
+            document.getElementById('timer').innerText = timeLeft;
+            const gi = document.getElementById('game-interface');
+            gi.classList.add('shake-effect'); setTimeout(() => gi.classList.remove('shake-effect'), 300);
+            if(timeLeft <= 0) gameOver(false);
+        };
+
         function gameOver(win) {
             isPlaying = false; clearInterval(timerObj);
             if(win && !isMuted) document.getElementById('snd-win').play();
-            const t = translations[currentLang];
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
+            const t = translations[currentLang];
             document.getElementById('go-msg').innerText = win ? t.win : t.lose;
             document.getElementById('go-score').innerText = totalScore;
-            let fr = t.ranks.find(r => totalScore >= r.min);
-            document.getElementById('rank-display').innerText = t.rankTitle + fr.text;
-            document.getElementById('rank-display').style.color = fr.color;
+            let fr = t.ranks.find(r => totalScore >= r.m);
+            document.getElementById('rank-display').innerText = t.rank + fr.t;
         }
 
-        // Unlock audio for mobile browsers
-        document.addEventListener('touchstart', function unlock() {
-            if(bgm.paused && !isMuted) bgm.play();
-            document.removeEventListener('touchstart', unlock);
-        }, { once: true });
-        document.addEventListener('click', function unlock() {
-            if(bgm.paused && !isMuted) bgm.play();
-            document.removeEventListener('click', unlock);
-        }, { once: true });
+        const unlockAudio = () => { if(bgm.paused && !isMuted) bgm.play(); document.removeEventListener('click', unlockAudio); document.removeEventListener('touchstart', unlockAudio); };
+        document.addEventListener('click', unlockAudio);
+        document.addEventListener('touchstart', unlockAudio);
     </script>
 </body>
 </html>
