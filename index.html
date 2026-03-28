@@ -26,6 +26,11 @@
         /* --- UI Screens --- */
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); clip-path: polygon(0 0, 100% 1%, 100% 100%, 0 99%); }
         .active-screen { display: flex; }
+        
+        /* แก้ไขตำแหน่งหน้าเลือกภาษาและเพิ่มสไตล์ Mascot */
+        #lang-screen { justify-content: flex-start; padding-top: 8vh; }
+        .lang-mascot { width: 180px; height: auto; margin-bottom: 10px; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1)); }
+
         .comic-title { font-family: 'Bangers'; font-size: 8vh; color: var(--blue); text-shadow: 3px 3px 0px #fff, 6px 6px 0px var(--black); margin-bottom: 1.5vh; transform: rotate(-1deg); }
         .box { background: var(--white); padding: 15px 20px; border: 3px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 380px; text-align: center; position: relative; border-radius: 5px; outline: 4px solid var(--white); }
 
@@ -43,7 +48,7 @@
         .image-container { position: relative; height: 92%; border: 5px solid var(--white); outline: 5px solid var(--black); }
         #main-img { height: 100%; width: auto; display: block; object-fit: contain; }
 
-        /* --- HUD (จุดที่แก้ไขสีข้อความเป็นสีดำ) --- */
+        /* --- HUD (ตัวอักษรสีดำ 100%) --- */
         .side-bar-left { position: absolute; top: 8px; left: 8px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 4px 12px; gap: 12px; z-index: 1520; box-shadow: 3px 3px 0px var(--black); }
         .side-item { font-family: 'Bangers'; font-size: 14px; color: #000; }
         .side-item span { font-size: 16px; color: #000 !important; margin-left: 2px; }
@@ -80,6 +85,7 @@
     </div>
 
     <div id="lang-screen" class="screen active-screen">
+        <img src="mascot.png" class="lang-mascot" alt="Mascot">
         <div class="comic-title">HAZARD HUNTER</div>
         <div class="btn-row" style="width: 240px;">
             <div class="btn" onclick="selectLang('th')">ไทย</div>
@@ -158,26 +164,12 @@
 
         let currentLang = 'th', currentLevel = 0, totalScore = 0, timeLeft = 60, foundInLevel = 0, isPlaying = false, isMuted = false, timerObj;
 
-        function playClick() { 
-            if(!isMuted) { 
-                const s = document.getElementById('snd-click');
-                s.currentTime = 0; s.play().catch(()=>{}); 
-            } 
-        }
-
-        function toggleMute() { 
-            playClick();
-            isMuted = !isMuted; 
-            const b = document.getElementById('sound-toggle');
-            b.innerText = isMuted ? "OFF" : "ON"; 
-            b.style.background = isMuted ? "#555" : "var(--red)"; 
-        }
+        function playClick() { if(!isMuted) { const s = document.getElementById('snd-click'); s.currentTime = 0; s.play().catch(()=>{}); } }
+        function toggleMute() { playClick(); isMuted = !isMuted; const b = document.getElementById('sound-toggle'); b.innerText = isMuted ? "OFF" : "ON"; b.style.background = isMuted ? "#555" : "var(--red)"; }
 
         function selectLang(l) {
-            currentLang = l; 
-            const t = translations[l];
+            currentLang = l; const t = translations[l];
             playClick();
-
             document.getElementById('empName').placeholder = t.pl;
             document.getElementById('empID').placeholder = t.id;
             document.getElementById('start-btn').innerText = t.st;
@@ -190,7 +182,6 @@
             document.getElementById('hud-score').innerText = t.hud_score;
             document.getElementById('hud-time').innerText = t.hud_time;
             document.getElementById('replay-btn').innerText = t.replay;
-
             document.getElementById('lang-screen').classList.remove('active-screen');
             document.getElementById('login-screen').classList.add('active-screen');
         }
@@ -201,8 +192,7 @@
         function startGame() {
             playClick();
             if(!document.getElementById('empName').value || !document.getElementById('empID').value) {
-                alert(translations[currentLang].alert);
-                return;
+                alert(translations[currentLang].alert); return;
             }
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'block';
@@ -212,30 +202,17 @@
 
         function loadLevel(lvIndex) {
             if(lvIndex >= levelsData.length) return gameOver(true);
-            
-            isPlaying = false;
-            currentLevel = lvIndex;
-            foundInLevel = 0;
-            timeLeft = 60;
-            
+            isPlaying = false; currentLevel = lvIndex; foundInLevel = 0; timeLeft = 60;
             document.getElementById('current-lv').innerText = lvIndex + 1;
             document.getElementById('time-text').innerText = timeLeft;
-            const container = document.getElementById('hazard-container');
-            container.innerHTML = '';
-            
+            const container = document.getElementById('hazard-container'); container.innerHTML = '';
             const img = document.getElementById('main-img');
             img.src = `images/${levelsData[lvIndex].img}`;
-            
             img.onload = () => {
                 levelsData[lvIndex].points.forEach(p => {
                     const d = document.createElement('div');
-                    d.className = 'hazard';
-                    d.style.top = p.t + '%'; d.style.left = p.l + '%';
-                    d.onclick = (e) => {
-                        e.stopPropagation();
-                        if(!isPlaying || d.classList.contains('found')) return;
-                        hitHazard(d);
-                    };
+                    d.className = 'hazard'; d.style.top = p.t + '%'; d.style.left = p.l + '%';
+                    d.onclick = (e) => { e.stopPropagation(); if(!isPlaying || d.classList.contains('found')) return; hitHazard(d); };
                     container.appendChild(d);
                 });
                 isPlaying = true;
@@ -244,32 +221,23 @@
 
         function hitHazard(el) {
             if(!isMuted) document.getElementById('snd-hit').play();
-            el.classList.add('found');
-            foundInLevel++;
+            el.classList.add('found'); foundInLevel++;
             totalScore += Math.floor(timeLeft * 10); 
             document.getElementById('total-score').innerText = totalScore;
-
-            if(foundInLevel === 4) {
-                isPlaying = false;
-                setTimeout(() => loadLevel(currentLevel + 1), 600);
-            }
+            if(foundInLevel === 4) { isPlaying = false; setTimeout(() => loadLevel(currentLevel + 1), 600); }
         }
 
         function startGlobalTimer() {
             if (timerObj) clearInterval(timerObj);
             timerObj = setInterval(() => {
                 if(isPlaying) {
-                    timeLeft -= 1;
-                    if(timeLeft < 0) timeLeft = 0;
-                    
+                    timeLeft -= 1; if(timeLeft < 0) timeLeft = 0;
                     document.getElementById('time-text').innerText = timeLeft;
                     const bar = document.getElementById('timer-bar');
                     bar.style.width = (timeLeft / 60 * 100) + '%';
-                    
                     if(timeLeft > 30) bar.style.background = "var(--green)";
                     else if(timeLeft > 15) bar.style.background = "var(--yellow)";
                     else bar.style.background = "var(--red)";
-
                     if(timeLeft <= 0) gameOver(false);
                 }
             }, 1000);
@@ -278,38 +246,27 @@
         document.getElementById('viewport').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             if(!isMuted) document.getElementById('snd-miss').play();
-            
-            timeLeft -= 10;
-            if(timeLeft < 0) timeLeft = 0;
-            
+            timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
             document.getElementById('time-text').innerText = timeLeft;
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + '%';
-            
             if(window.navigator.vibrate) window.navigator.vibrate(100);
             const p = document.createElement('div');
             p.className = 'penalty-text'; p.innerText = '-10s';
             p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
-            document.body.appendChild(p);
-            setTimeout(() => p.remove(), 800);
-
-            const gi = document.getElementById('game-interface');
-            gi.classList.add('shake-effect');
+            document.body.appendChild(p); setTimeout(() => p.remove(), 800);
+            const gi = document.getElementById('game-interface'); gi.classList.add('shake-effect');
             setTimeout(() => gi.classList.remove('shake-effect'), 300);
-            
             if(timeLeft <= 0) gameOver(false);
         };
 
         function gameOver(win) {
-            isPlaying = false;
-            clearInterval(timerObj);
+            isPlaying = false; clearInterval(timerObj);
             if(win && !isMuted) document.getElementById('snd-win').play();
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
-            
             const t = translations[currentLang];
             document.getElementById('go-msg').innerText = win ? t.win : t.lose;
             document.getElementById('go-score').innerText = totalScore;
-            
             let rank = t.ranks.find(r => totalScore >= r.m);
             document.getElementById('rank-display').innerText = t.rank + (rank ? rank.t : "");
         }
