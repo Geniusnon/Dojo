@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - FULL RECOVERY</title>
+    <title>LCB1 HAZARD HUNTER - FINAL PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; --white: #fff; --green: #00e676; }
@@ -27,17 +27,17 @@
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); clip-path: polygon(0 0, 100% 1%, 100% 100%, 0 99%); }
         .active-screen { display: flex; }
         
-        /* จัดตำแหน่งหน้าเลือกภาษาให้อยู่ตรงกลางพอดี */
-        #lang-screen { justify-content: center; padding-top: 0; } 
-        .lang-mascot { width: 180px; height: auto; margin-bottom: 15px; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1)); }
+        /* ปรับหน้าเลือกภาษาให้ทุกอย่างอยู่ตรงกลางพอดี */
+        #lang-screen { justify-content: center; padding-top: 0; }
+        .lang-mascot { width: 220px; height: auto; margin-bottom: 5px; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1)); }
 
-        .comic-title { font-family: 'Bangers'; font-size: 8vh; color: var(--blue); text-shadow: 3px 3px 0px #fff, 6px 6px 0px var(--black); margin-bottom: 1.5vh; transform: rotate(-1deg); }
+        .comic-title { font-family: 'Bangers'; font-size: 8vh; color: var(--blue); text-shadow: 3px 3px 0px #fff, 6px 6px 0px var(--black); margin-bottom: 15px; transform: rotate(-1deg); }
         .box { background: var(--white); padding: 15px 20px; border: 3px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 380px; text-align: center; position: relative; border-radius: 5px; outline: 4px solid var(--white); }
 
         /* --- Inputs & Buttons --- */
         input { width: 100%; padding: 8px 12px; margin: 6px 0; border: 2.5px solid var(--black); font-family: 'Itim'; font-size: 16px; border-radius: 5px; }
-        .btn-row { display: flex; gap: 8px; margin-top: 8px; width: 100%; }
-        .btn { flex: 1; background: var(--red); color: var(--white); padding: 8px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; }
+        .btn-row { display: flex; gap: 8px; margin-top: 8px; width: 100%; justify-content: center; }
+        .btn { flex: 1; max-width: 150px; background: var(--red); color: var(--white); padding: 8px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; }
         .btn:active { transform: translate(1.5px, 1.5px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
         .btn-gray { background: #666; }
@@ -57,13 +57,13 @@
         #timer-container { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 25%; height: 14px; background: rgba(0,0,0,0.5); border: 2.5px solid var(--black); border-radius: 8px; overflow: hidden; z-index: 2000; }
         #timer-bar { width: 100%; height: 100%; background: var(--green); transition: width 0.2s linear; }
 
+        /* --- Hazards & FX --- */
         .hazard { position: absolute; width: 10vh; height: 10vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; }
         .hazard.found { border: 5px solid var(--green) !important; background: rgba(0, 255, 0, 0.3) !important; box-shadow: 0 0 15px var(--green); }
-        
         .penalty-text { position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 32px; pointer-events: none; z-index: 2000; text-shadow: 2px 2px 0px var(--black); animation: floatUp 0.8s ease-out forwards; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
         .shake-effect { animation: shake 0.3s ease-in-out; }
-        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-4px, 4px); } 50% { transform: translate(5px, -5px); } 75% { transform: translate(-4px, -4px); } }
+        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-4px, 4px); } 50% { transform: translate(4px, -4px); } 75% { transform: translate(-4px, -4px); } }
 
         #rules-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; justify-content: center; align-items: center; }
     </style>
@@ -85,7 +85,7 @@
     <div id="lang-screen" class="screen active-screen">
         <img src="images/mascot.png" class="lang-mascot" alt="Mascot">
         <div class="comic-title">HAZARD HUNTER</div>
-        <div class="btn-row" style="width: 240px;">
+        <div class="btn-row" style="width: 100%; max-width: 320px;">
             <div class="btn" onclick="selectLang('th')">ไทย</div>
             <div class="btn btn-blue" onclick="selectLang('en')">EN</div>
         </div>
@@ -130,7 +130,7 @@
             <h2 id="go-msg" style="font-family:'Bangers'; font-size: 32px; margin:0;">SUCCESS!</h2>
             <div id="rank-display" style="font-family:'Bangers'; font-size: 20px; color:var(--blue);">RANK: MASTER</div>
             <h1 id="go-score" style="font-size: 45px; margin: 8px 0;">0</h1>
-            <div class="btn" onclick="location.reload()" id="replay-btn">PLAY AGAIN</div>
+            <div class="btn" onclick="location.reload()" id="replay-btn" style="max-width: 200px;">PLAY AGAIN</div>
         </div>
     </div>
 
