@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - SPY EDITION</title>
+    <title>LCB1 HAZARD HUNTER - FULL EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -15,7 +15,47 @@
             overflow: hidden; position: fixed; 
         }
 
-        /* --- Comic Sound Toggle (มุมล่างซ้าย) --- */
+        /* --- Animations --- */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
+        }
+        .shake-effect { animation: shake 0.3s !important; }
+
+        /* Animation: Mascot บินวนลูป */
+        @keyframes flyAround {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, -15px) rotate(5deg); }
+            50% { transform: translate(0, -30px) rotate(0deg); }
+            75% { transform: translate(-20px, -15px) rotate(-5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        .flying-mascot { animation: flyAround 6s ease-in-out infinite; } /* บินวนลูปถาวร */
+
+        /* --- Rotate Warning (ปรับปรุงภาษาไทย) --- */
+        #rotate-warning {
+            position: fixed; inset: 0; background: var(--blue); color: white; z-index: 99999;
+            display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px;
+        }
+        @media screen and (orientation: portrait) { #rotate-warning { display: flex !important; } }
+
+        /* --- UI Screens --- */
+        .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); }
+        .active-screen { display: flex; }
+        .comic-title { font-family: 'Bangers'; font-size: 7vh; color: var(--blue); text-shadow: 2px 2px 0px #fff, 3px 3px 0px var(--black); margin-bottom: 2vh; }
+        
+        .box { background: #fff; padding: 20px; border: 4px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 400px; text-align: center; position: relative; }
+        input { width: 100%; padding: 10px; margin: 8px 0; border: 2px solid var(--black); font-size: 18px; font-family: 'Itim'; outline: none; text-align: center; }
+        
+        .btn-row { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
+        .btn { flex: 1; background: var(--red); color: #fff; padding: 12px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; text-decoration: none; }
+        .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
+        .btn-blue { background: var(--blue); }
+        .btn-rules { background: #555; }
+
+        /* สไตล์ปุ่ม Sound Toggle (ON/OFF มุมล่างซ้าย) */
         #sound-toggle {
             position: fixed; bottom: 20px; left: 20px; 
             width: 70px; height: 60px;
@@ -29,38 +69,7 @@
         }
         #sound-toggle:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--black); }
 
-        /* --- Animations --- */
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            100% { transform: translate(0px, 0px) rotate(0deg); }
-        }
-        .shake-effect { animation: shake 0.3s !important; }
-
-        /* --- Rotate Warning --- */
-        #rotate-warning {
-            position: fixed; inset: 0; background: var(--blue); color: white; z-index: 99999;
-            display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-        }
-        @media screen and (orientation: portrait) { #rotate-warning { display: flex !important; } }
-
-        /* --- UI Screens --- */
-        .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); }
-        .active-screen { display: flex; }
-        .comic-title { font-family: 'Bangers'; font-size: 7vh; color: var(--blue); text-shadow: 2px 2px 0px #fff, 3px 3px 0px var(--black); margin-bottom: 2vh; }
-        
-        .box { background: #fff; padding: 20px; border: 4px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 400px; text-align: center; }
-        input { width: 100%; padding: 10px; margin: 8px 0; border: 2px solid var(--black); font-size: 18px; font-family: 'Itim'; outline: none; text-align: center; }
-        
-        .btn-row { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
-        .btn { flex: 1; background: var(--red); color: #fff; padding: 12px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; }
-        .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
-        .btn-blue { background: var(--blue); }
-        .btn-rules { background: #555; }
-
-        /* --- Modal --- */
+        /* --- Modal กติกา --- */
         #rules-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 8000;
             display: none; justify-content: center; align-items: center;
@@ -95,7 +104,7 @@
 <body>
 
     <audio id="bgm" loop preload="auto">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/music/preview/mixkit-mystery-suspense-132.mp3" type="audio/mpeg">
     </audio>
     <audio id="snd-hit" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" preload="auto"></audio>
     <audio id="snd-miss" src="https://assets.mixkit.co/active_storage/sfx/2021/2021-preview.mp3" preload="auto"></audio>
@@ -105,7 +114,8 @@
 
     <div id="rotate-warning">
         <div style="font-size: 60px;">🔄</div>
-        <h2 style="font-family:'Bangers'">LANDSCAPE ONLY</h2>
+        <h2 style="font-family:'Bangers'; margin: 10px 0;">LANDSCAPE ONLY</h2>
+        <h3 style="font-family:'Itim'; margin: 0;">หมุนหน้าจอเพื่อเล่น</h3>
     </div>
 
     <div id="loading-overlay"><h2 style="font-family:'Bangers'">LOADING...</h2></div>
@@ -120,6 +130,11 @@
 
     <div id="lang-screen" class="screen active-screen">
         <div class="comic-title">HAZARD HUNTER</div>
+        
+        <div style="position: relative; width: 150px; height: 150px; margin-bottom: 2vh;">
+            <img src="images/character.png" alt="Mascot" class="flying-mascot" style="width: 100%; height: auto; filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.2));">
+        </div>
+
         <div class="btn-row" style="width: 280px;">
             <div class="btn" onclick="selectLang('th')">ไทย</div>
             <div class="btn btn-blue" onclick="selectLang('en')">EN</div>
@@ -128,6 +143,10 @@
 
     <div id="login-screen" class="screen">
         <div class="box">
+            <div style="position: absolute; top: -110px; left: 50%; transform: translateX(-50%); width: 120px; z-index: -1;">
+                <img src="images/character.png" alt="Mascot" class="flying-mascot" style="width: 100%; height: auto; filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.2));">
+            </div>
+
             <input type="text" id="empName" placeholder="">
             <input type="text" id="empID" placeholder="">
             <div class="btn-row">
@@ -166,7 +185,7 @@
         const translations = {
             th: {
                 placeholder: "กรอกชื่อของคุณ", idPlaceholder: "กรอกรหัสพนักงาน", startBtn: "เริ่มภารกิจ", rulesBtn: "กติกา",
-                rulesTitle: "วิธีเล่น", rulesDesc: "1. ค้นหาจุดอันตราย 4 จุด<br>2. จิ้มที่จุดอันตรายเพื่อรับคะแนน<br>3. จิ้มผิดหัก 10 วินาที!<br>4. เวลาที่เหลือเปลี่ยนเป็นโบนัส",
+                rulesTitle: "วิธีเล่น", rulesDesc: "1. ค้นหาจุดอันตราย 4 จุดในแต่ละภาพ<br>2. จิ้มที่จุดอันตรายเพื่อเก็บคะแนน<br>3. หากจิ้มผิด เวลาจะลดลง 10 วินาที<br>4. คะแนนคิดจากเวลาที่เหลือ x 10",
                 timeLabel: "เวลา", scoreLabel: "คะแนน", goSuccess: "ภารกิจสำเร็จ!", goTimeout: "เวลาหมด!",
                 totalScoreLabel: "คะแนนรวมจากเวลา", homeBtn: "หน้าแรก", rankTitle: "ฉายา: ",
                 ranks: [
@@ -178,8 +197,8 @@
                 alertLogin: "กรุณากรอกชื่อและรหัสพนักงาน"
             },
             en: {
-                placeholder: "Enter Your Name", idPlaceholder: "Enter Employee ID", startBtn: "START", rulesBtn: "RULES",
-                rulesTitle: "HOW TO PLAY", rulesDesc: "1. Find 4 hazards per level.<br>2. Tap hazards to score.<br>3. Wrong tap reduces 10s!<br>4. Time converts to bonus points.",
+                placeholder: "Enter Your Name", idPlaceholder: "Enter Employee ID", startBtn: "START MISSION", rulesBtn: "RULES",
+                rulesTitle: "HOW TO PLAY", rulesDesc: "1. Find 4 hazards per level.<br>2. Tap hazards to score.<br>3. Wrong tap reduces 10s time.<br>4. Score = Remaining Time x 10",
                 timeLabel: "TIME", scoreLabel: "SCORE", goSuccess: "MISSION CLEAR!", goTimeout: "TIME OUT!",
                 totalScoreLabel: "TOTAL TIME SCORE", homeBtn: "HOME", rankTitle: "RANK: ",
                 ranks: [
@@ -203,21 +222,6 @@
         let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false, isMuted = false;
         const bgm = document.getElementById('bgm');
 
-        function startBGM() {
-            if (bgm.paused && !isMuted) {
-                bgm.volume = 0.3;
-                var playPromise = bgm.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(e => {
-                        console.log("Waiting for user interaction");
-                        // ดักจับการแตะหน้าจอครั้งแรกเพื่อเริ่มเพลง
-                        document.addEventListener('click', () => { bgm.play(); }, { once: true });
-                        document.addEventListener('touchstart', () => { bgm.play(); }, { once: true });
-                    });
-                }
-            }
-        }
-
         function selectLang(l) { 
             currentLang = l; 
             const t = translations[currentLang];
@@ -228,10 +232,14 @@
             document.getElementById('ui-time').innerText = t.timeLabel;
             document.getElementById('ui-score').innerText = t.scoreLabel;
             document.getElementById('rules-title').innerText = t.rulesTitle;
-            document.getElementById('rules-desc').innerHTML = t.rulesDesc;
+            document.getElementById('rules-desc').innerHTML = t.rulesText;
 
-            // เริ่มเล่นเพลงทันทีเมื่อกดเลือกภาษา
-            startBGM();
+            // เริ่มเล่น BGM ( Browser จะบล็อกถ้าไม่มีการคลิก )
+            bgm.volume = 0.3;
+            bgm.play().catch(() => {
+                // ถ้าเล่นไม่ได้ ให้รอจิ้มหน้าจออีกครั้ง
+                document.addEventListener('click', () => { bgm.play(); }, { once: true });
+            });
 
             document.getElementById('lang-screen').classList.remove('active-screen'); 
             document.getElementById('login-screen').classList.add('active-screen'); 
