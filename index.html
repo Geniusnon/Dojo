@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - PRO THAI EDITION</title>
+    <title>LCB1 HAZARD HUNTER - FULL EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -45,7 +45,7 @@
         .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
 
-        /* --- Game Interface --- */
+        /* --- Game Interface (รักษา Layout เดิมของคุณ) --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; background: var(--black); z-index: 1500; }
 
         #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow-x: auto; overflow-y: hidden; z-index: 1510; }
@@ -66,7 +66,7 @@
         .hazard { position: absolute; width: 16vh; height: 16vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 4px solid transparent; background: rgba(255, 0, 0, 0); }
         .hazard.found { border-color: #00ff00 !important; background: rgba(0, 255, 0, 0.4) !important; }
 
-        /* Effect คะแนนและเวลาเด้ง */
+        /* Effect คะแนนเด้ง */
         .effect-text { position: fixed; font-family: 'Bangers'; font-size: 45px; pointer-events: none; z-index: 9999; text-shadow: 2px 2px 0px #000; animation: fadeUp 0.8s forwards; }
         @keyframes fadeUp { 0% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -150%); } }
 
@@ -83,7 +83,6 @@
     <div id="rotate-warning">
         <div style="font-size: 60px;">🔄</div>
         <h2 style="font-family:'Bangers'">LANDSCAPE ONLY</h2>
-        <p>กรุณาหมุนจอเป็นแนวนอน</p>
     </div>
 
     <div id="loading-overlay"><h2 style="font-family:'Bangers'">LOADING...</h2></div>
@@ -98,22 +97,10 @@
 
     <div id="login-screen" class="screen">
         <div class="box">
-            <input type="text" id="empName" placeholder="ชื่อพนักงาน / Name">
-            <input type="text" id="empID" placeholder="รหัสพนักงาน / ID">
+            <input type="text" id="empName" placeholder="">
             <div class="btn-row">
                 <div class="btn" onclick="startGame()" id="start-btn">START</div>
-                <div class="btn btn-blue" onclick="showRules()" id="rule-btn">RULES</div>
             </div>
-            <div class="btn-row">
-                <div class="btn btn-blue" style="background:#666;" onclick="backToLang()">LANGUAGE</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="rules-screen" class="screen">
-        <div class="box">
-            <div id="rule-text" style="font-size: 16px; margin-bottom: 15px; text-align: left;"></div>
-            <div class="btn btn-blue" onclick="backToLogin()" id="back-btn">BACK</div>
         </div>
     </div>
 
@@ -127,8 +114,8 @@
 
         <div class="side-bar-left">
             <div class="side-item">LV<span id="current-lv">1</span></div>
-            <div class="side-item">TIME<span id="timer" style="color:red">60</span></div>
-            <div class="side-item">SCORE<span id="total-score">0</span></div>
+            <div class="side-item"><span id="ui-time">TIME</span><span id="timer" style="color:red">60</span></div>
+            <div class="side-item"><span id="ui-score">SCORE</span><span id="total-score">0</span></div>
         </div>
 
         <div id="character-area">
@@ -139,17 +126,52 @@
     <div id="game-over-screen" class="screen">
         <div class="box">
             <h2 id="go-msg" style="margin:0; font-family:'Bangers'; font-size: 35px;"></h2>
-            <div id="rank-display">อันดับของคุณ: มือใหม่ 🔍</div>
-            <div style="font-size: 20px; margin-top: 15px;">TOTAL SCORE</div>
+            <div id="rank-display"></div>
+            <div id="go-score-label" style="font-size: 20px; color: #666; margin-top: 10px;"></div>
             <h1 id="go-score" style="font-size: 65px; color: var(--blue); font-family: 'Bangers'; margin: 5px 0;">0</h1>
-            <div class="btn" onclick="location.reload()" style="max-width: 180px; margin: 15px auto 0;">HOME</div>
+            <div class="btn" onclick="location.reload()" id="home-btn" style="max-width: 180px; margin: 15px auto 0;">HOME</div>
         </div>
     </div>
 
     <script>
-        const langData = {
-            th: { startBtn: "เริ่มภารกิจ", ruleBtn: "กติกา", ruleDesc: "• หาจุดอันตราย 4 จุดต่อภาพ<br>• จิ้มผิดหักเวลา 10 วินาที!<br>• คะแนน = จิ้มถูก + (เวลาเหลือ x 10)", backBtn: "ย้อนกลับ", alertLogin: "กรุณากรอกข้อมูลให้ครบ", goComplete: "ภารกิจสำเร็จ!", goTimeout: "เวลาหมด!" },
-            en: { startBtn: "START", ruleBtn: "RULES", ruleDesc: "• Find 4 hazards per level<br>• Wrong tap: -10 sec penalty!<br>• Score = Hits + (Time x 10)", backBtn: "BACK", alertLogin: "Please fill info", goComplete: "MISSION CLEAR!", goTimeout: "TIME OUT!" }
+        // ระบบภาษาแบบ Full Sync
+        const translations = {
+            th: {
+                placeholder: "กรอกชื่อของคุณ",
+                startBtn: "เริ่มภารกิจ",
+                timeLabel: "เวลา",
+                scoreLabel: "คะแนน",
+                goSuccess: "ภารกิจสำเร็จ!",
+                goTimeout: "เวลาหมด!",
+                totalScoreLabel: "คะแนนรวมจากเวลา",
+                homeBtn: "หน้าแรก",
+                rankTitle: "ฉายา: ",
+                ranks: [
+                    { min: 1800, text: "ปรมาจารย์ความปลอดภัย 👑", color: "#ffde03" },
+                    { min: 1200, text: "นักล่าอันตรายขั้นสูง 🛡️", color: "#0336ff" },
+                    { min: 600, text: "นักล่าอันตรายชั้นต้น 🏹", color: "#ff0266" },
+                    { min: 0, text: "นักล่าอันตรายฝึกหัด 🔍", color: "#666" }
+                ],
+                alertLogin: "กรุณากรอกชื่อ"
+            },
+            en: {
+                placeholder: "Enter Your Name",
+                startBtn: "START MISSION",
+                timeLabel: "TIME",
+                scoreLabel: "SCORE",
+                goSuccess: "MISSION CLEAR!",
+                goTimeout: "TIME OUT!",
+                totalScoreLabel: "TOTAL TIME SCORE",
+                homeBtn: "HOME",
+                rankTitle: "RANK: ",
+                ranks: [
+                    { min: 1800, text: "Safety Master 👑", color: "#ffde03" },
+                    { min: 1200, text: "Elite Hazard Hunter 🛡️", color: "#0336ff" },
+                    { min: 600, text: "Junior Hazard Hunter 🏹", color: "#ff0266" },
+                    { min: 0, text: "Trainee Hunter 🔍", color: "#666" }
+                ],
+                alertLogin: "Please enter your name"
+            }
         };
 
         const levelsData = [
@@ -163,25 +185,18 @@
         let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false;
 
         function selectLang(l) { 
-            currentLang = l; updateTexts(); 
+            currentLang = l; 
+            const t = translations[currentLang];
+            document.getElementById('empName').placeholder = t.placeholder;
+            document.getElementById('start-btn').innerText = t.startBtn;
+            document.getElementById('ui-time').innerText = t.timeLabel;
+            document.getElementById('ui-score').innerText = t.scoreLabel;
             document.getElementById('lang-screen').classList.remove('active-screen'); 
             document.getElementById('login-screen').classList.add('active-screen'); 
         }
 
-        function updateTexts() {
-            const d = langData[currentLang];
-            document.getElementById('start-btn').innerText = d.startBtn;
-            document.getElementById('rule-btn').innerText = d.ruleBtn;
-            document.getElementById('rule-text').innerHTML = d.ruleDesc;
-            document.getElementById('back-btn').innerText = d.backBtn;
-        }
-
-        function backToLang() { document.getElementById('login-screen').classList.remove('active-screen'); document.getElementById('lang-screen').classList.add('active-screen'); }
-        function showRules() { document.getElementById('login-screen').classList.remove('active-screen'); document.getElementById('rules-screen').classList.add('active-screen'); }
-        function backToLogin() { document.getElementById('rules-screen').classList.remove('active-screen'); document.getElementById('login-screen').classList.add('active-screen'); }
-
         function startGame() {
-            if(!document.getElementById('empName').value) return alert(langData[currentLang].alertLogin);
+            if(!document.getElementById('empName').value) return alert(translations[currentLang].alertLogin);
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'block';
             loadLevel(1); startTimer();
@@ -198,13 +213,10 @@
             const container = document.getElementById('hazard-container');
             container.innerHTML = '';
             const img = document.getElementById('main-img');
-            img.style.opacity = '0';
             
             img.src = `images/${levelsData[lv-1].img}?v=${Date.now()}`;
             img.onload = () => {
-                img.style.opacity = '1';
-                const imgBox = document.getElementById('img-box');
-                imgBox.style.width = img.clientWidth + "px";
+                document.getElementById('img-box').style.width = img.clientWidth + "px";
                 createHazards(lv);
                 document.getElementById('loading-overlay').style.display = 'none';
                 isPlaying = true; foundInLevel = 0; currentLevel = lv;
@@ -229,12 +241,9 @@
             playSound('snd-hit');
             div.classList.add('found'); foundInLevel++;
             
-            showEffect("+100", div.getBoundingClientRect().left + 50, div.getBoundingClientRect().top, "#00ff00");
-            totalScore += 100;
-            document.getElementById('total-score').innerText = totalScore;
-
             if(foundInLevel === 4) {
-                totalScore += (timeLeft * 10); // โบนัสเวลาเมื่อจบด่าน
+                totalScore += (timeLeft * 10); // คะแนน x10
+                document.getElementById('total-score').innerText = totalScore;
                 if(currentLevel < levelsData.length) { 
                     setTimeout(() => { timeLeft = 60; loadLevel(currentLevel + 1); }, 600); 
                 } else { 
@@ -243,7 +252,6 @@
             }
         }
 
-        // ระบบจิ้มผิด (สั่น + เสียง + หักเวลา)
         document.getElementById('viewport').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             playSound('snd-miss');
@@ -274,29 +282,22 @@
         function gameOver(win) {
             isPlaying = false; clearInterval(timerObj);
             if(win) playSound('snd-win');
+            const t = translations[currentLang];
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
-            document.getElementById('go-msg').innerText = win ? langData[currentLang].goComplete : langData[currentLang].goTimeout;
+            document.getElementById('go-msg').innerText = win ? t.goSuccess : t.goTimeout;
             document.getElementById('go-score').innerText = totalScore;
+            document.getElementById('go-score-label').innerText = t.totalScoreLabel;
+            document.getElementById('home-btn').innerText = t.homeBtn;
 
-            // --- ระบบฉายาภาษาไทยที่คุณเลือก ---
-            let rank = "มือใหม่ 🔍";
-            let rankColor = "#666"; 
-
-            if(totalScore >= 3800) {
-                rank = "ปรมาจารย์ความปลอดภัย 👑";
-                rankColor = "#ffde03"; 
-            } else if(totalScore >= 2500) {
-                rank = "ผู้พิทักษ์ความปลอดภัย 🛡️";
-                rankColor = "#0336ff"; 
-            } else if(totalScore >= 1200) {
-                rank = "นักล่าจุดเสี่ยง 🏹";
-                rankColor = "#ff0266"; 
+            // คำนวณ Rank ตามภาษา
+            let finalRank = t.ranks[3];
+            for (let r of t.ranks) {
+                if (totalScore >= r.min) { finalRank = r; break; }
             }
-
             const rd = document.getElementById('rank-display');
-            rd.innerText = "อันดับของคุณ: " + rank;
-            rd.style.color = rankColor;
+            rd.innerText = t.rankTitle + finalRank.text;
+            rd.style.color = finalRank.color;
         }
     </script>
 </body>
