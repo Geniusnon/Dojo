@@ -98,6 +98,7 @@
     <div id="login-screen" class="screen">
         <div class="box">
             <input type="text" id="empName" placeholder="">
+            <input type="text" id="empID" placeholder="">
             <div class="btn-row">
                 <div class="btn" onclick="startGame()" id="start-btn">START</div>
             </div>
@@ -138,6 +139,7 @@
         const translations = {
             th: {
                 placeholder: "กรอกชื่อของคุณ",
+                idPlaceholder: "กรอกรหัสพนักงาน",
                 startBtn: "เริ่มภารกิจ",
                 timeLabel: "เวลา",
                 scoreLabel: "คะแนน",
@@ -152,10 +154,11 @@
                     { min: 600, text: "นักล่าอันตรายชั้นต้น 🏹", color: "#ff0266" },
                     { min: 0, text: "นักล่าอันตรายฝึกหัด 🔍", color: "#666" }
                 ],
-                alertLogin: "กรุณากรอกชื่อ"
+                alertLogin: "กรุณากรอกชื่อและรหัสพนักงาน"
             },
             en: {
                 placeholder: "Enter Your Name",
+                idPlaceholder: "Enter Employee ID",
                 startBtn: "START MISSION",
                 timeLabel: "TIME",
                 scoreLabel: "SCORE",
@@ -170,7 +173,7 @@
                     { min: 600, text: "Junior Hazard Hunter 🏹", color: "#ff0266" },
                     { min: 0, text: "Trainee Hunter 🔍", color: "#666" }
                 ],
-                alertLogin: "Please enter your name"
+                alertLogin: "Please enter your name and ID"
             }
         };
 
@@ -188,6 +191,7 @@
             currentLang = l; 
             const t = translations[currentLang];
             document.getElementById('empName').placeholder = t.placeholder;
+            document.getElementById('empID').placeholder = t.idPlaceholder; // อัปเดตรหัส
             document.getElementById('start-btn').innerText = t.startBtn;
             document.getElementById('ui-time').innerText = t.timeLabel;
             document.getElementById('ui-score').innerText = t.scoreLabel;
@@ -196,7 +200,11 @@
         }
 
         function startGame() {
-            if(!document.getElementById('empName').value) return alert(translations[currentLang].alertLogin);
+            // เช็คทั้งชื่อและรหัส
+            const nameVal = document.getElementById('empName').value;
+            const idVal = document.getElementById('empID').value;
+            if(!nameVal || !idVal) return alert(translations[currentLang].alertLogin);
+            
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'block';
             loadLevel(1); startTimer();
