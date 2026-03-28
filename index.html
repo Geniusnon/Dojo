@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - REFRESH TIME</title>
+    <title>LCB1 HAZARD HUNTER - FULL TRANSLATION</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; --white: #fff; --green: #00e676; }
@@ -38,12 +38,12 @@
         .image-container { position: relative; height: 92%; border: 5px solid var(--white); outline: 5px solid var(--black); }
         #main-img { height: 100%; width: auto; display: block; object-fit: contain; }
 
-        .side-bar-left { position: absolute; top: 8px; left: 8px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 4px 12px; gap: 15px; z-index: 1520; box-shadow: 3px 3px 0px var(--black); }
-        .side-item { font-family: 'Bangers'; font-size: 16px; color: #000; }
-        .side-item span { font-size: 18px; color: var(--blue); margin-left: 4px; }
+        .side-bar-left { position: absolute; top: 8px; left: 8px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 4px 12px; gap: 12px; z-index: 1520; box-shadow: 3px 3px 0px var(--black); }
+        .side-item { font-family: 'Bangers'; font-size: 14px; color: #000; }
+        .side-item span { font-size: 16px; color: var(--blue); margin-left: 2px; }
 
         #timer-container { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 25%; height: 14px; background: rgba(0,0,0,0.5); border: 2.5px solid var(--black); border-radius: 8px; overflow: hidden; z-index: 2000; }
-        #timer-bar { width: 100%; height: 100%; background: var(--green); transition: width 0.1s linear; }
+        #timer-bar { width: 100%; height: 100%; background: var(--green); transition: width 0.2s linear; }
 
         .hazard { position: absolute; width: 10vh; height: 10vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; }
         .hazard.found { border: 5px solid var(--green) !important; background: rgba(0, 255, 0, 0.3) !important; box-shadow: 0 0 15px var(--green); }
@@ -67,7 +67,7 @@
 
     <div id="rotate-warning">
         <div style="font-size: 60px;">🔄</div>
-        <h2 style="font-family:'Bangers'; margin-top:8px;">ROTATE TO PLAY</h2>
+        <h2 id="rotate-text" style="font-family:'Bangers'; margin-top:8px;">ROTATE TO PLAY</h2>
     </div>
 
     <div id="lang-screen" class="screen active-screen">
@@ -80,8 +80,8 @@
 
     <div id="login-screen" class="screen">
         <div class="box">
-            <input type="text" id="empName" placeholder="ชื่อพนักงาน">
-            <input type="text" id="empID" placeholder="รหัสพนักงาน">
+            <input type="text" id="empName" placeholder="">
+            <input type="text" id="empID" placeholder="">
             <div class="btn-row">
                 <div class="btn" onclick="playClick(); startGame()" id="start-btn">START</div>
                 <div class="btn btn-gray" onclick="playClick(); showRules()" id="rules-btn">RULES</div>
@@ -93,15 +93,16 @@
         <div class="box">
             <h2 id="rules-title" style="font-family:'Bangers'; color:var(--blue); font-size: 28px; margin:0;">RULES</h2>
             <div id="rules-text" style="font-size: 16px; line-height: 1.4; margin: 10px 0; text-align: left;"></div>
-            <div class="btn" onclick="playClick(); closeRules()">OK!</div>
+            <div class="btn" onclick="playClick(); closeRules()" id="rules-ok-btn">OK!</div>
         </div>
     </div>
 
     <div id="game-interface">
         <div id="timer-container"><div id="timer-bar"></div></div>
         <div class="side-bar-left">
-            <div class="side-item">LV <span id="current-lv">1</span></div>
-            <div class="side-item">SCORE <span id="total-score">0</span></div>
+            <div class="side-item"><span id="hud-lv">LV</span> <span id="current-lv">1</span></div>
+            <div class="side-item"><span id="hud-score">SCORE</span> <span id="total-score">0</span></div>
+            <div class="side-item"><span id="hud-time">TIME</span> <span id="time-text">60</span>s</div>
         </div>
         <div id="viewport">
             <div class="image-container" id="img-box">
@@ -116,7 +117,7 @@
             <h2 id="go-msg" style="font-family:'Bangers'; font-size: 32px; margin:0;">SUCCESS!</h2>
             <div id="rank-display" style="font-family:'Bangers'; font-size: 20px; color:var(--blue);">RANK: MASTER</div>
             <h1 id="go-score" style="font-size: 45px; margin: 8px 0;">0</h1>
-            <div class="btn" onclick="location.reload()">PLAY AGAIN</div>
+            <div class="btn" onclick="location.reload()" id="replay-btn">PLAY AGAIN</div>
         </div>
     </div>
 
@@ -124,12 +125,16 @@
         const translations = {
             th: { 
                 pl: "ชื่อพนักงาน", id: "รหัสพนักงาน", st: "เริ่มเกม", rb: "กติกา", win: "สำเร็จ!", lose: "เวลาหมด!", rank: "ฉายา: ",
-                rt: "กติกาการเล่น", rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ<br>2. แต่ละด่านมีเวลา 60 วินาที<br>3. จิ้มผิดหักเวลาในแถบพลัง!<br>4. อย่าให้แถบเวลาหมดเด็ดขาด",
+                rt: "กติกาการเล่น", rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ<br>2. แต่ละด่านมีเวลา 60 วินาที<br>3. จิ้มผิดหักเวลา 10 วินาที!<br>4. อย่าให้เวลาหมดเด็ดขาด",
+                ok: "ตกลง!", rotate: "กรุณาหมุนโทรศัพท์", alert: "กรุณากรอกข้อมูลให้ครบถ้วน", replay: "เล่นอีกครั้ง",
+                hud_lv: "ด่าน", hud_score: "คะแนน", hud_time: "เวลา",
                 ranks: [{m:2500, t:"ปรมาจารย์ 👑"}, {m:1500, t:"นักล่า 🛡️"}, {m:0, t:"มือใหม่ 🔍"}]
             },
             en: { 
                 pl: "Name", id: "ID", st: "START", rb: "RULES", win: "CLEAR!", lose: "TIMEOUT!", rank: "RANK: ",
-                rt: "HOW TO PLAY", rText: "1. Find 4 hazards per image.<br>2. 60 seconds for each level.<br>3. Wrong tap reduces your time bar!<br>4. Don't let the time bar run out.",
+                rt: "HOW TO PLAY", rText: "1. Find 4 hazards per image.<br>2. 60 seconds per level.<br>3. Wrong tap reduces 10 seconds!<br>4. Don't let the timer reach zero.",
+                ok: "OK!", rotate: "PLEASE ROTATE PHONE", alert: "Please fill in all fields", replay: "PLAY AGAIN",
+                hud_lv: "LV", hud_score: "SCORE", hud_time: "TIME",
                 ranks: [{m:2500, t:"Master 👑"}, {m:1500, t:"Elite 🛡️"}, {m:0, t:"Rookie 🔍"}]
             }
         };
@@ -142,7 +147,7 @@
             { img: "level5.jpg", points: [{t:73, l:96}, {t:54, l:55}, {t:37, l:55}, {t:59, l:99}] }
         ];
 
-        let currentLang = 'th', currentLevel = 0, totalScore = 0, timeLeft = 100, foundInLevel = 0, isPlaying = false, isMuted = false, timerObj;
+        let currentLang = 'th', currentLevel = 0, totalScore = 0, timeLeft = 60, foundInLevel = 0, isPlaying = false, isMuted = false, timerObj;
 
         function playClick() { if(!isMuted) { const s = document.getElementById('snd-click'); s.currentTime=0; s.play().catch(()=>{}); } }
         function toggleMute() { isMuted = !isMuted; const b = document.getElementById('sound-toggle'); b.innerText = isMuted ? "OFF" : "ON"; b.style.background = isMuted ? "#555" : "var(--red)"; }
@@ -151,18 +156,33 @@
 
         function selectLang(l) {
             currentLang = l; const t = translations[l];
+            // Login & Rules
             document.getElementById('empName').placeholder = t.pl;
             document.getElementById('empID').placeholder = t.id;
             document.getElementById('start-btn').innerText = t.st;
             document.getElementById('rules-btn').innerText = t.rb;
             document.getElementById('rules-title').innerText = t.rt;
             document.getElementById('rules-text').innerHTML = t.rText;
+            document.getElementById('rules-ok-btn').innerText = t.ok;
+            document.getElementById('rotate-text').innerText = t.rotate;
+            
+            // HUD
+            document.getElementById('hud-lv').innerText = t.hud_lv;
+            document.getElementById('hud-score').innerText = t.hud_score;
+            document.getElementById('hud-time').innerText = t.hud_time;
+
+            // Replay
+            document.getElementById('replay-btn').innerText = t.replay;
+
             document.getElementById('lang-screen').classList.remove('active-screen');
             document.getElementById('login-screen').classList.add('active-screen');
         }
 
         function startGame() {
-            if(!document.getElementById('empName').value || !document.getElementById('empID').value) return alert("กรุณากรอกข้อมูล");
+            if(!document.getElementById('empName').value || !document.getElementById('empID').value) {
+                alert(translations[currentLang].alert);
+                return;
+            }
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'block';
             loadLevel(0);
@@ -175,9 +195,10 @@
             isPlaying = false;
             currentLevel = lvIndex;
             foundInLevel = 0;
-            timeLeft = 100; // <<< แก้ไขจุดที่ 1: รีเซ็ตเวลาให้เต็มหลอดทุกด่าน
+            timeLeft = 60;
             
             document.getElementById('current-lv').innerText = lvIndex + 1;
+            document.getElementById('time-text').innerText = timeLeft;
             const container = document.getElementById('hazard-container');
             container.innerHTML = '';
             
@@ -204,12 +225,11 @@
             if(!isMuted) document.getElementById('snd-hit').play();
             el.classList.add('found');
             foundInLevel++;
-            totalScore += Math.floor(timeLeft * 2); 
+            totalScore += Math.floor(timeLeft * 10); 
             document.getElementById('total-score').innerText = totalScore;
 
             if(foundInLevel === 4) {
                 isPlaying = false;
-                // <<< แก้ไขจุดที่ 2: เอาการบวกโบนัสเวลาออก เพราะจะไปรีเซ็ตที่ loadLevel อยู่แล้ว
                 setTimeout(() => loadLevel(currentLevel + 1), 600);
             }
         }
@@ -218,32 +238,43 @@
             if (timerObj) clearInterval(timerObj);
             timerObj = setInterval(() => {
                 if(isPlaying) {
-                    timeLeft -= 0.4; // 100% / (0.4 * 10 รอบต่อวิ) = 25 วิโดยประมาณ (ปรับความเร็วได้ที่นี่)
-                    const bar = document.getElementById('timer-bar');
-                    bar.style.width = timeLeft + '%';
+                    timeLeft -= 1;
+                    if(timeLeft < 0) timeLeft = 0;
                     
-                    if(timeLeft > 50) bar.style.background = "var(--green)";
-                    else if(timeLeft > 20) bar.style.background = "var(--yellow)";
+                    document.getElementById('time-text').innerText = timeLeft;
+                    const bar = document.getElementById('timer-bar');
+                    bar.style.width = (timeLeft / 60 * 100) + '%';
+                    
+                    if(timeLeft > 30) bar.style.background = "var(--green)";
+                    else if(timeLeft > 15) bar.style.background = "var(--yellow)";
                     else bar.style.background = "var(--red)";
 
                     if(timeLeft <= 0) gameOver(false);
                 }
-            }, 100);
+            }, 1000);
         }
 
         document.getElementById('viewport').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             if(!isMuted) document.getElementById('snd-miss').play();
-            timeLeft -= 12; // จิ้มผิดหัก 12%
+            
+            timeLeft -= 10;
+            if(timeLeft < 0) timeLeft = 0;
+            
+            document.getElementById('time-text').innerText = timeLeft;
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + '%';
+            
             if(window.navigator.vibrate) window.navigator.vibrate(100);
             const p = document.createElement('div');
-            p.className = 'penalty-text'; p.innerText = '-12%';
+            p.className = 'penalty-text'; p.innerText = '-10s';
             p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
             document.body.appendChild(p);
             setTimeout(() => p.remove(), 800);
             const gi = document.getElementById('game-interface');
             gi.classList.add('shake-effect');
             setTimeout(() => gi.classList.remove('shake-effect'), 300);
+            
+            if(timeLeft <= 0) gameOver(false);
         };
 
         function gameOver(win) {
@@ -252,9 +283,11 @@
             if(win && !isMuted) document.getElementById('snd-win').play();
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
+            
             const t = translations[currentLang];
             document.getElementById('go-msg').innerText = win ? t.win : t.lose;
             document.getElementById('go-score').innerText = totalScore;
+            
             let rank = t.ranks.find(r => totalScore >= r.m);
             document.getElementById('rank-display').innerText = t.rank + (rank ? rank.t : "");
         }
