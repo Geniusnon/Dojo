@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - FINAL PRO VERSION</title>
+    <title>LCB1 HAZARD HUNTER - FULL RECOVERY</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; --white: #fff; }
@@ -16,7 +16,7 @@
             background-image: repeating-linear-gradient(45deg, rgba(255,222,3,0.05) 0px, rgba(255,222,3,0.05) 2px, transparent 2px, transparent 10px);
         }
 
-        /* บังคับแนวนอน */
+        /* --- Rotate Warning (ล็อคแนวนอน) --- */
         #rotate-warning {
             position: fixed; inset: 0; background: var(--blue); color: var(--white); z-index: 200000;
             display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
@@ -26,36 +26,40 @@
             #game-interface, .screen, #mascot-ui, #sound-toggle { display: none !important; }
         }
 
-        /* Mascot ขวาบน */
-        #mascot-ui { position: fixed; top: 10px; right: 15px; width: 130px; height: auto; z-index: 5000; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.5)); }
+        /* --- Mascot --- */
+        #mascot-ui { position: fixed; top: 5px; right: 15px; width: 130px; height: auto; z-index: 5000; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.5)); }
 
-        /* หน้าจอเมนู */
+        /* --- UI Screens --- */
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); clip-path: polygon(0 0, 100% 1%, 100% 100%, 0 99%); }
         .active-screen { display: flex; }
         .comic-title { font-family: 'Bangers'; font-size: 11vh; color: var(--blue); text-shadow: 4px 4px 0px #fff, 8px 8px 0px var(--black); margin-bottom: 2vh; transform: rotate(-2deg); }
         .box { background: var(--white); padding: 25px; border: 4px solid var(--black); box-shadow: 8px 8px 0px var(--black); width: 90%; max-width: 500px; text-align: center; position: relative; border-radius: 5px; outline: 5px solid var(--white); }
 
-        /* Rules Modal */
+        /* --- Rules Modal --- */
         #rules-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; justify-content: center; align-items: center; }
         .rules-box { background: var(--white); width: 85%; max-width: 480px; padding: 25px; border: 5px solid var(--black); box-shadow: 10px 10px 0px var(--black); border-radius: 5px; outline: 6px solid var(--white); }
 
+        /* --- Game Over Layout --- */
+        #game-over-screen .box { display: flex; flex-direction: row; align-items: center; justify-content: space-around; max-width: 550px; }
+        
         .btn-row { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
         .btn { flex: 1; background: var(--red); color: var(--white); padding: 12px; font-family: 'Bangers'; font-size: 24px; border: 4px solid var(--black); cursor: pointer; box-shadow: 4px 4px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; }
         .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
         .btn-gray { background: #666; }
 
-        /* พื้นที่เล่นเกม */
+        /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 1500; }
         #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 1510; }
         .image-container { position: relative; height: 96%; border: 8px solid var(--black); box-shadow: 0 0 30px rgba(0,0,0,0.7); outline: 8px solid var(--white); }
         #main-img { height: 100%; width: auto; display: block; object-fit: contain; }
-        
         .side-bar-left { position: absolute; top: 10px; left: 10px; background: var(--white); border: 3px solid var(--black); border-radius: 5px; display: flex; padding: 5px 15px; gap: 20px; z-index: 1520; box-shadow: 4px 4px 0px var(--black); }
         .side-item { font-family: 'Bangers'; font-size: 16px; color: #000; }
         .side-item span { font-size: 20px; color: var(--blue); margin-left: 5px; }
+        #character-area { position: absolute; bottom: 0; right: 0; width: 100px; z-index: 1520; pointer-events: none; }
+        .big-char { width: 100%; height: auto; }
 
-        /* ตัวเลขลอย -10s */
+        /* --- ปรับแต่งจุดแจ้งเตือน -10 --- */
         .penalty-text {
             position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 40px;
             pointer-events: none; z-index: 2000; text-shadow: 2px 2px 0px var(--black);
@@ -63,12 +67,13 @@
         }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
 
-        /* จุดอันตราย ( Hazard ) */
+        /* --- จุดอันตราย --- */
         .hazard { position: absolute; width: 12vh; height: 12vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 4px solid #ff0000; background: rgba(255, 0, 0, 0.2); }
         .hazard.found { border: 6px solid #00ff00 !important; background: rgba(0, 255, 0, 0.4) !important; box-shadow: 0 0 20px #00ff00; }
 
+        /* --- อื่นๆ --- */
         #sound-toggle { position: fixed; bottom: 15px; left: 15px; width: 70px; height: 55px; background: var(--red); color: var(--white); border: 4px solid var(--black); border-radius: 12px; display: flex; justify-content: center; align-items: center; z-index: 9000; cursor: pointer; font-family: 'Bangers'; font-size: 24px; box-shadow: 4px 4px 0px var(--black); outline: 4px solid var(--white); }
-        
+        #loading-overlay { position: fixed; inset: 0; background: var(--yellow); z-index: 11000; display: none; flex-direction: column; justify-content: center; align-items: center; }
         @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 100% { transform: translate(0px, 0px) rotate(0deg); } }
         .shake-effect { animation: shake 0.3s !important; }
     </style>
@@ -80,7 +85,7 @@
     <audio id="snd-miss" src="https://assets.mixkit.co/active_storage/sfx/2021/2021-preview.mp3" preload="auto"></audio>
     <audio id="snd-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
 
-    <div id="sound-toggle" onclick="playClick(); toggleMute()">ON</div>
+    <div id="sound-toggle" onclick="toggleMute()">ON</div>
     <img id="mascot-ui" src="images/mascot.png" alt="Mascot">
 
     <div id="rotate-warning">
@@ -89,10 +94,12 @@
         <h3 style="font-family:'Itim'; margin: 0;">กรุณาหมุนโทรศัพท์เพื่อเล่น</h3>
     </div>
 
+    <div id="loading-overlay"><h2 style="font-family:'Bangers'">LOADING...</h2></div>
+
     <div id="rules-modal">
         <div class="rules-box">
             <h2 id="rules-title" style="font-family:'Bangers'; color:var(--blue); margin:0; font-size: 40px;">RULES</h2>
-            <div id="rules-text" style="font-size: 18px; line-height: 1.5; margin: 15px 0; color:#333;"></div>
+            <p id="rules-text" style="font-size: 20px; line-height: 1.6; margin: 15px 0; color:#333;"></p>
             <div class="btn" onclick="playClick(); closeRules()">OK!</div>
         </div>
     </div>
@@ -121,6 +128,7 @@
             <div class="image-container" id="img-box">
                 <img id="main-img" src="">
                 <div id="hazard-container"></div>
+                <div id="effect-layer" style="position:absolute; inset:0; pointer-events:none;"></div>
             </div>
         </div>
         <div class="side-bar-left">
@@ -128,16 +136,17 @@
             <div class="side-item"><span id="ui-time">TIME</span><span id="timer" style="color:red">60</span></div>
             <div class="side-item"><span id="ui-score">SCORE</span><span id="total-score">0</span></div>
         </div>
+        <div id="character-area"><img src="images/character.png" class="big-char"></div>
     </div>
 
     <div id="game-over-screen" class="screen">
-        <div class="box" style="display:flex; flex-direction:row; align-items:center; justify-content:space-around; max-width:550px;">
-            <div style="flex:1;">
+        <div class="box">
+            <div class="go-content">
                 <h2 id="go-msg" style="font-family:'Bangers'; font-size: 38px; margin:0;"></h2>
                 <div id="rank-display" style="font-family:'Bangers'; font-size: 24px; margin: 5px 0;"></div>
                 <h1 id="go-score" style="font-size: 55px; color: var(--blue); font-family: 'Bangers'; margin: 0;">0</h1>
             </div>
-            <div style="flex:1;"><div class="btn" onclick="playClick(); location.reload()">HOME</div></div>
+            <div class="go-actions"><div class="btn" onclick="playClick(); location.reload()">HOME</div></div>
         </div>
     </div>
 
@@ -150,7 +159,7 @@
             },
             en: { 
                 pl: "Name", id: "ID", st: "START", rb: "RULES", time: "TIME", score: "SCORE", win: "CLEAR!", lose: "TIMEOUT!", rank: "RANK: ",
-                rt: "HOW TO PLAY", rText: "1. Find 4 hazards per level.<br>2. Tap to find hazards.<br>3. Wrong tap = -10 seconds!<br>4. Score = Remaining time x 10",
+                rt: "HOW TO PLAY", rText: "1. Find 4 hazards in each image.<br>2. Tap hazards to score points.<br>3. Wrong tap reduces 10s!<br>4. Bonus points for remaining time.",
                 ranks: [{m:1800, t:"Master 👑"}, {m:1200, t:"Elite 🛡️"}, {m:600, t:"Junior 🏹"}, {m:0, t:"Rookie 🔍"}]
             }
         };
@@ -165,14 +174,8 @@
 
         let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false, isMuted = false;
 
-        function playClick() { 
-            if(!isMuted) {
-                const s = document.getElementById('snd-click');
-                s.pause(); s.currentTime = 0; s.play().catch(e => {}); 
-            }
-        }
-
-        function toggleMute() { isMuted = !isMuted; const b = document.getElementById('sound-toggle'); b.innerText = isMuted ? "OFF" : "ON"; b.style.background = isMuted ? "#555" : "var(--red)"; }
+        function playClick() { if(!isMuted) { const s = document.getElementById('snd-click'); s.currentTime = 0; s.play().catch(()=>{}); } }
+        function toggleMute() { isMuted = !isMuted; const b = document.getElementById('sound-toggle'); b.innerText = isMuted ? "OFF" : "ON"; b.style.background = isMuted ? "#555" : "var(--red)"; playClick(); }
         function showRules() { document.getElementById('rules-modal').style.display = 'flex'; }
         function closeRules() { document.getElementById('rules-modal').style.display = 'none'; }
 
@@ -194,7 +197,7 @@
         }
 
         function loadLevel(lv) {
-            isPlaying = false;
+            isPlaying = false; document.getElementById('loading-overlay').style.display = 'flex';
             const container = document.getElementById('hazard-container'); container.innerHTML = '';
             const img = document.getElementById('main-img');
             img.src = `images/${levelsData[lv-1].img}?v=${Date.now()}`;
@@ -204,7 +207,7 @@
                     const div = document.createElement('div');
                     div.className = 'hazard'; div.style.top = p.t + '%'; div.style.left = p.l + '%';
                     div.onclick = (e) => { e.stopPropagation(); if(!isPlaying || div.classList.contains('found')) return;
-                        if(!isMuted) { const s = document.getElementById('snd-hit'); s.currentTime = 0; s.play(); }
+                        if(!isMuted) document.getElementById('snd-hit').play();
                         div.classList.add('found'); foundInLevel++;
                         if(foundInLevel === 4) { 
                             totalScore += (timeLeft * 10); 
@@ -214,6 +217,7 @@
                     };
                     container.appendChild(div);
                 });
+                document.getElementById('loading-overlay').style.display = 'none';
                 isPlaying = true; foundInLevel = 0; timeLeft = 60;
                 document.getElementById('current-lv').innerText = lv;
             };
@@ -223,14 +227,13 @@
 
         document.getElementById('viewport').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
-            
-            // เอฟเฟกต์ -10s
+            // แจ้งเตือน -10
             const p = document.createElement('div');
             p.className = 'penalty-text'; p.innerText = '-10s';
             p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
             document.body.appendChild(p); setTimeout(() => p.remove(), 800);
 
-            if(!isMuted) { const s = document.getElementById('snd-miss'); s.currentTime = 0; s.play(); }
+            if(!isMuted) document.getElementById('snd-miss').play();
             timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
             document.getElementById('timer').innerText = timeLeft;
             const gi = document.getElementById('game-interface');
@@ -240,7 +243,7 @@
 
         function gameOver(win) {
             isPlaying = false; clearInterval(timerObj);
-            if(win && !isMuted) { const s = document.getElementById('snd-win'); s.currentTime = 0; s.play(); }
+            if(win && !isMuted) document.getElementById('snd-win').play();
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
             const t = translations[currentLang];
@@ -250,14 +253,8 @@
             document.getElementById('rank-display').innerText = t.rank + (fr ? fr.t : '');
         }
 
-        // ปลดล็อกเสียงครั้งแรก
-        document.addEventListener('click', function unlock() {
-            ['snd-click', 'snd-hit', 'snd-miss', 'snd-win'].forEach(id => {
-                const s = document.getElementById(id);
-                s.play().then(() => { s.pause(); s.currentTime = 0; }).catch(e => {});
-            });
-            document.removeEventListener('click', unlock);
-        }, { once: true });
+        const unlock = () => { if(!isMuted) document.getElementById('snd-click').play().catch(()=>{}); document.removeEventListener('click', unlock); document.removeEventListener('touchstart', unlock); };
+        document.addEventListener('click', unlock); document.addEventListener('touchstart', unlock);
     </script>
 </body>
 </html>
