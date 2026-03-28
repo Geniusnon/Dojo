@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - FULL RECOVERY</title>
+    <title>LCB1 HAZARD HUNTER - ULTIMATE</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
-        :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; --white: #fff; }
+        :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; --white: #fff; --green: #00e676; }
         * { box-sizing: border-box; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
         
         body, html { 
@@ -16,7 +16,7 @@
             background-image: repeating-linear-gradient(45deg, rgba(255,222,3,0.05) 0px, rgba(255,222,3,0.05) 2px, transparent 2px, transparent 10px);
         }
 
-        /* --- Rotate Warning (ล็อคแนวนอน) --- */
+        /* --- Rotate Warning --- */
         #rotate-warning {
             position: fixed; inset: 0; background: var(--blue); color: var(--white); z-index: 200000;
             display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
@@ -26,8 +26,9 @@
             #game-interface, .screen, #mascot-ui, #sound-toggle { display: none !important; }
         }
 
-        /* --- Mascot --- */
+        /* --- Mascot & Sound --- */
         #mascot-ui { position: fixed; top: 5px; right: 15px; width: 130px; height: auto; z-index: 5000; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.5)); }
+        #sound-toggle { position: fixed; bottom: 15px; left: 15px; width: 70px; height: 55px; background: var(--red); color: var(--white); border: 4px solid var(--black); border-radius: 12px; display: flex; justify-content: center; align-items: center; z-index: 9000; cursor: pointer; font-family: 'Bangers'; font-size: 24px; box-shadow: 4px 4px 0px var(--black); outline: 4px solid var(--white); }
 
         /* --- UI Screens --- */
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); clip-path: polygon(0 0, 100% 1%, 100% 100%, 0 99%); }
@@ -35,13 +36,10 @@
         .comic-title { font-family: 'Bangers'; font-size: 11vh; color: var(--blue); text-shadow: 4px 4px 0px #fff, 8px 8px 0px var(--black); margin-bottom: 2vh; transform: rotate(-2deg); }
         .box { background: var(--white); padding: 25px; border: 4px solid var(--black); box-shadow: 8px 8px 0px var(--black); width: 90%; max-width: 500px; text-align: center; position: relative; border-radius: 5px; outline: 5px solid var(--white); }
 
-        /* --- Rules Modal --- */
-        #rules-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; justify-content: center; align-items: center; }
-        .rules-box { background: var(--white); width: 85%; max-width: 480px; padding: 25px; border: 5px solid var(--black); box-shadow: 10px 10px 0px var(--black); border-radius: 5px; outline: 6px solid var(--white); }
+        /* --- Input Fields --- */
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 3px solid var(--black); font-family: 'Itim'; font-size: 18px; border-radius: 5px; }
 
-        /* --- Game Over Layout --- */
-        #game-over-screen .box { display: flex; flex-direction: row; align-items: center; justify-content: space-around; max-width: 550px; }
-        
+        /* --- Buttons --- */
         .btn-row { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
         .btn { flex: 1; background: var(--red); color: var(--white); padding: 12px; font-family: 'Bangers'; font-size: 24px; border: 4px solid var(--black); cursor: pointer; box-shadow: 4px 4px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; }
         .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px var(--black); }
@@ -50,32 +48,30 @@
 
         /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 1500; }
-        #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 1510; }
-        .image-container { position: relative; height: 96%; border: 8px solid var(--black); box-shadow: 0 0 30px rgba(0,0,0,0.7); outline: 8px solid var(--white); }
+        #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 1510; background: #222; }
+        .image-container { position: relative; height: 90%; border: 6px solid var(--white); box-shadow: 0 0 30px rgba(0,0,0,0.7); outline: 6px solid var(--black); }
         #main-img { height: 100%; width: auto; display: block; object-fit: contain; }
+
+        /* --- HUD --- */
         .side-bar-left { position: absolute; top: 10px; left: 10px; background: var(--white); border: 3px solid var(--black); border-radius: 5px; display: flex; padding: 5px 15px; gap: 20px; z-index: 1520; box-shadow: 4px 4px 0px var(--black); }
-        .side-item { font-family: 'Bangers'; font-size: 16px; color: #000; }
-        .side-item span { font-size: 20px; color: var(--blue); margin-left: 5px; }
-        #character-area { position: absolute; bottom: 0; right: 0; width: 100px; z-index: 1520; pointer-events: none; }
-        .big-char { width: 100%; height: auto; }
+        .side-item { font-family: 'Bangers'; font-size: 18px; color: #000; }
+        .side-item span { font-size: 22px; color: var(--blue); margin-left: 5px; }
 
-        /* --- ปรับแต่งจุดแจ้งเตือน -10 --- */
-        .penalty-text {
-            position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 40px;
-            pointer-events: none; z-index: 2000; text-shadow: 2px 2px 0px var(--black);
-            animation: floatUp 0.8s ease-out forwards;
-        }
+        /* --- Timer Bar (New) --- */
+        #timer-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 30%; height: 20px; background: rgba(0,0,0,0.5); border: 3px solid var(--black); border-radius: 10px; overflow: hidden; z-index: 2000; }
+        #timer-bar { width: 100%; height: 100%; background: var(--green); transition: width 0.1s linear; }
+
+        /* --- Hazards & Penalties --- */
+        .hazard { position: absolute; width: 12vh; height: 12vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 4px solid transparent; }
+        .hazard.found { border: 6px solid var(--green) !important; background: rgba(0, 255, 0, 0.3) !important; box-shadow: 0 0 20px var(--green); }
+        .penalty-text { position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 40px; pointer-events: none; z-index: 2000; text-shadow: 2px 2px 0px var(--black); animation: floatUp 0.8s ease-out forwards; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
+        
+        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-5px, 5px); } 50% { transform: translate(5px, -5px); } 75% { transform: translate(-5px, -5px); } }
+        .shake-effect { animation: shake 0.3s ease-in-out; }
 
-        /* --- จุดอันตราย --- */
-        .hazard { position: absolute; width: 12vh; height: 12vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 4px solid #ff0000; background: rgba(255, 0, 0, 0.2); }
-        .hazard.found { border: 6px solid #00ff00 !important; background: rgba(0, 255, 0, 0.4) !important; box-shadow: 0 0 20px #00ff00; }
-
-        /* --- อื่นๆ --- */
-        #sound-toggle { position: fixed; bottom: 15px; left: 15px; width: 70px; height: 55px; background: var(--red); color: var(--white); border: 4px solid var(--black); border-radius: 12px; display: flex; justify-content: center; align-items: center; z-index: 9000; cursor: pointer; font-family: 'Bangers'; font-size: 24px; box-shadow: 4px 4px 0px var(--black); outline: 4px solid var(--white); }
-        #loading-overlay { position: fixed; inset: 0; background: var(--yellow); z-index: 11000; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 100% { transform: translate(0px, 0px) rotate(0deg); } }
-        .shake-effect { animation: shake 0.3s !important; }
+        /* --- Modal --- */
+        #rules-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; justify-content: center; align-items: center; }
     </style>
 </head>
 <body>
@@ -89,19 +85,8 @@
     <img id="mascot-ui" src="images/mascot.png" alt="Mascot">
 
     <div id="rotate-warning">
-        <div style="font-size: 70px; animation: shake 2s infinite;">🔄</div>
-        <h2 style="font-family:'Bangers'; font-size: 40px; margin: 15px 0;">PLEASE ROTATE!</h2>
-        <h3 style="font-family:'Itim'; margin: 0;">กรุณาหมุนโทรศัพท์เพื่อเล่น</h3>
-    </div>
-
-    <div id="loading-overlay"><h2 style="font-family:'Bangers'">LOADING...</h2></div>
-
-    <div id="rules-modal">
-        <div class="rules-box">
-            <h2 id="rules-title" style="font-family:'Bangers'; color:var(--blue); margin:0; font-size: 40px;">RULES</h2>
-            <p id="rules-text" style="font-size: 20px; line-height: 1.6; margin: 15px 0; color:#333;"></p>
-            <div class="btn" onclick="playClick(); closeRules()">OK!</div>
-        </div>
+        <div style="font-size: 70px;">🔄</div>
+        <h2 style="font-family:'Bangers'; margin-top:10px;">PLEASE ROTATE TO PLAY</h2>
     </div>
 
     <div id="lang-screen" class="screen active-screen">
@@ -114,53 +99,57 @@
 
     <div id="login-screen" class="screen">
         <div class="box">
-            <input type="text" id="empName" placeholder="">
-            <input type="text" id="empID" placeholder="">
+            <input type="text" id="empName" placeholder="ชื่อพนักงาน">
+            <input type="text" id="empID" placeholder="รหัสพนักงาน">
             <div class="btn-row">
-                <div class="btn" onclick="playClick(); startGame()" id="start-btn">เริ่ม / START</div>
+                <div class="btn" onclick="playClick(); startGame()" id="start-btn">START</div>
                 <div class="btn btn-gray" onclick="playClick(); showRules()" id="rules-btn">RULES</div>
             </div>
         </div>
     </div>
 
+    <div id="rules-modal">
+        <div class="box">
+            <h2 id="rules-title" style="font-family:'Bangers'; color:var(--blue); font-size: 35px; margin:0;">RULES</h2>
+            <p id="rules-text" style="font-size: 18px; line-height: 1.5; margin: 15px 0;"></p>
+            <div class="btn" onclick="playClick(); closeRules()">OK!</div>
+        </div>
+    </div>
+
     <div id="game-interface">
+        <div id="timer-container"><div id="timer-bar"></div></div>
+        <div class="side-bar-left">
+            <div class="side-item">LV <span id="current-lv">1</span></div>
+            <div class="side-item">SCORE <span id="total-score">0</span></div>
+        </div>
         <div id="viewport">
             <div class="image-container" id="img-box">
                 <img id="main-img" src="">
                 <div id="hazard-container"></div>
-                <div id="effect-layer" style="position:absolute; inset:0; pointer-events:none;"></div>
             </div>
         </div>
-        <div class="side-bar-left">
-            <div class="side-item">LV<span id="current-lv">1</span></div>
-            <div class="side-item"><span id="ui-time">TIME</span><span id="timer" style="color:red">60</span></div>
-            <div class="side-item"><span id="ui-score">SCORE</span><span id="total-score">0</span></div>
-        </div>
-        <div id="character-area"><img src="images/character.png" class="big-char"></div>
     </div>
 
     <div id="game-over-screen" class="screen">
         <div class="box">
-            <div class="go-content">
-                <h2 id="go-msg" style="font-family:'Bangers'; font-size: 38px; margin:0;"></h2>
-                <div id="rank-display" style="font-family:'Bangers'; font-size: 24px; margin: 5px 0;"></div>
-                <h1 id="go-score" style="font-size: 55px; color: var(--blue); font-family: 'Bangers'; margin: 0;">0</h1>
-            </div>
-            <div class="go-actions"><div class="btn" onclick="playClick(); location.reload()">HOME</div></div>
+            <h2 id="go-msg" style="font-family:'Bangers'; font-size: 40px; margin:0;">SUCCESS!</h2>
+            <div id="rank-display" style="font-family:'Bangers'; font-size: 24px; color:var(--blue);">RANK: MASTER</div>
+            <h1 id="go-score" style="font-size: 60px; margin: 10px 0;">0</h1>
+            <div class="btn" onclick="location.reload()">PLAY AGAIN</div>
         </div>
     </div>
 
     <script>
         const translations = {
             th: { 
-                pl: "ชื่อพนักงาน", id: "รหัสพนักงาน", st: "เริ่ม", rb: "กติกา", time: "เวลา", score: "แต้ม", win: "สำเร็จ!", lose: "เวลาหมด!", rank: "ฉายา: ",
-                rt: "กติกาการเล่น", rText: "1. ค้นหาจุดอันตราย 4 จุดในภาพ<br>2. จิ้มที่จุดเพื่อรับแต้ม<br>3. จิ้มผิดหักเวลา 10 วินาที!<br>4. แต้มพิเศษจากเวลาที่เหลือ",
-                ranks: [{m:1800, t:"ปรมาจารย์ 👑"}, {m:1200, t:"นักล่า 🛡️"}, {m:600, t:"ฝึกหัด 🏹"}, {m:0, t:"น้องใหม่ 🔍"}]
+                pl: "ชื่อพนักงาน", id: "รหัสพนักงาน", st: "เริ่มเกม", rb: "กติกา", win: "สำเร็จ!", lose: "เวลาหมด!", rank: "ฉายา: ",
+                rt: "กติกาการเล่น", rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ<br>2. จิ้มถูกได้แต้มโบนัสตามเวลา<br>3. จิ้มผิดหักเวลาในแถบพลัง!<br>4. อย่าให้แถบเวลาหมดเด็ดขาด",
+                ranks: [{m:2500, t:"ปรมาจารย์ 👑"}, {m:1500, t:"นักล่า 🛡️"}, {m:0, t:"มือใหม่ 🔍"}]
             },
             en: { 
-                pl: "Name", id: "ID", st: "START", rb: "RULES", time: "TIME", score: "SCORE", win: "CLEAR!", lose: "TIMEOUT!", rank: "RANK: ",
-                rt: "HOW TO PLAY", rText: "1. Find 4 hazards in each image.<br>2. Tap hazards to score points.<br>3. Wrong tap reduces 10s!<br>4. Bonus points for remaining time.",
-                ranks: [{m:1800, t:"Master 👑"}, {m:1200, t:"Elite 🛡️"}, {m:600, t:"Junior 🏹"}, {m:0, t:"Rookie 🔍"}]
+                pl: "Name", id: "ID", st: "START", rb: "RULES", win: "CLEAR!", lose: "TIMEOUT!", rank: "RANK: ",
+                rt: "HOW TO PLAY", rText: "1. Find 4 hazards per image.<br>2. Correct tap gives time bonus.<br>3. Wrong tap reduces your time bar!<br>4. Don't let the time bar run out.",
+                ranks: [{m:2500, t:"Master 👑"}, {m:1500, t:"Elite 🛡️"}, {m:0, t:"Rookie 🔍"}]
             }
         };
 
@@ -172,89 +161,130 @@
             { img: "level5.jpg", points: [{t:73, l:96}, {t:54, l:55}, {t:37, l:55}, {t:59, l:99}] }
         ];
 
-        let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false, isMuted = false;
+        let currentLang = 'th', currentLevel = 0, totalScore = 0, timeLeft = 100, foundInLevel = 0, isPlaying = false, isMuted = false, timerObj;
 
-        function playClick() { if(!isMuted) { const s = document.getElementById('snd-click'); s.currentTime = 0; s.play().catch(()=>{}); } }
-        function toggleMute() { isMuted = !isMuted; const b = document.getElementById('sound-toggle'); b.innerText = isMuted ? "OFF" : "ON"; b.style.background = isMuted ? "#555" : "var(--red)"; playClick(); }
+        function playClick() { if(!isMuted) { const s = document.getElementById('snd-click'); s.currentTime=0; s.play().catch(()=>{}); } }
+        function toggleMute() { isMuted = !isMuted; const b = document.getElementById('sound-toggle'); b.innerText = isMuted ? "OFF" : "ON"; b.style.background = isMuted ? "#555" : "var(--red)"; }
         function showRules() { document.getElementById('rules-modal').style.display = 'flex'; }
         function closeRules() { document.getElementById('rules-modal').style.display = 'none'; }
 
         function selectLang(l) {
             currentLang = l; const t = translations[l];
-            document.getElementById('empName').placeholder = t.pl; document.getElementById('empID').placeholder = t.id;
-            document.getElementById('start-btn').innerText = t.st; document.getElementById('rules-btn').innerText = t.rb;
-            document.getElementById('ui-time').innerText = t.time; document.getElementById('ui-score').innerText = t.score;
-            document.getElementById('rules-title').innerText = t.rt; document.getElementById('rules-text').innerHTML = t.rText;
-            document.getElementById('lang-screen').classList.remove('active-screen'); document.getElementById('login-screen').classList.add('active-screen');
+            document.getElementById('empName').placeholder = t.pl;
+            document.getElementById('empID').placeholder = t.id;
+            document.getElementById('start-btn').innerText = t.st;
+            document.getElementById('rules-btn').innerText = t.rb;
+            document.getElementById('rules-title').innerText = t.rt;
+            document.getElementById('rules-text').innerHTML = t.rText;
+            document.getElementById('lang-screen').classList.remove('active-screen');
+            document.getElementById('login-screen').classList.add('active-screen');
         }
 
         function startGame() {
-            if(!document.getElementById('empName').value || !document.getElementById('empID').value) return alert("กรุณากรอกข้อมูล");
+            if(!document.getElementById('empName').value || !document.getElementById('empID').value) return alert("กรุณากรอกข้อมูล / Please enter info");
             document.getElementById('login-screen').classList.remove('active-screen');
-            document.getElementById('mascot-ui').style.display = 'none'; 
+            document.getElementById('mascot-ui').style.display = 'none';
             document.getElementById('game-interface').style.display = 'block';
-            loadLevel(1); startTimer();
+            loadLevel(0);
+            startGlobalTimer();
         }
 
-        function loadLevel(lv) {
-            isPlaying = false; document.getElementById('loading-overlay').style.display = 'flex';
-            const container = document.getElementById('hazard-container'); container.innerHTML = '';
+        function loadLevel(lvIndex) {
+            if(lvIndex >= levelsData.length) return gameOver(true);
+            
+            isPlaying = false;
+            currentLevel = lvIndex;
+            foundInLevel = 0;
+            document.getElementById('current-lv').innerText = lvIndex + 1;
+            
+            const container = document.getElementById('hazard-container');
+            container.innerHTML = '';
+            
             const img = document.getElementById('main-img');
-            img.src = `images/${levelsData[lv-1].img}?v=${Date.now()}`;
+            img.src = `images/${levelsData[lvIndex].img}`;
+            
             img.onload = () => {
-                document.getElementById('img-box').style.width = img.clientWidth + "px";
-                levelsData[lv-1].points.forEach(p => {
-                    const div = document.createElement('div');
-                    div.className = 'hazard'; div.style.top = p.t + '%'; div.style.left = p.l + '%';
-                    div.onclick = (e) => { e.stopPropagation(); if(!isPlaying || div.classList.contains('found')) return;
-                        if(!isMuted) document.getElementById('snd-hit').play();
-                        div.classList.add('found'); foundInLevel++;
-                        if(foundInLevel === 4) { 
-                            totalScore += (timeLeft * 10); 
-                            document.getElementById('total-score').innerText = totalScore;
-                            if(currentLevel < 5) { setTimeout(()=>loadLevel(++currentLevel), 600); } else { gameOver(true); }
-                        }
+                levelsData[lvIndex].points.forEach(p => {
+                    const d = document.createElement('div');
+                    d.className = 'hazard';
+                    d.style.top = p.t + '%'; d.style.left = p.l + '%';
+                    d.onclick = (e) => {
+                        e.stopPropagation();
+                        if(!isPlaying || d.classList.contains('found')) return;
+                        hitHazard(d);
                     };
-                    container.appendChild(div);
+                    container.appendChild(d);
                 });
-                document.getElementById('loading-overlay').style.display = 'none';
-                isPlaying = true; foundInLevel = 0; timeLeft = 60;
-                document.getElementById('current-lv').innerText = lv;
+                isPlaying = true;
             };
         }
 
-        function startTimer() { if(timerObj) clearInterval(timerObj); timerObj = setInterval(() => { if(isPlaying) { timeLeft--; document.getElementById('timer').innerText = timeLeft; if(timeLeft <= 0) gameOver(false); } }, 1000); }
+        function hitHazard(el) {
+            if(!isMuted) document.getElementById('snd-hit').play();
+            el.classList.add('found');
+            foundInLevel++;
+            totalScore += Math.floor(timeLeft * 2); 
+            document.getElementById('total-score').innerText = totalScore;
 
+            if(foundInLevel === 4) {
+                isPlaying = false;
+                timeLeft = Math.min(timeLeft + 20, 100); // แถมเวลาเมื่อผ่านด่าน
+                setTimeout(() => loadLevel(currentLevel + 1), 600);
+            }
+        }
+
+        function startGlobalTimer() {
+            timerObj = setInterval(() => {
+                if(isPlaying) {
+                    timeLeft -= 0.4; // ความเร็วแถบเวลาลดลง
+                    const bar = document.getElementById('timer-bar');
+                    bar.style.width = timeLeft + '%';
+                    
+                    if(timeLeft > 50) bar.style.background = "var(--green)";
+                    else if(timeLeft > 20) bar.style.background = "var(--yellow)";
+                    else bar.style.background = "var(--red)";
+
+                    if(timeLeft <= 0) gameOver(false);
+                }
+            }, 100);
+        }
+
+        // จิ้มพลาด (Penalties)
         document.getElementById('viewport').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
-            // แจ้งเตือน -10
-            const p = document.createElement('div');
-            p.className = 'penalty-text'; p.innerText = '-10s';
-            p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
-            document.body.appendChild(p); setTimeout(() => p.remove(), 800);
-
+            
             if(!isMuted) document.getElementById('snd-miss').play();
-            timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
-            document.getElementById('timer').innerText = timeLeft;
+            timeLeft -= 10; // หักพลังงาน
+            if(window.navigator.vibrate) window.navigator.vibrate(100);
+
+            // Effect -10
+            const p = document.createElement('div');
+            p.className = 'penalty-text'; p.innerText = '-10%';
+            p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 800);
+
+            // Shake
             const gi = document.getElementById('game-interface');
-            gi.classList.add('shake-effect'); setTimeout(() => gi.classList.remove('shake-effect'), 300);
-            if(timeLeft <= 0) gameOver(false);
+            gi.classList.add('shake-effect');
+            setTimeout(() => gi.classList.remove('shake-effect'), 300);
         };
 
         function gameOver(win) {
-            isPlaying = false; clearInterval(timerObj);
+            isPlaying = false;
+            clearInterval(timerObj);
             if(win && !isMuted) document.getElementById('snd-win').play();
+            
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
+            
             const t = translations[currentLang];
             document.getElementById('go-msg').innerText = win ? t.win : t.lose;
             document.getElementById('go-score').innerText = totalScore;
-            let fr = t.ranks.find(r => totalScore >= r.m);
-            document.getElementById('rank-display').innerText = t.rank + (fr ? fr.t : '');
+            
+            let rank = t.ranks.find(r => totalScore >= r.m);
+            document.getElementById('rank-display').innerText = t.rank + (rank ? rank.t : "");
         }
-
-        const unlock = () => { if(!isMuted) document.getElementById('snd-click').play().catch(()=>{}); document.removeEventListener('click', unlock); document.removeEventListener('touchstart', unlock); };
-        document.addEventListener('click', unlock); document.addEventListener('touchstart', unlock);
     </script>
 </body>
 </html>
