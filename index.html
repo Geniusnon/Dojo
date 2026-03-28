@@ -28,15 +28,16 @@
         .active-screen { display: flex; }
         
         #lang-screen { justify-content: center; padding-top: 0; }
-        .lang-mascot { width: 220px; height: auto; margin-bottom: 5px; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1)); }
+        /* Mascot เล็กลง 30% ตามสั่ง */
+        .lang-mascot { width: 154px; height: auto; margin-bottom: 5px; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1)); }
 
         .comic-title { font-family: 'Bangers'; font-size: 8vh; color: var(--blue); text-shadow: 3px 3px 0px #fff, 6px 6px 0px var(--black); margin-bottom: 15px; transform: rotate(-1deg); }
-        .box { background: var(--white); padding: 15px 20px; border: 3px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 380px; text-align: center; position: relative; border-radius: 5px; outline: 4px solid var(--white); }
+        .box { background: var(--white); padding: 15px 20px; border: 3px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 450px; text-align: center; position: relative; border-radius: 5px; outline: 4px solid var(--white); }
 
         /* --- Inputs & Buttons --- */
         input { width: 100%; padding: 8px 12px; margin: 6px 0; border: 2.5px solid var(--black); font-family: 'Itim'; font-size: 16px; border-radius: 5px; }
         .btn-row { display: flex; gap: 8px; margin-top: 8px; width: 100%; justify-content: center; }
-        .btn { flex: 1; max-width: 150px; background: var(--red); color: var(--white); padding: 8px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; }
+        .btn { display: inline-block; width: 100%; max-width: 200px; background: var(--red); color: var(--white); padding: 10px; font-family: 'Bangers'; font-size: 22px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; margin: 10px auto 0 auto; }
         .btn:active { transform: translate(1.5px, 1.5px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
         .btn-gray { background: #666; }
@@ -85,8 +86,8 @@
         <img src="images/mascot.png" class="lang-mascot" alt="Mascot">
         <div class="comic-title">HAZARD HUNTER</div>
         <div class="btn-row" style="width: 100%; max-width: 320px;">
-            <div class="btn" onclick="selectLang('th')">ไทย</div>
-            <div class="btn btn-blue" onclick="selectLang('en')">EN</div>
+            <div class="btn" onclick="selectLang('th')" style="margin:0">ไทย</div>
+            <div class="btn btn-blue" onclick="selectLang('en')" style="margin:0">EN</div>
         </div>
     </div>
 
@@ -95,8 +96,8 @@
             <input type="text" id="empName" placeholder="">
             <input type="text" id="empID" placeholder="">
             <div class="btn-row">
-                <div class="btn" onclick="startGame()" id="start-btn">START</div>
-                <div class="btn btn-gray" onclick="showRules()" id="rules-btn">RULES</div>
+                <div class="btn" onclick="startGame()" id="start-btn" style="margin:0">START</div>
+                <div class="btn btn-gray" onclick="showRules()" id="rules-btn" style="margin:0">RULES</div>
             </div>
         </div>
     </div>
@@ -127,9 +128,11 @@
     <div id="game-over-screen" class="screen">
         <div class="box">
             <h2 id="go-msg" style="font-family:'Bangers'; font-size: 32px; margin:0;">SUCCESS!</h2>
-            <div id="rank-display" style="font-family:'Bangers'; font-size: 20px; color:var(--blue);">RANK: MASTER</div>
-            <h1 id="go-score" style="font-size: 45px; margin: 8px 0;">0</h1>
-            <div class="btn" onclick="location.reload()" id="replay-btn" style="max-width: 200px;">PLAY AGAIN</div>
+            <div id="rank-display" style="font-family:'Bangers'; font-size: 20px; color:var(--blue); margin-top: 5px;">RANK: MASTER</div>
+            <h1 id="go-score" style="font-size: 50px; margin: 10px 0;">0</h1>
+            <div style="width: 100%; text-align: center;">
+                <div class="btn" onclick="location.reload()" id="replay-btn">PLAY AGAIN</div>
+            </div>
         </div>
     </div>
 
@@ -137,7 +140,8 @@
         const translations = {
             th: { 
                 pl: "ชื่อพนักงาน", id: "รหัสพนักงาน", st: "เริ่มเกม", rb: "กติกา", win: "สำเร็จ!", lose: "เวลาหมด!", rank: "ฉายา: ",
-                rt: "กติกาการเล่น", rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ<br>2. แต่ละด่านมีเวลา 60 วินาที<br>3. จิ้มผิดหักเวลา 10 วินาที!<br>4. อย่าให้เวลาหมดเด็ดขาด",
+                rt: "กติกาการเล่น", 
+                rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ (มีทั้งหมด 5 ด่าน)<br>2. รับคะแนนพื้นฐานทุกครั้งที่หาเจอ + โบนัสจากเวลาที่เหลือ<br>3. ระวัง! จิ้มผิดหักเวลา 10 วินาที (คะแนนโบนัสจะลดลง)<br>4. สะสมคะแนนเพื่อชิงฉายา 'ปรมาจารย์ความปลอดภัย'",
                 ok: "ตกลง!", rotate: "กรุณาหมุนโทรศัพท์", alert: "กรุณากรอกข้อมูลให้ครบถ้วน", replay: "เล่นอีกครั้ง",
                 hud_lv: "ด่าน", hud_score: "คะแนน", hud_time: "เวลา",
                 ranks: [
@@ -150,7 +154,8 @@
             },
             en: { 
                 pl: "Name", id: "ID", st: "START", rb: "RULES", win: "CLEAR!", lose: "TIMEOUT!", rank: "RANK: ",
-                rt: "HOW TO PLAY", rText: "1. Find 4 hazards per image.<br>2. 60 seconds per level.<br>3. Wrong tap reduces 10 seconds!<br>4. Don't let the timer reach zero.",
+                rt: "HOW TO PLAY", 
+                rText: "1. Find 4 hazards per image (5 levels total).<br>2. Get base score for each find + time bonus!<br>3. Careful! Wrong tap costs 10s (reduces your bonus).<br>4. Collect points to reach 'Safety Grandmaster' rank.",
                 ok: "OK!", rotate: "PLEASE ROTATE PHONE", alert: "Please fill in all fields", replay: "PLAY AGAIN",
                 hud_lv: "LV", hud_score: "SCORE", hud_time: "TIME",
                 ranks: [
@@ -233,7 +238,7 @@
             el.classList.add('found'); 
             foundInLevel++;
             
-            // สูตรคะแนนใหม่: 125 คะแนนฐาน + (เวลาวินาทีที่เหลือ x 2)
+            // สูตรคะแนน: ฐาน 125 + โบนัสเวลา (วิที่เหลือ x 2)
             totalScore += 125 + Math.floor(timeLeft * 2); 
             document.getElementById('total-score').innerText = totalScore;
 
@@ -294,7 +299,6 @@
             document.getElementById('go-msg').innerText = win ? t.win : t.lose;
             document.getElementById('go-score').innerText = totalScore;
             
-            // ค้นหา Rank จากคะแนนที่ได้ (เรียงจากมากไปน้อย)
             let rank = t.ranks.find(r => totalScore >= r.m);
             document.getElementById('rank-display').innerText = t.rank + (rank ? rank.t : t.ranks[t.ranks.length-1].t);
         }
