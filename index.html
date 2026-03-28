@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - EASY TAP</title>
+    <title>LCB1 HAZARD HUNTER - PRO EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -11,10 +11,19 @@
         
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100svh; 
-            background: var(--black); 
-            font-family: 'Itim', cursive; 
+            background: var(--black); font-family: 'Itim', cursive; 
             overflow: hidden; position: fixed; 
         }
+
+        /* --- [NEW] Animation: สั่นหน้าจอเวลาจิ้มผิด --- */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
+        }
+        .shake-effect { animation: shake 0.3s !important; }
 
         /* --- Rotate Warning --- */
         #rotate-warning {
@@ -36,82 +45,40 @@
         .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
 
-        /* --- Game Interface --- */
-        #game-interface { 
-            display: none; width: 100%; height: 100%; 
-            position: relative; 
-            background: var(--black); z-index: 1500; 
-        }
+        /* --- Game Interface (รักษา Layout เต็มจอของคุณไว้) --- */
+        #game-interface { display: none; width: 100%; height: 100%; position: relative; background: var(--black); z-index: 1500; }
 
-        /* Viewport เต็มจอ */
-        #viewport { 
-            position: absolute; inset: 0; 
-            display: flex; justify-content: center; align-items: center; 
-            overflow-x: auto; overflow-y: hidden; 
-            -webkit-overflow-scrolling: touch; z-index: 1510;
-        }
+        #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow-x: auto; overflow-y: hidden; z-index: 1510; }
         .image-container { position: relative; height: 100%; display: flex; align-items: center; }
-        #main-img { 
-            height: 100%; width: auto; 
-            object-fit: contain; 
-            display: block; 
-        }
+        #main-img { height: 100%; width: auto; object-fit: contain; display: block; }
 
-        /* Stats Bar แบบลอยทับ */
         .side-bar-left { 
-            position: absolute; top: 10px; left: 10px; 
-            width: auto; height: auto; 
-            background: rgba(255, 255, 255, 0.85); 
-            border: 3px solid var(--black); 
-            border-radius: 10px;
-            display: flex; flex-direction: row; 
-            justify-content: center; align-items: center; 
-            padding: 5px 10px; gap: 15px; z-index: 1520; 
+            position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.85); 
+            border: 3px solid var(--black); border-radius: 10px; display: flex; padding: 5px 10px; gap: 15px; z-index: 1520; 
         }
         .side-item { text-align: center; font-family: 'Bangers'; font-size: 14px; line-height: 1; color: var(--black); }
         .side-item span { display: inline; font-size: 18px; color: var(--blue); margin-left: 3px; }
-        .side-item.time span { color: var(--red); }
 
-        /* Character แบบลอยทับ */
-        #character-area { 
-            position: absolute; bottom: 0; right: 0; 
-            width: 120px; height: auto; 
-            background: transparent; 
-            border: none; 
-            display: flex; justify-content: center; align-items: flex-end; 
-            z-index: 1520; padding: 0;
-        }
-        .big-char {
-            width: 100%; height: auto; 
-            object-fit: contain;
-            filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)); 
-        }
+        #character-area { position: absolute; bottom: 0; right: 0; width: 120px; z-index: 1520; }
+        .big-char { width: 100%; height: auto; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)); }
 
-        /* --- แก้ไขใหม่: ขยายขนาดวงกลมให้ใหญ่ขึ้น 2 เท่า --- */
-        .hazard { 
-            position: absolute; 
-            width: 16vh;  /* ขยายจาก 8vh เป็น 16vh */
-            height: 16vh; /* ขยายจาก 8vh เป็น 16vh */
-            transform: translate(-50%, -50%); 
-            z-index: 100; 
-            border-radius: 50%; 
-            border: 4px solid transparent; /* ซ่อนขอบไว้ */
-            background: rgba(255, 0, 0, 0); /* ซ่อนสีพื้นหลังไว้ */
-        }
-        
-        /* โชว์ขึ้นมาเป็นสีเขียวเมื่อหาเจอ */
-        .hazard.found { 
-            border-color: #00ff00 !important; 
-            background: rgba(0, 255, 0, 0.4) !important; 
-        }
+        /* Hazard: วงกลมใหญ่ 16vh ตามที่คุณต้องการ */
+        .hazard { position: absolute; width: 16vh; height: 16vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 4px solid transparent; background: rgba(255, 0, 0, 0); }
+        .hazard.found { border-color: #00ff00 !important; background: rgba(0, 255, 0, 0.4) !important; }
 
-        .penalty-text { position: fixed; color: #ff0000; font-family: 'Bangers'; font-size: 45px; z-index: 9999; text-shadow: 2px 2px 0px #000; pointer-events: none; animation: fadeUp 0.8s forwards; }
+        /* Effect คะแนนและเวลาเด้ง */
+        .effect-text { position: fixed; font-family: 'Bangers'; font-size: 45px; pointer-events: none; z-index: 9999; text-shadow: 2px 2px 0px #000; animation: fadeUp 0.8s forwards; }
         @keyframes fadeUp { 0% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -150%); } }
 
+        #rank-display { font-family: 'Bangers'; font-size: 24px; color: var(--red); margin-top: 10px; }
         #loading-overlay { position: fixed; inset: 0; background: var(--yellow); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
     </style>
 </head>
 <body>
+
+    <audio id="snd-hit" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
+    <audio id="snd-miss" src="https://assets.mixkit.co/active_storage/sfx/2021/2021-preview.mp3"></audio>
+    <audio id="snd-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
 
     <div id="rotate-warning">
         <div style="font-size: 60px;">🔄</div>
@@ -160,7 +127,7 @@
 
         <div class="side-bar-left">
             <div class="side-item">LV<span id="current-lv">1</span></div>
-            <div class="side-item time">TIME<span id="timer">60</span></div>
+            <div class="side-item time">TIME<span id="timer" style="color:red">60</span></div>
             <div class="side-item">SCORE<span id="total-score">0</span></div>
         </div>
 
@@ -172,6 +139,7 @@
     <div id="game-over-screen" class="screen">
         <div class="box">
             <h2 id="go-msg" style="margin:0; font-family:'Bangers'; font-size: 30px;"></h2>
+            <div id="rank-display">RANK: ???</div>
             <div style="font-size: 18px; margin-top: 10px;">TOTAL SCORE</div>
             <h1 id="go-score" style="font-size: 60px; color: var(--blue); font-family: 'Bangers'; margin: 5px 0;">0</h1>
             <div class="btn" onclick="location.reload()" style="max-width: 150px; margin: 10px auto 0;">HOME</div>
@@ -200,11 +168,6 @@
             document.getElementById('login-screen').classList.add('active-screen'); 
         }
 
-        function backToLang() {
-            document.getElementById('login-screen').classList.remove('active-screen');
-            document.getElementById('lang-screen').classList.add('active-screen');
-        }
-
         function updateTexts() {
             const d = langData[currentLang];
             document.getElementById('start-btn').innerText = d.startBtn;
@@ -213,14 +176,21 @@
             document.getElementById('back-btn').innerText = d.backBtn;
         }
 
+        function backToLang() { document.getElementById('login-screen').classList.remove('active-screen'); document.getElementById('lang-screen').classList.add('active-screen'); }
         function showRules() { document.getElementById('login-screen').classList.remove('active-screen'); document.getElementById('rules-screen').classList.add('active-screen'); }
         function backToLogin() { document.getElementById('rules-screen').classList.remove('active-screen'); document.getElementById('login-screen').classList.add('active-screen'); }
 
         function startGame() {
             if(!document.getElementById('empName').value) return alert(langData[currentLang].alertLogin);
             document.getElementById('login-screen').classList.remove('active-screen');
-            document.getElementById('game-interface').style.display = 'flex';
+            document.getElementById('game-interface').style.display = 'block';
             loadLevel(1); startTimer();
+        }
+
+        // [NEW] ฟังก์ชันเล่นเสียง
+        function playSound(id) {
+            const s = document.getElementById(id);
+            if(s) { s.currentTime = 0; s.play().catch(()=>{}); }
         }
 
         function loadLevel(lv) {
@@ -231,20 +201,17 @@
             const img = document.getElementById('main-img');
             img.style.opacity = '0';
             
-            setTimeout(() => {
-                img.src = `images/${levelsData[lv-1].img}?v=${Date.now()}`;
-                img.onload = () => {
-                    img.style.opacity = '1';
-                    const imgBox = document.getElementById('img-box');
-                    imgBox.style.width = img.clientWidth + "px";
-                    imgBox.style.height = img.clientHeight + "px";
-                    createHazards(lv);
-                    document.getElementById('loading-overlay').style.display = 'none';
-                    isPlaying = true; foundInLevel = 0; currentLevel = lv;
-                    document.getElementById('current-lv').innerText = lv;
-                    document.getElementById('viewport').scrollLeft = 0;
-                };
-            }, 400);
+            img.src = `images/${levelsData[lv-1].img}?v=${Date.now()}`;
+            img.onload = () => {
+                img.style.opacity = '1';
+                const imgBox = document.getElementById('img-box');
+                imgBox.style.width = img.clientWidth + "px";
+                imgBox.style.height = img.clientHeight + "px";
+                createHazards(lv);
+                document.getElementById('loading-overlay').style.display = 'none';
+                isPlaying = true; foundInLevel = 0; currentLevel = lv;
+                document.getElementById('current-lv').innerText = lv;
+            };
         }
 
         function createHazards(lv) {
@@ -253,7 +220,7 @@
                 const div = document.createElement('div');
                 div.className = 'hazard';
                 div.style.top = p.t + '%'; div.style.left = p.l + '%';
-                div.addEventListener('touchstart', (e) => { e.preventDefault(); handleHit(div); }, {passive: false});
+                // ใช้ทั้ง Click และ Touch
                 div.onclick = (e) => { e.stopPropagation(); handleHit(div); };
                 container.appendChild(div);
             });
@@ -261,27 +228,49 @@
 
         function handleHit(div) {
             if(!isPlaying || div.classList.contains('found')) return;
+            playSound('snd-hit'); // [NEW] เสียงจิ้มถูก
             div.classList.add('found'); foundInLevel++;
+            
+            // แสดงคะแนนเด้ง +100
+            showEffect("+100", div.getBoundingClientRect().left + 50, div.getBoundingClientRect().top, "#00ff00");
+            totalScore += 100;
+            document.getElementById('total-score').innerText = totalScore;
+
             if(foundInLevel === 4) {
                 totalScore += (timeLeft * 10);
                 document.getElementById('total-score').innerText = totalScore;
-                if(currentLevel < 5) { setTimeout(() => { timeLeft = 60; loadLevel(currentLevel + 1); }, 600); }
-                else { gameOver(true); }
+                if(currentLevel < levelsData.length) { 
+                    setTimeout(() => { timeLeft = 60; loadLevel(currentLevel + 1); }, 600); 
+                } else { 
+                    gameOver(true); 
+                }
             }
         }
 
-        document.getElementById('viewport').addEventListener('touchstart', (e) => {
+        // ระบบจิ้มผิด (สั่น + เสียง + หักเวลา)
+        document.getElementById('viewport').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
-            const touch = e.touches[0];
+            playSound('snd-miss'); // [NEW] เสียงจิ้มผิด
+            
             timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
             document.getElementById('timer').innerText = timeLeft;
+
+            // [NEW] สั่นหน้าจอ
+            const gi = document.getElementById('game-interface');
+            gi.classList.add('shake-effect');
+            setTimeout(() => gi.classList.remove('shake-effect'), 300);
+
+            showEffect("-10s", e.clientX, e.clientY, "#ff0000");
+            if(timeLeft <= 0) gameOver(false);
+        };
+
+        function showEffect(txt, x, y, color) {
             const p = document.createElement('div');
-            p.className = 'penalty-text'; p.innerText = '-10s';
-            p.style.left = touch.clientX + 'px'; p.style.top = touch.clientY + 'px';
+            p.className = 'effect-text'; p.innerText = txt;
+            p.style.left = x + 'px'; p.style.top = y + 'px'; p.style.color = color;
             document.body.appendChild(p);
             setTimeout(() => p.remove(), 800);
-            if(timeLeft <= 0) gameOver(false);
-        }, {passive: false});
+        }
 
         function startTimer() {
             if(timerObj) clearInterval(timerObj);
@@ -290,10 +279,18 @@
 
         function gameOver(win) {
             isPlaying = false; clearInterval(timerObj);
+            if(win) playSound('snd-win'); // [NEW] เสียงชนะ
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
             document.getElementById('go-msg').innerText = win ? langData[currentLang].goComplete : langData[currentLang].goTimeout;
             document.getElementById('go-score').innerText = totalScore;
+
+            // [NEW] ระบบฉายา (Rank)
+            let rank = "SAFETY TRAINEE 🛠️";
+            if(totalScore >= 3500) rank = "SAFETY GOD 👑";
+            else if(totalScore >= 2000) rank = "SAFETY HUNTER 🎯";
+            else if(totalScore >= 1000) rank = "SAFETY OFFICER 🛡️";
+            document.getElementById('rank-display').innerText = "RANK: " + rank;
         }
     </script>
 </body>
