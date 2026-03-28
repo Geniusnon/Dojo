@@ -28,14 +28,15 @@
         .active-screen { display: flex; }
         
         #lang-screen { justify-content: center; padding-top: 0; }
-        .lang-mascot { width: 154px; height: auto; margin-bottom: 5px; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1)); }
+        /* เก็บ Mascot ตัวหลักในหน้าแรกไว้ */
+        .main-mascot { width: 160px; height: auto; margin-bottom: 10px; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1)); }
 
         .comic-title { font-family: 'Bangers'; font-size: 8vh; color: var(--blue); text-shadow: 3px 3px 0px #fff, 6px 6px 0px var(--black); margin-bottom: 15px; transform: rotate(-1deg); }
-        .box { background: var(--white); padding: 15px 20px; border: 3px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 450px; text-align: center; position: relative; border-radius: 5px; outline: 4px solid var(--white); }
+        .box { background: var(--white); padding: 20px; border: 3px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 450px; text-align: center; position: relative; border-radius: 5px; outline: 4px solid var(--white); }
 
-        input { width: 100%; padding: 8px 12px; margin: 6px 0; border: 2.5px solid var(--black); font-family: 'Itim'; font-size: 16px; border-radius: 5px; }
-        .btn-row { display: flex; gap: 8px; margin-top: 8px; width: 100%; justify-content: center; }
-        .btn { display: inline-block; width: 100%; max-width: 200px; background: var(--red); color: var(--white); padding: 10px; font-family: 'Bangers'; font-size: 22px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; margin: 10px auto 0 auto; }
+        input { width: 100%; padding: 10px; margin: 8px 0; border: 2.5px solid var(--black); font-family: 'Itim'; font-size: 18px; border-radius: 5px; }
+        .btn-row { display: flex; gap: 10px; margin-top: 10px; width: 100%; justify-content: center; }
+        .btn { display: inline-block; width: 100%; max-width: 200px; background: var(--red); color: var(--white); padding: 12px; font-family: 'Bangers'; font-size: 24px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; margin: 10px auto 0 auto; }
         .btn:active { transform: translate(1.5px, 1.5px); box-shadow: 1px 1px 0px var(--black); }
 
         /* --- Game Interface --- */
@@ -48,50 +49,32 @@
             background-size: 60px 60px;
         }
 
-        /* ล็อค Aspect Ratio ของภาพให้คงที่ 16:9 */
         .image-container { 
             position: relative; 
             aspect-ratio: 16 / 9;
-            width: auto;
-            height: auto;
-            max-width: 95vw; 
-            max-height: 85vh; 
+            width: auto; height: auto;
+            max-width: 92vw; max-height: 88vh; 
             border: 8px solid var(--white); 
             outline: 8px solid var(--black); 
             box-shadow: 0 0 100px rgba(0,0,0,0.8); 
             background: #000; 
         }
 
-        #main-img { 
-            width: 100%; 
-            height: 100%; 
-            display: block; 
-            object-fit: fill; /* บังคับให้รูปเต็มสัดส่วน 16:9 */
-        }
-
-        #hazard-container {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-        }
-
-        #cheerleader-mascot {
-            position: absolute; bottom: -15px; right: 15px; width: auto; height: 45vh; 
-            z-index: 1550; pointer-events: none; filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.3));
-        }
+        #main-img { width: 100%; height: 100%; display: block; object-fit: fill; }
+        #hazard-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
         /* --- HUD --- */
-        .side-bar-left { position: absolute; top: 8px; left: 8px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 4px 12px; gap: 12px; z-index: 1520; box-shadow: 3px 3px 0px var(--black); }
-        .side-item { font-family: 'Bangers'; font-size: 14px; color: #000; }
-        .side-item span { font-size: 16px; color: #000 !important; margin-left: 2px; }
+        .side-bar-left { position: absolute; top: 10px; left: 10px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 6px 15px; gap: 15px; z-index: 1520; box-shadow: 4px 4px 0px var(--black); }
+        .side-item { font-family: 'Bangers'; font-size: 16px; color: #000; }
+        .side-item span { font-size: 18px; color: #000 !important; margin-left: 2px; }
 
-        #timer-container { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 25%; height: 14px; background: rgba(0,0,0,0.5); border: 2.5px solid var(--black); border-radius: 8px; overflow: hidden; z-index: 2000; }
+        #timer-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 30%; height: 16px; background: rgba(0,0,0,0.5); border: 2.5px solid var(--black); border-radius: 10px; overflow: hidden; z-index: 2000; }
         #timer-bar { width: 100%; height: 100%; background: var(--green); transition: width 0.2s linear; }
 
-        /* Hazard Points */
-        .hazard { position: absolute; width: 8vh; height: 8vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; cursor: pointer; }
-        .hazard.found { border: 5px solid var(--green) !important; background: rgba(0, 255, 0, 0.3) !important; box-shadow: 0 0 15px var(--green); }
+        .hazard { position: absolute; width: 9vh; height: 9vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; cursor: pointer; }
+        .hazard.found { border: 5px solid var(--green) !important; background: rgba(0, 255, 0, 0.3) !important; box-shadow: 0 0 20px var(--green); }
         
-        .penalty-text { position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 32px; pointer-events: none; z-index: 2000; text-shadow: 2px 2px 0px var(--black); animation: floatUp 0.8s ease-out forwards; }
+        .penalty-text { position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 36px; pointer-events: none; z-index: 2000; text-shadow: 2px 2px 0px var(--black); animation: floatUp 0.8s ease-out forwards; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
         .shake-effect { animation: shake 0.3s ease-in-out; }
         @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-4px, 4px); } 50% { transform: translate(4px, -4px); } 75% { transform: translate(-4px, -4px); } }
@@ -115,7 +98,7 @@
     </div>
 
     <div id="lang-screen" class="screen active-screen">
-        <img src="images/mascot.png" class="lang-mascot" alt="Mascot">
+        <img src="images/mascot.png" class="main-mascot" alt="Mascot">
         <div class="comic-title">HAZARD HUNTER</div>
         <div class="btn-row" style="width: 100%; max-width: 320px;">
             <div class="btn" onclick="selectLang('th')" style="margin:0">ไทย</div>
@@ -155,8 +138,7 @@
                 <div id="hazard-container"></div>
             </div>
         </div>
-        <img src="images/cheerleader_mascot.png" id="cheerleader-mascot" alt="Cheerleader">
-    </div>
+        </div>
 
     <div id="game-over-screen" class="screen">
         <div class="box">
@@ -170,6 +152,7 @@
     </div>
 
     <script>
+        // ... (JavaScript ส่วนเดิมทั้งหมด ไม่มีการเปลี่ยนแปลงกลไก) ...
         const translations = {
             th: { 
                 pl: "ชื่อพนักงาน", id: "รหัสพนักงาน", st: "เริ่มเกม", rb: "กติกา", win: "สำเร็จ!", lose: "เวลาหมด!", rank: "ฉายา: ",
@@ -298,9 +281,8 @@
                     const bar = document.getElementById('timer-bar');
                     bar.style.width = (timeLeft / 60 * 100) + '%';
                     
-                    // Soundscape Logic
                     if(timeLeft <= 15 && timeLeft > 0) {
-                        bgm.playbackRate = 1.4; // เร่งเพลง
+                        bgm.playbackRate = 1.4;
                         bar.style.background = "var(--red)";
                     } else {
                         bgm.playbackRate = 1.0;
