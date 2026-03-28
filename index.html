@@ -27,7 +27,6 @@
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); clip-path: polygon(0 0, 100% 1%, 100% 100%, 0 99%); }
         .active-screen { display: flex; }
         
-        /* ปรับหน้าเลือกภาษาให้ทุกอย่างอยู่ตรงกลางพอดี */
         #lang-screen { justify-content: center; padding-top: 0; }
         .lang-mascot { width: 220px; height: auto; margin-bottom: 5px; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1)); }
 
@@ -48,7 +47,7 @@
         .image-container { position: relative; height: 92%; border: 5px solid var(--white); outline: 5px solid var(--black); }
         #main-img { height: 100%; width: auto; display: block; object-fit: contain; }
 
-        /* --- HUD (Black Text) --- */
+        /* --- HUD --- */
         .side-bar-left { position: absolute; top: 8px; left: 8px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 4px 12px; gap: 12px; z-index: 1520; box-shadow: 3px 3px 0px var(--black); }
         .side-item { font-family: 'Bangers'; font-size: 14px; color: #000; }
         .side-item span { font-size: 16px; color: #000 !important; margin-left: 2px; }
@@ -58,7 +57,7 @@
         #timer-bar { width: 100%; height: 100%; background: var(--green); transition: width 0.2s linear; }
 
         /* --- Hazards & FX --- */
-        .hazard { position: absolute; width: 10vh; height: 10vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; }
+        .hazard { position: absolute; width: 10vh; height: 10vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; cursor: pointer; }
         .hazard.found { border: 5px solid var(--green) !important; background: rgba(0, 255, 0, 0.3) !important; box-shadow: 0 0 15px var(--green); }
         .penalty-text { position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 32px; pointer-events: none; z-index: 2000; text-shadow: 2px 2px 0px var(--black); animation: floatUp 0.8s ease-out forwards; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
@@ -141,14 +140,26 @@
                 rt: "กติกาการเล่น", rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ<br>2. แต่ละด่านมีเวลา 60 วินาที<br>3. จิ้มผิดหักเวลา 10 วินาที!<br>4. อย่าให้เวลาหมดเด็ดขาด",
                 ok: "ตกลง!", rotate: "กรุณาหมุนโทรศัพท์", alert: "กรุณากรอกข้อมูลให้ครบถ้วน", replay: "เล่นอีกครั้ง",
                 hud_lv: "ด่าน", hud_score: "คะแนน", hud_time: "เวลา",
-                ranks: [{m:2500, t:"ปรมาจารย์ 👑"}, {m:1500, t:"นักล่า 🛡️"}, {m:0, t:"มือใหม่ 🔍"}]
+                ranks: [
+                    {m: 5000, t: "ปรมาจารย์ความปลอดภัย 👑"},
+                    {m: 4000, t: "ผู้เชี่ยวชาญความปลอดภัย ✨"},
+                    {m: 2500, t: "นักล่าอันตรายมือโปร 🔍"},
+                    {m: 1200, t: "เจ้าหน้าที่ฝึกหัด 🔰"},
+                    {m: 0, t: "ผู้สังเกตการณ์หน้าใหม่ 👣"}
+                ]
             },
             en: { 
                 pl: "Name", id: "ID", st: "START", rb: "RULES", win: "CLEAR!", lose: "TIMEOUT!", rank: "RANK: ",
                 rt: "HOW TO PLAY", rText: "1. Find 4 hazards per image.<br>2. 60 seconds per level.<br>3. Wrong tap reduces 10 seconds!<br>4. Don't let the timer reach zero.",
                 ok: "OK!", rotate: "PLEASE ROTATE PHONE", alert: "Please fill in all fields", replay: "PLAY AGAIN",
                 hud_lv: "LV", hud_score: "SCORE", hud_time: "TIME",
-                ranks: [{m:2500, t:"Master 👑"}, {m:1500, t:"Elite 🛡️"}, {m:0, t:"Rookie 🔍"}]
+                ranks: [
+                    {m: 5000, t: "Safety Grandmaster 👑"},
+                    {m: 4000, t: "Safety Expert ✨"},
+                    {m: 2500, t: "Hazard Pro 🔍"},
+                    {m: 1200, t: "Safety Trainee 🔰"},
+                    {m: 0, t: "Observer 👣"}
+                ]
             }
         };
 
@@ -219,10 +230,17 @@
 
         function hitHazard(el) {
             if(!isMuted) document.getElementById('snd-hit').play();
-            el.classList.add('found'); foundInLevel++;
-            totalScore += Math.floor(timeLeft * 10); 
+            el.classList.add('found'); 
+            foundInLevel++;
+            
+            // สูตรคะแนนใหม่: 125 คะแนนฐาน + (เวลาวินาทีที่เหลือ x 2)
+            totalScore += 125 + Math.floor(timeLeft * 2); 
             document.getElementById('total-score').innerText = totalScore;
-            if(foundInLevel === 4) { isPlaying = false; setTimeout(() => loadLevel(currentLevel + 1), 600); }
+
+            if(foundInLevel === 4) { 
+                isPlaying = false; 
+                setTimeout(() => loadLevel(currentLevel + 1), 600); 
+            }
         }
 
         function startGlobalTimer() {
@@ -233,9 +251,11 @@
                     document.getElementById('time-text').innerText = timeLeft;
                     const bar = document.getElementById('timer-bar');
                     bar.style.width = (timeLeft / 60 * 100) + '%';
+                    
                     if(timeLeft > 30) bar.style.background = "var(--green)";
                     else if(timeLeft > 15) bar.style.background = "var(--yellow)";
                     else bar.style.background = "var(--red)";
+
                     if(timeLeft <= 0) gameOver(false);
                 }
             }, 1000);
@@ -244,29 +264,39 @@
         document.getElementById('viewport').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             if(!isMuted) document.getElementById('snd-miss').play();
+            
             timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
             document.getElementById('time-text').innerText = timeLeft;
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + '%';
+            
             if(window.navigator.vibrate) window.navigator.vibrate(100);
+            
             const p = document.createElement('div');
             p.className = 'penalty-text'; p.innerText = '-10s';
             p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
             document.body.appendChild(p); setTimeout(() => p.remove(), 800);
-            const gi = document.getElementById('game-interface'); gi.classList.add('shake-effect');
+            
+            const gi = document.getElementById('game-interface'); 
+            gi.classList.add('shake-effect');
             setTimeout(() => gi.classList.remove('shake-effect'), 300);
+            
             if(timeLeft <= 0) gameOver(false);
         };
 
         function gameOver(win) {
             isPlaying = false; clearInterval(timerObj);
             if(win && !isMuted) document.getElementById('snd-win').play();
+            
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
+            
             const t = translations[currentLang];
             document.getElementById('go-msg').innerText = win ? t.win : t.lose;
             document.getElementById('go-score').innerText = totalScore;
+            
+            // ค้นหา Rank จากคะแนนที่ได้ (เรียงจากมากไปน้อย)
             let rank = t.ranks.find(r => totalScore >= r.m);
-            document.getElementById('rank-display').innerText = t.rank + (rank ? rank.t : "");
+            document.getElementById('rank-display').innerText = t.rank + (rank ? rank.t : t.ranks[t.ranks.length-1].t);
         }
     </script>
 </body>
