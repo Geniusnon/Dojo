@@ -41,7 +41,6 @@
         /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 1500; }
         
-        /* พื้นหลังแถบเหลืองดำสไตล์ Warning */
         #viewport { 
             position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 1510; 
             background-color: #ffde03; 
@@ -49,19 +48,38 @@
             background-size: 60px 60px;
         }
 
+        /* ล็อค Aspect Ratio ของภาพให้คงที่ 16:9 */
         .image-container { 
-            position: relative; height: 92%; border: 8px solid var(--white); outline: 8px solid var(--black); 
-            box-shadow: 0 0 100px rgba(0,0,0,0.8); background: #000; 
+            position: relative; 
+            aspect-ratio: 16 / 9;
+            width: auto;
+            height: auto;
+            max-width: 95vw; 
+            max-height: 85vh; 
+            border: 8px solid var(--white); 
+            outline: 8px solid var(--black); 
+            box-shadow: 0 0 100px rgba(0,0,0,0.8); 
+            background: #000; 
         }
-        #main-img { height: 100%; width: auto; display: block; object-fit: contain; }
 
-        /* ตัวละครยืนลุ้นที่มุมขวาล่าง */
+        #main-img { 
+            width: 100%; 
+            height: 100%; 
+            display: block; 
+            object-fit: fill; /* บังคับให้รูปเต็มสัดส่วน 16:9 */
+        }
+
+        #hazard-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+
         #cheerleader-mascot {
             position: absolute; bottom: -15px; right: 15px; width: auto; height: 45vh; 
             z-index: 1550; pointer-events: none; filter: drop-shadow(5px 5px 0px rgba(0,0,0,0.3));
         }
 
-        /* --- HUD & Elements --- */
+        /* --- HUD --- */
         .side-bar-left { position: absolute; top: 8px; left: 8px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 4px 12px; gap: 12px; z-index: 1520; box-shadow: 3px 3px 0px var(--black); }
         .side-item { font-family: 'Bangers'; font-size: 14px; color: #000; }
         .side-item span { font-size: 16px; color: #000 !important; margin-left: 2px; }
@@ -69,8 +87,10 @@
         #timer-container { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 25%; height: 14px; background: rgba(0,0,0,0.5); border: 2.5px solid var(--black); border-radius: 8px; overflow: hidden; z-index: 2000; }
         #timer-bar { width: 100%; height: 100%; background: var(--green); transition: width 0.2s linear; }
 
-        .hazard { position: absolute; width: 10vh; height: 10vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; cursor: pointer; }
+        /* Hazard Points */
+        .hazard { position: absolute; width: 8vh; height: 8vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; cursor: pointer; }
         .hazard.found { border: 5px solid var(--green) !important; background: rgba(0, 255, 0, 0.3) !important; box-shadow: 0 0 15px var(--green); }
+        
         .penalty-text { position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 32px; pointer-events: none; z-index: 2000; text-shadow: 2px 2px 0px var(--black); animation: floatUp 0.8s ease-out forwards; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
         .shake-effect { animation: shake 0.3s ease-in-out; }
@@ -85,6 +105,7 @@
     <audio id="snd-hit" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" preload="auto"></audio>
     <audio id="snd-miss" src="https://assets.mixkit.co/active_storage/sfx/2021/2021-preview.mp3" preload="auto"></audio>
     <audio id="snd-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
+    <audio id="snd-bgm" src="https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3" loop preload="auto"></audio>
 
     <div id="sound-toggle" onclick="toggleMute()">ON</div>
 
@@ -191,7 +212,16 @@
         let currentLang = 'th', currentLevel = 0, totalScore = 0, timeLeft = 60, foundInLevel = 0, isPlaying = false, isMuted = false, timerObj;
 
         function playClick() { if(!isMuted) { const s = document.getElementById('snd-click'); s.currentTime = 0; s.play().catch(()=>{}); } }
-        function toggleMute() { playClick(); isMuted = !isMuted; const b = document.getElementById('sound-toggle'); b.innerText = isMuted ? "OFF" : "ON"; b.style.background = isMuted ? "#555" : "var(--red)"; }
+        
+        function toggleMute() { 
+            playClick(); 
+            isMuted = !isMuted; 
+            const b = document.getElementById('sound-toggle'); 
+            const bgm = document.getElementById('snd-bgm');
+            b.innerText = isMuted ? "OFF" : "ON"; 
+            b.style.background = isMuted ? "#555" : "var(--red)"; 
+            if(isMuted) bgm.pause(); else if(isPlaying) bgm.play().catch(()=>{});
+        }
 
         function selectLang(l) {
             currentLang = l; const t = translations[l];
@@ -220,6 +250,10 @@
             if(!document.getElementById('empName').value || !document.getElementById('empID').value) {
                 alert(translations[currentLang].alert); return;
             }
+            const bgm = document.getElementById('snd-bgm');
+            bgm.volume = 0.4;
+            if(!isMuted) bgm.play().catch(()=>{});
+
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'block';
             loadLevel(0);
@@ -246,7 +280,7 @@
         }
 
         function hitHazard(el) {
-            if(!isMuted) document.getElementById('snd-hit').play();
+            if(!isMuted) { const s = document.getElementById('snd-hit'); s.currentTime = 0; s.play(); }
             el.classList.add('found'); 
             foundInLevel++;
             totalScore += 125 + Math.floor(timeLeft * 2); 
@@ -256,15 +290,23 @@
 
         function startGlobalTimer() {
             if (timerObj) clearInterval(timerObj);
+            const bgm = document.getElementById('snd-bgm');
             timerObj = setInterval(() => {
                 if(isPlaying) {
                     timeLeft -= 1; if(timeLeft < 0) timeLeft = 0;
                     document.getElementById('time-text').innerText = timeLeft;
                     const bar = document.getElementById('timer-bar');
                     bar.style.width = (timeLeft / 60 * 100) + '%';
-                    if(timeLeft > 30) bar.style.background = "var(--green)";
-                    else if(timeLeft > 15) bar.style.background = "var(--yellow)";
-                    else bar.style.background = "var(--red)";
+                    
+                    // Soundscape Logic
+                    if(timeLeft <= 15 && timeLeft > 0) {
+                        bgm.playbackRate = 1.4; // เร่งเพลง
+                        bar.style.background = "var(--red)";
+                    } else {
+                        bgm.playbackRate = 1.0;
+                        bar.style.background = timeLeft > 30 ? "var(--green)" : "var(--yellow)";
+                    }
+
                     if(timeLeft <= 0) gameOver(false);
                 }
             }, 1000);
@@ -272,7 +314,7 @@
 
         document.getElementById('viewport').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
-            if(!isMuted) document.getElementById('snd-miss').play();
+            if(!isMuted) { const s = document.getElementById('snd-miss'); s.currentTime = 0; s.play(); }
             timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
             document.getElementById('time-text').innerText = timeLeft;
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + '%';
@@ -288,6 +330,9 @@
 
         function gameOver(win) {
             isPlaying = false; clearInterval(timerObj);
+            const bgm = document.getElementById('snd-bgm');
+            bgm.pause(); bgm.currentTime = 0; bgm.playbackRate = 1.0;
+
             if(win && !isMuted) document.getElementById('snd-win').play();
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
