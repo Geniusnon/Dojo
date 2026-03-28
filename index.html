@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - COMIC EDITION</title>
+    <title>LCB1 HAZARD HUNTER - SOUND FIXED</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -15,21 +15,21 @@
             overflow: hidden; position: fixed; 
         }
 
-        /* --- Comic Sound Toggle (สไตล์ปุ่มกดกติกา) --- */
+        /* --- Comic Sound Toggle (มุมล่างซ้าย) --- */
         #sound-toggle {
             position: fixed; bottom: 20px; left: 20px; 
-            width: 60px; height: 60px;
+            width: 65px; height: 60px;
             background: var(--red); color: white;
             border: 4px solid var(--black); border-radius: 15px;
             display: flex; justify-content: center; align-items: center;
             z-index: 9000; cursor: pointer;
-            font-family: 'Bangers'; font-size: 30px;
+            font-family: 'Bangers'; font-size: 24px;
             box-shadow: 4px 4px 0px var(--black);
             transition: 0.1s;
         }
         #sound-toggle:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--black); }
 
-        /* --- Animation --- */
+        /* --- Animation & UI --- */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -44,7 +44,6 @@
         }
         @media screen and (orientation: portrait) { #rotate-warning { display: flex !important; } }
 
-        /* --- UI Screens --- */
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); }
         .active-screen { display: flex; }
         .comic-title { font-family: 'Bangers'; font-size: 7vh; color: var(--blue); text-shadow: 2px 2px 0px #fff, 3px 3px 0px var(--black); margin-bottom: 2vh; }
@@ -58,14 +57,12 @@
         .btn-blue { background: var(--blue); }
         .btn-rules { background: #555; }
 
-        /* --- Rules Modal --- */
         #rules-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 8000;
             display: none; justify-content: center; align-items: center;
         }
         .rules-box { background: #fff; width: 85%; max-width: 400px; padding: 20px; border: 4px solid var(--black); box-shadow: 8px 8px 0px var(--black); }
 
-        /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; background: var(--black); z-index: 1500; }
         #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow-x: auto; overflow-y: hidden; z-index: 1510; }
         .image-container { position: relative; height: 100%; display: flex; align-items: center; }
@@ -92,12 +89,14 @@
 </head>
 <body>
 
-    <audio id="bgm" src="https://assets.mixkit.co/music/preview/mixkit-mystery-suspense-132.mp3" loop></audio>
-    <audio id="snd-hit" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
-    <audio id="snd-miss" src="https://assets.mixkit.co/active_storage/sfx/2021/2021-preview.mp3"></audio>
-    <audio id="snd-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+    <audio id="bgm" loop preload="auto">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="snd-hit" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" preload="auto"></audio>
+    <audio id="snd-miss" src="https://assets.mixkit.co/active_storage/sfx/2021/2021-preview.mp3" preload="auto"></audio>
+    <audio id="snd-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
 
-    <div id="sound-toggle" onclick="toggleMute()">ON</div>
+    <div id="sound-toggle" onclick="toggleMute()">MUSIC ON</div>
 
     <div id="rotate-warning">
         <div style="font-size: 60px;">🔄</div>
@@ -199,6 +198,17 @@
         let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false, isMuted = false;
         const bgm = document.getElementById('bgm');
 
+        // ฟังก์ชันสำคัญ: ปลดล็อกเสียงเมื่อมีการคลิกครั้งแรก
+        function unlockAudio() {
+            if (bgm.paused && !isMuted) {
+                bgm.volume = 0.3;
+                bgm.play().catch(e => console.log("Audio unlock failed:", e));
+            }
+            // ลบ Event listener เมื่อปลดล็อกแล้ว
+            document.removeEventListener('click', unlockAudio);
+            document.removeEventListener('touchstart', unlockAudio);
+        }
+
         function selectLang(l) { 
             currentLang = l; 
             const t = translations[currentLang];
@@ -211,9 +221,8 @@
             document.getElementById('rules-title').innerText = t.rulesTitle;
             document.getElementById('rules-desc').innerHTML = t.rulesDesc;
 
-            // เริ่มเล่น BGM ทันทีที่เลือกภาษา (จุดเริ่มต้นของเกม)
-            bgm.volume = 0.3;
-            bgm.play().catch(() => {});
+            // พยายามเริ่มเล่นทันทีเมื่อกดเลือกภาษา
+            unlockAudio();
 
             document.getElementById('lang-screen').classList.remove('active-screen'); 
             document.getElementById('login-screen').classList.add('active-screen'); 
@@ -229,8 +238,10 @@
             document.getElementById('snd-miss').muted = isMuted;
             document.getElementById('snd-win').muted = isMuted;
             const btn = document.getElementById('sound-toggle');
-            btn.innerText = isMuted ? "OFF" : "ON";
+            btn.innerText = isMuted ? "MUSIC OFF" : "MUSIC ON";
             btn.style.background = isMuted ? "#555" : "var(--red)";
+            
+            if (!isMuted) bgm.play();
         }
 
         function startGame() {
@@ -328,6 +339,11 @@
             const rd = document.getElementById('rank-display');
             rd.innerText = t.rankTitle + finalRank.text; rd.style.color = finalRank.color;
         }
+
+        // เพิ่ม Listener เพื่อปลดล็อกเสียงเมื่อมีการสัมผัสหน้าจอครั้งแรก
+        document.addEventListener('click', unlockAudio);
+        document.addEventListener('touchstart', unlockAudio);
+
     </script>
 </body>
 </html>
