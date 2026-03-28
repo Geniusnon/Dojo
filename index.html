@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - PRO EDITION</title>
+    <title>LCB1 HAZARD HUNTER - PRO THAI EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; }
@@ -15,7 +15,7 @@
             overflow: hidden; position: fixed; 
         }
 
-        /* --- [NEW] Animation: สั่นหน้าจอเวลาจิ้มผิด --- */
+        /* --- Animation: สั่นหน้าจอเวลาจิ้มผิด --- */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -37,15 +37,15 @@
         .active-screen { display: flex; }
         .comic-title { font-family: 'Bangers'; font-size: 7vh; color: var(--blue); text-shadow: 2px 2px 0px #fff, 3px 3px 0px var(--black); margin-bottom: 2vh; }
         
-        .box { background: #fff; padding: 15px; border: 4px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 380px; text-align: center; }
-        input { width: 100%; padding: 8px; margin: 4px 0; border: 2px solid var(--black); font-size: 16px; font-family: 'Itim'; outline: none; text-align: center; }
+        .box { background: #fff; padding: 20px; border: 4px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 400px; text-align: center; }
+        input { width: 100%; padding: 10px; margin: 8px 0; border: 2px solid var(--black); font-size: 18px; font-family: 'Itim'; outline: none; text-align: center; }
         
-        .btn-row { display: flex; gap: 8px; margin-top: 8px; width: 100%; }
-        .btn { flex: 1; background: var(--red); color: #fff; padding: 10px; font-family: 'Bangers'; font-size: 18px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; text-decoration: none; }
+        .btn-row { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
+        .btn { flex: 1; background: var(--red); color: #fff; padding: 12px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; text-decoration: none; }
         .btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
 
-        /* --- Game Interface (รักษา Layout เต็มจอของคุณไว้) --- */
+        /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; background: var(--black); z-index: 1500; }
 
         #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow-x: auto; overflow-y: hidden; z-index: 1510; }
@@ -53,16 +53,16 @@
         #main-img { height: 100%; width: auto; object-fit: contain; display: block; }
 
         .side-bar-left { 
-            position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.85); 
-            border: 3px solid var(--black); border-radius: 10px; display: flex; padding: 5px 10px; gap: 15px; z-index: 1520; 
+            position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.9); 
+            border: 3px solid var(--black); border-radius: 10px; display: flex; padding: 8px 15px; gap: 20px; z-index: 1520; 
         }
-        .side-item { text-align: center; font-family: 'Bangers'; font-size: 14px; line-height: 1; color: var(--black); }
-        .side-item span { display: inline; font-size: 18px; color: var(--blue); margin-left: 3px; }
+        .side-item { text-align: center; font-family: 'Bangers'; font-size: 16px; line-height: 1; color: var(--black); }
+        .side-item span { display: inline; font-size: 20px; color: var(--blue); margin-left: 5px; }
 
-        #character-area { position: absolute; bottom: 0; right: 0; width: 120px; z-index: 1520; }
+        #character-area { position: absolute; bottom: 0; right: 0; width: 130px; z-index: 1520; pointer-events: none; }
         .big-char { width: 100%; height: auto; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.3)); }
 
-        /* Hazard: วงกลมใหญ่ 16vh ตามที่คุณต้องการ */
+        /* Hazard: วงกลมใหญ่ 16vh */
         .hazard { position: absolute; width: 16vh; height: 16vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 4px solid transparent; background: rgba(255, 0, 0, 0); }
         .hazard.found { border-color: #00ff00 !important; background: rgba(0, 255, 0, 0.4) !important; }
 
@@ -70,7 +70,7 @@
         .effect-text { position: fixed; font-family: 'Bangers'; font-size: 45px; pointer-events: none; z-index: 9999; text-shadow: 2px 2px 0px #000; animation: fadeUp 0.8s forwards; }
         @keyframes fadeUp { 0% { opacity: 1; transform: translate(-50%, -50%); } 100% { opacity: 0; transform: translate(-50%, -150%); } }
 
-        #rank-display { font-family: 'Bangers'; font-size: 24px; color: var(--red); margin-top: 10px; }
+        #rank-display { font-family: 'Bangers'; font-size: 28px; margin-top: 15px; text-shadow: 1px 1px 0px #000; }
         #loading-overlay { position: fixed; inset: 0; background: var(--yellow); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; }
     </style>
 </head>
@@ -90,7 +90,7 @@
 
     <div id="lang-screen" class="screen active-screen">
         <div class="comic-title">HAZARD HUNTER</div>
-        <div class="btn-row" style="width: 260px;">
+        <div class="btn-row" style="width: 280px;">
             <div class="btn" onclick="selectLang('th')">ไทย</div>
             <div class="btn btn-blue" onclick="selectLang('en')">EN</div>
         </div>
@@ -98,7 +98,7 @@
 
     <div id="login-screen" class="screen">
         <div class="box">
-            <input type="text" id="empName" placeholder="ชื่อ / Name">
+            <input type="text" id="empName" placeholder="ชื่อพนักงาน / Name">
             <input type="text" id="empID" placeholder="รหัสพนักงาน / ID">
             <div class="btn-row">
                 <div class="btn" onclick="startGame()" id="start-btn">START</div>
@@ -112,7 +112,7 @@
 
     <div id="rules-screen" class="screen">
         <div class="box">
-            <div id="rule-text" style="font-size: 15px; margin-bottom: 15px; text-align: left;"></div>
+            <div id="rule-text" style="font-size: 16px; margin-bottom: 15px; text-align: left;"></div>
             <div class="btn btn-blue" onclick="backToLogin()" id="back-btn">BACK</div>
         </div>
     </div>
@@ -127,7 +127,7 @@
 
         <div class="side-bar-left">
             <div class="side-item">LV<span id="current-lv">1</span></div>
-            <div class="side-item time">TIME<span id="timer" style="color:red">60</span></div>
+            <div class="side-item">TIME<span id="timer" style="color:red">60</span></div>
             <div class="side-item">SCORE<span id="total-score">0</span></div>
         </div>
 
@@ -138,18 +138,18 @@
 
     <div id="game-over-screen" class="screen">
         <div class="box">
-            <h2 id="go-msg" style="margin:0; font-family:'Bangers'; font-size: 30px;"></h2>
-            <div id="rank-display">RANK: ???</div>
-            <div style="font-size: 18px; margin-top: 10px;">TOTAL SCORE</div>
-            <h1 id="go-score" style="font-size: 60px; color: var(--blue); font-family: 'Bangers'; margin: 5px 0;">0</h1>
-            <div class="btn" onclick="location.reload()" style="max-width: 150px; margin: 10px auto 0;">HOME</div>
+            <h2 id="go-msg" style="margin:0; font-family:'Bangers'; font-size: 35px;"></h2>
+            <div id="rank-display">อันดับของคุณ: มือใหม่ 🔍</div>
+            <div style="font-size: 20px; margin-top: 15px;">TOTAL SCORE</div>
+            <h1 id="go-score" style="font-size: 65px; color: var(--blue); font-family: 'Bangers'; margin: 5px 0;">0</h1>
+            <div class="btn" onclick="location.reload()" style="max-width: 180px; margin: 15px auto 0;">HOME</div>
         </div>
     </div>
 
     <script>
         const langData = {
-            th: { startBtn: "เริ่มภารกิจ", ruleBtn: "กติกา", ruleDesc: "• หาจุดอันตราย 4 จุดต่อภาพ<br>• หากจิ้มผิดหักเวลา 10 วินาที<br>• คะแนน = เวลาที่เหลือ x 10", backBtn: "ย้อนกลับ", alertLogin: "กรอกข้อมูลให้ครบ", goComplete: "สำเร็จ!", goTimeout: "เวลาหมด!" },
-            en: { startBtn: "START", ruleBtn: "RULES", ruleDesc: "• Find 4 hazards per level<br>• Wrong tap: -10 sec penalty<br>• Score = Remaining time x 10", backBtn: "BACK", alertLogin: "Please fill info", goComplete: "MISSION CLEAR!", goTimeout: "TIME OUT!" }
+            th: { startBtn: "เริ่มภารกิจ", ruleBtn: "กติกา", ruleDesc: "• หาจุดอันตราย 4 จุดต่อภาพ<br>• จิ้มผิดหักเวลา 10 วินาที!<br>• คะแนน = จิ้มถูก + (เวลาเหลือ x 10)", backBtn: "ย้อนกลับ", alertLogin: "กรุณากรอกข้อมูลให้ครบ", goComplete: "ภารกิจสำเร็จ!", goTimeout: "เวลาหมด!" },
+            en: { startBtn: "START", ruleBtn: "RULES", ruleDesc: "• Find 4 hazards per level<br>• Wrong tap: -10 sec penalty!<br>• Score = Hits + (Time x 10)", backBtn: "BACK", alertLogin: "Please fill info", goComplete: "MISSION CLEAR!", goTimeout: "TIME OUT!" }
         };
 
         const levelsData = [
@@ -187,7 +187,6 @@
             loadLevel(1); startTimer();
         }
 
-        // [NEW] ฟังก์ชันเล่นเสียง
         function playSound(id) {
             const s = document.getElementById(id);
             if(s) { s.currentTime = 0; s.play().catch(()=>{}); }
@@ -206,11 +205,11 @@
                 img.style.opacity = '1';
                 const imgBox = document.getElementById('img-box');
                 imgBox.style.width = img.clientWidth + "px";
-                imgBox.style.height = img.clientHeight + "px";
                 createHazards(lv);
                 document.getElementById('loading-overlay').style.display = 'none';
                 isPlaying = true; foundInLevel = 0; currentLevel = lv;
                 document.getElementById('current-lv').innerText = lv;
+                document.getElementById('viewport').scrollLeft = 0;
             };
         }
 
@@ -220,7 +219,6 @@
                 const div = document.createElement('div');
                 div.className = 'hazard';
                 div.style.top = p.t + '%'; div.style.left = p.l + '%';
-                // ใช้ทั้ง Click และ Touch
                 div.onclick = (e) => { e.stopPropagation(); handleHit(div); };
                 container.appendChild(div);
             });
@@ -228,17 +226,15 @@
 
         function handleHit(div) {
             if(!isPlaying || div.classList.contains('found')) return;
-            playSound('snd-hit'); // [NEW] เสียงจิ้มถูก
+            playSound('snd-hit');
             div.classList.add('found'); foundInLevel++;
             
-            // แสดงคะแนนเด้ง +100
             showEffect("+100", div.getBoundingClientRect().left + 50, div.getBoundingClientRect().top, "#00ff00");
             totalScore += 100;
             document.getElementById('total-score').innerText = totalScore;
 
             if(foundInLevel === 4) {
-                totalScore += (timeLeft * 10);
-                document.getElementById('total-score').innerText = totalScore;
+                totalScore += (timeLeft * 10); // โบนัสเวลาเมื่อจบด่าน
                 if(currentLevel < levelsData.length) { 
                     setTimeout(() => { timeLeft = 60; loadLevel(currentLevel + 1); }, 600); 
                 } else { 
@@ -250,12 +246,10 @@
         // ระบบจิ้มผิด (สั่น + เสียง + หักเวลา)
         document.getElementById('viewport').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
-            playSound('snd-miss'); // [NEW] เสียงจิ้มผิด
-            
+            playSound('snd-miss');
             timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
             document.getElementById('timer').innerText = timeLeft;
 
-            // [NEW] สั่นหน้าจอ
             const gi = document.getElementById('game-interface');
             gi.classList.add('shake-effect');
             setTimeout(() => gi.classList.remove('shake-effect'), 300);
@@ -279,18 +273,30 @@
 
         function gameOver(win) {
             isPlaying = false; clearInterval(timerObj);
-            if(win) playSound('snd-win'); // [NEW] เสียงชนะ
+            if(win) playSound('snd-win');
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
             document.getElementById('go-msg').innerText = win ? langData[currentLang].goComplete : langData[currentLang].goTimeout;
             document.getElementById('go-score').innerText = totalScore;
 
-            // [NEW] ระบบฉายา (Rank)
-            let rank = "SAFETY TRAINEE 🛠️";
-            if(totalScore >= 3500) rank = "SAFETY GOD 👑";
-            else if(totalScore >= 2000) rank = "SAFETY HUNTER 🎯";
-            else if(totalScore >= 1000) rank = "SAFETY OFFICER 🛡️";
-            document.getElementById('rank-display').innerText = "RANK: " + rank;
+            // --- ระบบฉายาภาษาไทยที่คุณเลือก ---
+            let rank = "มือใหม่ 🔍";
+            let rankColor = "#666"; 
+
+            if(totalScore >= 3800) {
+                rank = "ปรมาจารย์ความปลอดภัย 👑";
+                rankColor = "#ffde03"; 
+            } else if(totalScore >= 2500) {
+                rank = "ผู้พิทักษ์ความปลอดภัย 🛡️";
+                rankColor = "#0336ff"; 
+            } else if(totalScore >= 1200) {
+                rank = "นักล่าจุดเสี่ยง 🏹";
+                rankColor = "#ff0266"; 
+            }
+
+            const rd = document.getElementById('rank-display');
+            rd.innerText = "อันดับของคุณ: " + rank;
+            rd.style.color = rankColor;
         }
     </script>
 </body>
