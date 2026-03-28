@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - FINAL VERSION</title>
+    <title>LCB1 HAZARD HUNTER - FINAL PRO VERSION</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; --white: #fff; }
@@ -16,7 +16,7 @@
             background-image: repeating-linear-gradient(45deg, rgba(255,222,3,0.05) 0px, rgba(255,222,3,0.05) 2px, transparent 2px, transparent 10px);
         }
 
-        /* --- Rotate Warning (บังคับแนวนอนเด็ดขาด) --- */
+        /* บังคับแนวนอน */
         #rotate-warning {
             position: fixed; inset: 0; background: var(--blue); color: var(--white); z-index: 200000;
             display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
@@ -26,16 +26,16 @@
             #game-interface, .screen, #mascot-ui, #sound-toggle { display: none !important; }
         }
 
-        /* --- Mascot: มุมขวาบนตัวใหญ่ --- */
+        /* Mascot ขวาบน */
         #mascot-ui { position: fixed; top: 10px; right: 15px; width: 130px; height: auto; z-index: 5000; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.5)); }
 
-        /* --- UI Screens --- */
+        /* หน้าจอเมนู */
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); clip-path: polygon(0 0, 100% 1%, 100% 100%, 0 99%); }
         .active-screen { display: flex; }
         .comic-title { font-family: 'Bangers'; font-size: 11vh; color: var(--blue); text-shadow: 4px 4px 0px #fff, 8px 8px 0px var(--black); margin-bottom: 2vh; transform: rotate(-2deg); }
         .box { background: var(--white); padding: 25px; border: 4px solid var(--black); box-shadow: 8px 8px 0px var(--black); width: 90%; max-width: 500px; text-align: center; position: relative; border-radius: 5px; outline: 5px solid var(--white); }
 
-        /* --- Rules Modal --- */
+        /* Rules Modal */
         #rules-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; justify-content: center; align-items: center; }
         .rules-box { background: var(--white); width: 85%; max-width: 480px; padding: 25px; border: 5px solid var(--black); box-shadow: 10px 10px 0px var(--black); border-radius: 5px; outline: 6px solid var(--white); }
 
@@ -45,7 +45,7 @@
         .btn-blue { background: var(--blue); }
         .btn-gray { background: #666; }
 
-        /* --- Game Interface --- */
+        /* พื้นที่เล่นเกม */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 1500; }
         #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 1510; }
         .image-container { position: relative; height: 96%; border: 8px solid var(--black); box-shadow: 0 0 30px rgba(0,0,0,0.7); outline: 8px solid var(--white); }
@@ -55,7 +55,7 @@
         .side-item { font-family: 'Bangers'; font-size: 16px; color: #000; }
         .side-item span { font-size: 20px; color: var(--blue); margin-left: 5px; }
 
-        /* --- Penalty -10s Effect --- */
+        /* ตัวเลขลอย -10s */
         .penalty-text {
             position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 40px;
             pointer-events: none; z-index: 2000; text-shadow: 2px 2px 0px var(--black);
@@ -63,10 +63,10 @@
         }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
 
+        /* จุดอันตราย ( Hazard ) */
         .hazard { position: absolute; width: 12vh; height: 12vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 4px solid #ff0000; background: rgba(255, 0, 0, 0.2); }
         .hazard.found { border: 6px solid #00ff00 !important; background: rgba(0, 255, 0, 0.4) !important; box-shadow: 0 0 20px #00ff00; }
 
-        /* --- Sound Toggle --- */
         #sound-toggle { position: fixed; bottom: 15px; left: 15px; width: 70px; height: 55px; background: var(--red); color: var(--white); border: 4px solid var(--black); border-radius: 12px; display: flex; justify-content: center; align-items: center; z-index: 9000; cursor: pointer; font-family: 'Bangers'; font-size: 24px; box-shadow: 4px 4px 0px var(--black); outline: 4px solid var(--white); }
         
         @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 100% { transform: translate(0px, 0px) rotate(0deg); } }
@@ -86,7 +86,7 @@
     <div id="rotate-warning">
         <div style="font-size: 70px; animation: shake 2s infinite;">🔄</div>
         <h2 style="font-family:'Bangers'; font-size: 40px; margin: 15px 0;">PLEASE ROTATE!</h2>
-        <h3 style="font-family:'Itim'; margin: 0;">กรุณาหมุนโทรศัพท์แนวนอนเพื่อเล่น</h3>
+        <h3 style="font-family:'Itim'; margin: 0;">กรุณาหมุนโทรศัพท์เพื่อเล่น</h3>
     </div>
 
     <div id="rules-modal">
@@ -135,7 +135,7 @@
             <div style="flex:1;">
                 <h2 id="go-msg" style="font-family:'Bangers'; font-size: 38px; margin:0;"></h2>
                 <div id="rank-display" style="font-family:'Bangers'; font-size: 24px; margin: 5px 0;"></div>
-                <h1 id="go-score" style="font-size: 50px; color: var(--blue); font-family: 'Bangers'; margin: 0;">0</h1>
+                <h1 id="go-score" style="font-size: 55px; color: var(--blue); font-family: 'Bangers'; margin: 0;">0</h1>
             </div>
             <div style="flex:1;"><div class="btn" onclick="playClick(); location.reload()">HOME</div></div>
         </div>
@@ -165,22 +165,14 @@
 
         let currentLang = 'th', currentLevel = 1, totalScore = 0, timeLeft = 60, foundInLevel = 0, timerObj, isPlaying = false, isMuted = false;
 
-        // --- Sound System ---
         function playClick() { 
             if(!isMuted) {
                 const s = document.getElementById('snd-click');
-                s.pause(); s.currentTime = 0;
-                s.play().catch(e => {}); 
+                s.pause(); s.currentTime = 0; s.play().catch(e => {}); 
             }
         }
 
-        function toggleMute() { 
-            isMuted = !isMuted; 
-            const b = document.getElementById('sound-toggle'); 
-            b.innerText = isMuted ? "OFF" : "ON"; 
-            b.style.background = isMuted ? "#555" : "var(--red)"; 
-        }
-
+        function toggleMute() { isMuted = !isMuted; const b = document.getElementById('sound-toggle'); b.innerText = isMuted ? "OFF" : "ON"; b.style.background = isMuted ? "#555" : "var(--red)"; }
         function showRules() { document.getElementById('rules-modal').style.display = 'flex'; }
         function closeRules() { document.getElementById('rules-modal').style.display = 'none'; }
 
@@ -232,7 +224,7 @@
         document.getElementById('viewport').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             
-            // -10s Penalty Animation
+            // เอฟเฟกต์ -10s
             const p = document.createElement('div');
             p.className = 'penalty-text'; p.innerText = '-10s';
             p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
@@ -258,14 +250,14 @@
             document.getElementById('rank-display').innerText = t.rank + (fr ? fr.t : '');
         }
 
-        // --- Audio Unlock for Mobile ---
-        const unlock = () => { 
+        // ปลดล็อกเสียงครั้งแรก
+        document.addEventListener('click', function unlock() {
             ['snd-click', 'snd-hit', 'snd-miss', 'snd-win'].forEach(id => {
-                const s = document.getElementById(id); s.play().then(() => { s.pause(); s.currentTime = 0; }).catch(()=>{});
+                const s = document.getElementById(id);
+                s.play().then(() => { s.pause(); s.currentTime = 0; }).catch(e => {});
             });
             document.removeEventListener('click', unlock);
-        };
-        document.addEventListener('click', unlock);
+        }, { once: true });
     </script>
 </body>
 </html>
