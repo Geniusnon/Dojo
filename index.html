@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - COMPACT</title>
+    <title>LCB1 HAZARD HUNTER - REFRESH TIME</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; --white: #fff; --green: #00e676; }
@@ -16,62 +16,44 @@
             background-image: repeating-linear-gradient(45deg, rgba(255,222,3,0.05) 0px, rgba(255,222,3,0.05) 2px, transparent 2px, transparent 10px);
         }
 
-        /* --- Rotate Warning --- */
-        #rotate-warning {
-            position: fixed; inset: 0; background: var(--blue); color: var(--white); z-index: 200000;
-            display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-        }
-        @media screen and (orientation: portrait) {
-            #rotate-warning { display: flex !important; }
-            #game-interface, .screen, #sound-toggle { display: none !important; }
-        }
+        #rotate-warning { position: fixed; inset: 0; background: var(--blue); color: var(--white); z-index: 200000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        @media screen and (orientation: portrait) { #rotate-warning { display: flex !important; } #game-interface, .screen, #sound-toggle { display: none !important; } }
 
-        /* --- Sound Toggle --- */
         #sound-toggle { position: fixed; bottom: 10px; left: 10px; width: 55px; height: 40px; background: var(--red); color: var(--white); border: 3px solid var(--black); border-radius: 8px; display: flex; justify-content: center; align-items: center; z-index: 9000; cursor: pointer; font-family: 'Bangers'; font-size: 18px; box-shadow: 3px 3px 0px var(--black); outline: 3px solid var(--white); }
 
-        /* --- UI Screens --- */
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--yellow); clip-path: polygon(0 0, 100% 1%, 100% 100%, 0 99%); }
         .active-screen { display: flex; }
         .comic-title { font-family: 'Bangers'; font-size: 8vh; color: var(--blue); text-shadow: 3px 3px 0px #fff, 6px 6px 0px var(--black); margin-bottom: 1.5vh; transform: rotate(-1deg); }
         .box { background: var(--white); padding: 15px 20px; border: 3px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 380px; text-align: center; position: relative; border-radius: 5px; outline: 4px solid var(--white); }
 
-        /* --- Input Fields --- */
-        input { width: 100%; padding: 8px 12px; margin: 6px 0; border: 2.5px solid var(--black); font-family: 'Itim'; font-size: 16px; border-radius: 5px; background: #f9f9f9; }
-
-        /* --- Buttons --- */
+        input { width: 100%; padding: 8px 12px; margin: 6px 0; border: 2.5px solid var(--black); font-family: 'Itim'; font-size: 16px; border-radius: 5px; }
         .btn-row { display: flex; gap: 8px; margin-top: 8px; width: 100%; }
-        .btn { flex: 1; background: var(--red); color: var(--white); padding: 8px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; }
+        .btn { flex: 1; background: var(--red); color: var(--white); padding: 8px; font-family: 'Bangers'; font-size: 20px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; }
         .btn:active { transform: translate(1.5px, 1.5px); box-shadow: 1px 1px 0px var(--black); }
         .btn-blue { background: var(--blue); }
         .btn-gray { background: #666; }
 
-        /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 1500; }
-        #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 1510; background: #222; }
-        .image-container { position: relative; height: 92%; border: 5px solid var(--white); box-shadow: 0 0 25px rgba(0,0,0,0.7); outline: 5px solid var(--black); }
+        #viewport { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; background: #222; }
+        .image-container { position: relative; height: 92%; border: 5px solid var(--white); outline: 5px solid var(--black); }
         #main-img { height: 100%; width: auto; display: block; object-fit: contain; }
 
-        /* --- HUD --- */
         .side-bar-left { position: absolute; top: 8px; left: 8px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 4px 12px; gap: 15px; z-index: 1520; box-shadow: 3px 3px 0px var(--black); }
         .side-item { font-family: 'Bangers'; font-size: 16px; color: #000; }
         .side-item span { font-size: 18px; color: var(--blue); margin-left: 4px; }
 
-        /* --- Timer Bar --- */
         #timer-container { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 25%; height: 14px; background: rgba(0,0,0,0.5); border: 2.5px solid var(--black); border-radius: 8px; overflow: hidden; z-index: 2000; }
         #timer-bar { width: 100%; height: 100%; background: var(--green); transition: width 0.1s linear; }
 
-        /* --- Hazards & Penalties --- */
-        .hazard { position: absolute; width: 10vh; height: 10vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; border: 3px solid transparent; }
+        .hazard { position: absolute; width: 10vh; height: 10vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; }
         .hazard.found { border: 5px solid var(--green) !important; background: rgba(0, 255, 0, 0.3) !important; box-shadow: 0 0 15px var(--green); }
+        
         .penalty-text { position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 32px; pointer-events: none; z-index: 2000; text-shadow: 2px 2px 0px var(--black); animation: floatUp 0.8s ease-out forwards; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
-        
-        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-4px, 4px); } 50% { transform: translate(4px, -4px); } 75% { transform: translate(-4px, -4px); } }
         .shake-effect { animation: shake 0.3s ease-in-out; }
+        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-4px, 4px); } 50% { transform: translate(4px, -4px); } 75% { transform: translate(-4px, -4px); } }
 
-        /* --- Modal --- */
         #rules-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; justify-content: center; align-items: center; }
-        .rules-box { max-width: 400px; }
     </style>
 </head>
 <body>
@@ -108,9 +90,9 @@
     </div>
 
     <div id="rules-modal">
-        <div class="box rules-box">
+        <div class="box">
             <h2 id="rules-title" style="font-family:'Bangers'; color:var(--blue); font-size: 28px; margin:0;">RULES</h2>
-            <p id="rules-text" style="font-size: 16px; line-height: 1.4; margin: 10px 0; text-align: left;"></p>
+            <div id="rules-text" style="font-size: 16px; line-height: 1.4; margin: 10px 0; text-align: left;"></div>
             <div class="btn" onclick="playClick(); closeRules()">OK!</div>
         </div>
     </div>
@@ -139,16 +121,15 @@
     </div>
 
     <script>
-        // --- JavaScript Logic (ยังคงเดิมแต่มีการเรียกใช้ตัวแปรที่เหมาะสม) ---
         const translations = {
             th: { 
                 pl: "ชื่อพนักงาน", id: "รหัสพนักงาน", st: "เริ่มเกม", rb: "กติกา", win: "สำเร็จ!", lose: "เวลาหมด!", rank: "ฉายา: ",
-                rt: "กติกาการเล่น", rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ<br>2. จิ้มถูกได้แต้มโบนัสตามเวลา<br>3. จิ้มผิดหักเวลาในแถบพลัง!<br>4. อย่าให้แถบเวลาหมดเด็ดขาด",
+                rt: "กติกาการเล่น", rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ<br>2. แต่ละด่านมีเวลา 60 วินาที<br>3. จิ้มผิดหักเวลาในแถบพลัง!<br>4. อย่าให้แถบเวลาหมดเด็ดขาด",
                 ranks: [{m:2500, t:"ปรมาจารย์ 👑"}, {m:1500, t:"นักล่า 🛡️"}, {m:0, t:"มือใหม่ 🔍"}]
             },
             en: { 
                 pl: "Name", id: "ID", st: "START", rb: "RULES", win: "CLEAR!", lose: "TIMEOUT!", rank: "RANK: ",
-                rt: "HOW TO PLAY", rText: "1. Find 4 hazards per image.<br>2. Correct tap gives time bonus.<br>3. Wrong tap reduces your time bar!<br>4. Don't let the time bar run out.",
+                rt: "HOW TO PLAY", rText: "1. Find 4 hazards per image.<br>2. 60 seconds for each level.<br>3. Wrong tap reduces your time bar!<br>4. Don't let the time bar run out.",
                 ranks: [{m:2500, t:"Master 👑"}, {m:1500, t:"Elite 🛡️"}, {m:0, t:"Rookie 🔍"}]
             }
         };
@@ -181,7 +162,7 @@
         }
 
         function startGame() {
-            if(!document.getElementById('empName').value || !document.getElementById('empID').value) return alert("กรุณากรอกข้อมูล / Please enter info");
+            if(!document.getElementById('empName').value || !document.getElementById('empID').value) return alert("กรุณากรอกข้อมูล");
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'block';
             loadLevel(0);
@@ -190,14 +171,19 @@
 
         function loadLevel(lvIndex) {
             if(lvIndex >= levelsData.length) return gameOver(true);
+            
             isPlaying = false;
             currentLevel = lvIndex;
             foundInLevel = 0;
+            timeLeft = 100; // <<< แก้ไขจุดที่ 1: รีเซ็ตเวลาให้เต็มหลอดทุกด่าน
+            
             document.getElementById('current-lv').innerText = lvIndex + 1;
             const container = document.getElementById('hazard-container');
             container.innerHTML = '';
+            
             const img = document.getElementById('main-img');
             img.src = `images/${levelsData[lvIndex].img}`;
+            
             img.onload = () => {
                 levelsData[lvIndex].points.forEach(p => {
                     const d = document.createElement('div');
@@ -220,9 +206,10 @@
             foundInLevel++;
             totalScore += Math.floor(timeLeft * 2); 
             document.getElementById('total-score').innerText = totalScore;
+
             if(foundInLevel === 4) {
                 isPlaying = false;
-                timeLeft = Math.min(timeLeft + 20, 100); 
+                // <<< แก้ไขจุดที่ 2: เอาการบวกโบนัสเวลาออก เพราะจะไปรีเซ็ตที่ loadLevel อยู่แล้ว
                 setTimeout(() => loadLevel(currentLevel + 1), 600);
             }
         }
@@ -231,12 +218,14 @@
             if (timerObj) clearInterval(timerObj);
             timerObj = setInterval(() => {
                 if(isPlaying) {
-                    timeLeft -= 0.4; 
+                    timeLeft -= 0.4; // 100% / (0.4 * 10 รอบต่อวิ) = 25 วิโดยประมาณ (ปรับความเร็วได้ที่นี่)
                     const bar = document.getElementById('timer-bar');
                     bar.style.width = timeLeft + '%';
+                    
                     if(timeLeft > 50) bar.style.background = "var(--green)";
                     else if(timeLeft > 20) bar.style.background = "var(--yellow)";
                     else bar.style.background = "var(--red)";
+
                     if(timeLeft <= 0) gameOver(false);
                 }
             }, 100);
@@ -245,10 +234,10 @@
         document.getElementById('viewport').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             if(!isMuted) document.getElementById('snd-miss').play();
-            timeLeft -= 10; 
+            timeLeft -= 12; // จิ้มผิดหัก 12%
             if(window.navigator.vibrate) window.navigator.vibrate(100);
             const p = document.createElement('div');
-            p.className = 'penalty-text'; p.innerText = '-10%';
+            p.className = 'penalty-text'; p.innerText = '-12%';
             p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
             document.body.appendChild(p);
             setTimeout(() => p.remove(), 800);
