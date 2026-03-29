@@ -69,7 +69,6 @@
         .rank-header { font-family: 'Bangers'; font-size: 32px; color: var(--blue); margin-bottom: 10px; text-align: center; }
         .rank-list { max-height: 220px; overflow-y: auto; border: 2px solid var(--black); margin-bottom: 15px; background: #eee; }
         
-        /* ตารางแรงกิ้งแบบ 3 คอลัมน์ */
         .rank-item { display: grid; grid-template-columns: 0.8fr 1.2fr 0.6fr; gap: 5px; padding: 8px 10px; border-bottom: 1px solid #ccc; font-size: 16px; align-items: center; }
         .rank-item:nth-child(odd) { background: #fff; }
         .rank-item span:last-child { text-align: right; font-weight: bold; color: var(--red); }
@@ -144,8 +143,8 @@
 
     <div id="rotate-warning">
         <div class="icon">🔄</div>
-        <h2 style="font-family:'Bangers'; font-size: 32px; margin: 0;">ROTATE TO PLAY</h2>
-        <h3 style="font-family:'Itim'; font-size: 24px; margin-top: 5px;">กรุณาหมุนหน้าจอเพื่อเล่น</h3>
+        <h2 id="rot-title" style="font-family:'Bangers'; font-size: 32px; margin: 0;">ROTATE TO PLAY</h2>
+        <h3 id="rot-sub" style="font-family:'Itim'; font-size: 24px; margin-top: 5px;">กรุณาหมุนหน้าจอเพื่อเล่น</h3>
     </div>
 
     <div id="lang-screen" class="screen active-screen">
@@ -179,9 +178,9 @@
     <div id="game-interface">
         <div id="timer-container"><div id="timer-bar"></div></div>
         <div class="side-bar-left">
-            <div class="side-item"><span id="hud-lv">LV</span> <span id="current-lv">1</span></div>
-            <div class="side-item"><span id="hud-score">SCORE</span> <span id="total-score">0</span></div>
-            <div class="side-item"><span id="hud-time">TIME</span> <span id="time-text">60</span>s</div>
+            <div class="side-item"><span id="hud-lv-txt">LV</span> <span id="current-lv">1</span></div>
+            <div class="side-item"><span id="hud-score-txt">SCORE</span> <span id="total-score">0</span></div>
+            <div class="side-item"><span id="hud-time-txt">TIME</span> <span id="time-text">60</span>s</div>
         </div>
         
         <div id="viewport"></div>
@@ -209,15 +208,15 @@
 
     <div id="rank-screen" class="screen">
         <div class="leaderboard-container">
-            <div class="rank-header">🏆 TOP 10 HUNTERS</div>
+            <div id="rank-header-title" class="rank-header">🏆 TOP 10 HUNTERS</div>
             <div class="rank-item" style="background:var(--blue); color:white; font-weight:bold; border-radius: 5px 5px 0 0;">
-                <span>NAME</span>
-                <span style="text-align:center">TITLE</span>
-                <span style="text-align:right">SCORE</span>
+                <span id="col-name">NAME</span>
+                <span id="col-title" style="text-align:center">TITLE</span>
+                <span id="col-score" style="text-align:right">SCORE</span>
             </div>
             <div id="leaderboard-list" class="rank-list">Loading...</div>
             <div id="my-rank-info" class="my-final-rank"></div>
-            <div class="btn" onclick="hideRanking()" style="width:100%">BACK</div>
+            <div id="back-btn" class="btn" onclick="hideRanking()" style="width:100%">BACK</div>
         </div>
     </div>
 
@@ -244,28 +243,22 @@
                 pl: "ชื่อพนักงาน", id: "รหัสพนักงาน", st: "เริ่มเกม", rb: "กติกา", win: "สำเร็จ!", lose: "เวลาหมด!", rank: "ฉายา: ",
                 rt: "กติกาการเล่น", 
                 rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ (มีทั้งหมด 5 ด่าน)<br>2. รับคะแนนพื้นฐานทุกครั้งที่หาเจอ + โบนัสจากเวลาที่เหลือ<br>3. ระวัง! จิ้มผิดหักเวลา 10 วินาที<br>4. สะสมคะแนนเพื่อชิงฉายา 'ปรมาจารย์ความปลอดภัย'",
-                ok: "ตกลง!", rotate: "กรุณาหมุนโทรศัพท์", alert: "กรุณากรอกข้อมูลให้ครบถ้วน", replay: "หน้าแรก",
-                hud_lv: "ด่าน", hud_score: "คะแนน", hud_time: "เวลา", ranking: "ลำดับคะแนน",
+                ok: "ตกลง!", rotate: "กรุณาหมุนโทรศัพท์", rotSub: "กรุณาหมุนหน้าจอเพื่อเล่น", alert: "กรุณากรอกข้อมูลให้ครบถ้วน", replay: "หน้าแรก", ranking: "ลำดับคะแนน",
+                hud_lv: "ด่าน", hud_score: "คะแนน", hud_time: "เวลา", 
+                rank_head: "🏆 10 อันดับนักล่า", col_n: "ชื่อ", col_t: "ฉายา", col_s: "คะแนน", back: "ย้อนกลับ",
                 ranks: [
-                    {m: 4500, t: "ปรมาจารย์ 👑"},
-                    {m: 3800, t: "ผู้เชี่ยวชาญ ✨"},
-                    {m: 2500, t: "มือโปร 🔍"},
-                    {m: 1200, t: "ฝึกหัด 🔰"},
-                    {m: 0, t: "หน้าใหม่ 👣"}
+                    {m: 4500, t: "ปรมาจารย์ 👑"}, {m: 3800, t: "ผู้เชี่ยวชาญ ✨"}, {m: 2500, t: "มือโปร 🔍"}, {m: 1200, t: "ฝึกหัด 🔰"}, {m: 0, t: "หน้าใหม่ 👣"}
                 ]
             },
             en: { 
                 pl: "Name", id: "Employee ID", st: "START", rb: "RULES", win: "CLEAR!", lose: "TIMEOUT!", rank: "RANK: ",
                 rt: "HOW TO PLAY", 
                 rText: "1. Find 4 hazards per image (5 levels total).<br>2. Get base score + time bonus!<br>3. Careful! Wrong tap costs 10s.<br>4. Reach 'Safety Grandmaster' rank.",
-                ok: "OK!", rotate: "PLEASE ROTATE PHONE", alert: "Please fill in all fields", replay: "HOME", ranking: "RANKING",
+                ok: "OK!", rotate: "ROTATE TO PLAY", rotSub: "Please rotate your screen", alert: "Please fill in all fields", replay: "HOME", ranking: "RANKING",
                 hud_lv: "LV", hud_score: "SCORE", hud_time: "TIME",
+                rank_head: "🏆 TOP 10 HUNTERS", col_n: "NAME", col_t: "TITLE", col_s: "SCORE", back: "BACK",
                 ranks: [
-                    {m: 4500, t: "Grandmaster 👑"},
-                    {m: 3800, t: "Expert ✨"},
-                    {m: 2500, t: "Hazard Pro 🔍"},
-                    {m: 1200, t: "Trainee 🔰"},
-                    {m: 0, t: "Observer 👣"}
+                    {m: 4500, t: "Grandmaster 👑"}, {m: 3800, t: "Expert ✨"}, {m: 2500, t: "Hazard Pro 🔍"}, {m: 1200, t: "Trainee 🔰"}, {m: 0, t: "Observer 👣"}
                 ]
             }
         };
@@ -291,18 +284,31 @@
 
         window.selectLang = (l) => {
             currentLang = l; const t = translations[l]; playSnd('snd-click');
+            // Input Placeholders
             document.getElementById('empName').placeholder = t.pl;
             document.getElementById('empID').placeholder = t.id;
+            // Buttons
             document.getElementById('start-btn').innerText = t.st;
             document.getElementById('rules-btn').innerText = t.rb;
-            document.getElementById('rules-title').innerText = t.rt;
-            document.getElementById('rules-text').innerHTML = t.rText;
             document.getElementById('rules-ok-btn').innerText = t.ok;
-            document.getElementById('hud-lv').innerText = t.hud_lv;
-            document.getElementById('hud-score').innerText = t.hud_score;
-            document.getElementById('hud-time').innerText = t.hud_time;
             document.getElementById('replay-btn').innerText = t.replay;
             document.getElementById('rank-btn').innerText = t.ranking;
+            document.getElementById('back-btn').innerText = t.back;
+            // HUD & Labels
+            document.getElementById('hud-lv-txt').innerText = t.hud_lv;
+            document.getElementById('hud-score-txt').innerText = t.hud_score;
+            document.getElementById('hud-time-txt').innerText = t.hud_time;
+            document.getElementById('rules-title').innerText = t.rt;
+            document.getElementById('rules-text').innerHTML = t.rText;
+            // Ranking Screen
+            document.getElementById('rank-header-title').innerText = t.rank_head;
+            document.getElementById('col-name').innerText = t.col_n;
+            document.getElementById('col-title').innerText = t.col_t;
+            document.getElementById('col-score').innerText = t.col_s;
+            // Rotate screen
+            document.getElementById('rot-title').innerText = t.rotate;
+            document.getElementById('rot-sub').innerText = t.rotSub;
+
             document.getElementById('lang-screen').classList.remove('active-screen');
             document.getElementById('login-screen').classList.add('active-screen');
         };
@@ -426,7 +432,7 @@
                 const sorted = Object.values(data).sort((a,b) => b.score - a.score);
                 document.getElementById('leaderboard-list').innerHTML = sorted.slice(0,10).map((p,i) => 
                     `<div class="rank-item">
-                        <span>#${i+1} ${p.name}</span> 
+                        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">#${i+1} ${p.name}</span> 
                         <span class="rank-title">${p.rank}</span> 
                         <span>${p.score}</span>
                     </div>`
