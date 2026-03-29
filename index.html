@@ -273,7 +273,7 @@
         function hitHazard(el) {
             if(!isMuted) { const s = document.getElementById('snd-hit'); s.currentTime = 0; s.play(); }
             el.classList.add('found'); foundInLevel++;
-            totalScore += 125 + Math.floor(timeLeft * 2); 
+            totalScore += 125 + Math.floor(timeLeft * 2.5); 
             document.getElementById('total-score').innerText = totalScore;
             if(foundInLevel === 4) { isPlaying = false; setTimeout(() => loadLevel(currentLevel + 1), 600); }
         }
