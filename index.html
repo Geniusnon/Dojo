@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - COMIC EDITION</title>
+    <title>LCB1 HAZARD HUNTER - FINAL COMPLETE</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; --white: #fff; --green: #00e676; }
@@ -34,23 +34,22 @@
         input { width: 100%; padding: 10px; margin: 8px 0; border: 2.5px solid var(--black); font-family: 'Itim'; font-size: 18px; border-radius: 5px; }
         .btn-row { display: flex; gap: 10px; margin-top: 10px; width: 100%; justify-content: center; }
         .btn { display: inline-block; width: 100%; max-width: 200px; background: var(--red); color: var(--white); padding: 12px; font-family: 'Bangers'; font-size: 24px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; margin: 10px auto 0 auto; }
+        .btn:active { transform: translate(1.5px, 1.5px); box-shadow: 1px 1px 0px var(--black); }
 
         /* --- Game Interface --- */
-        #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 1500; }
+        #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 500; }
         
-        /* --- COMIC DANGER ZONE (BACKGROUND) แก้ไขใหม่ --- */
         #viewport { 
-            position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 1510; 
+            position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 510; 
             background-color: var(--yellow);
             background-image: 
                 repeating-linear-gradient(45deg, var(--black) 0px, var(--black) 40px, transparent 40px, transparent 80px),
                 radial-gradient(rgba(0,0,0,0.3) 2px, transparent 2px);
             background-size: 113px 113px, 12px 12px;
             filter: url(#comic-ink); 
-            pointer-events: none; /* ห้ามกดโดนพื้นที่นี้ */
+            pointer-events: none; 
         }
 
-        /* --- กรอบรูปที่กดได้ --- */
         .image-container { 
             position: relative; 
             aspect-ratio: 16 / 9;
@@ -60,18 +59,19 @@
             outline: 6px solid var(--black); 
             box-shadow: 15px 15px 0px rgba(0,0,0,0.5); 
             background: #000; 
-            pointer-events: auto; /* เปิดให้กดได้เฉพาะที่นี่ */
-            z-index: 1520;
+            pointer-events: auto; 
+            z-index: 520;
         }
 
         #main-img { width: 100%; height: 100%; display: block; object-fit: fill; pointer-events: none; }
         #hazard-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
         /* --- HUD --- */
-        .side-bar-left { position: absolute; top: 10px; left: 10px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 6px 15px; gap: 15px; z-index: 1600; box-shadow: 4px 4px 0px var(--black); }
+        .side-bar-left { position: absolute; top: 10px; left: 10px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 6px 15px; gap: 15px; z-index: 800; box-shadow: 4px 4px 0px var(--black); }
         .side-item { font-family: 'Bangers'; font-size: 16px; color: #000; }
-        
-        #timer-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 30%; height: 16px; background: rgba(0,0,0,0.5); border: 2.5px solid var(--black); border-radius: 10px; overflow: hidden; z-index: 2000; }
+        .side-item span { font-size: 18px; color: #000 !important; margin-left: 2px; }
+
+        #timer-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 30%; height: 16px; background: rgba(0,0,0,0.5); border: 2.5px solid var(--black); border-radius: 10px; overflow: hidden; z-index: 800; }
         #timer-bar { width: 100%; height: 100%; background: var(--green); transition: width 0.2s linear; }
 
         .hazard { position: absolute; width: 9vh; height: 9vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; cursor: pointer; }
@@ -81,14 +81,17 @@
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
         .shake-effect { animation: shake 0.3s ease-in-out; }
         @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-4px, 4px); } 50% { transform: translate(4px, -4px); } 75% { transform: translate(-4px, -4px); } }
+
+        /* --- Rules Modal Fixed --- */
+        #rules-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; justify-content: center; align-items: center; }
     </style>
 </head>
 <body>
 
     <svg style="position: absolute; width: 0; height: 0;">
         <filter id="comic-ink">
-            <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" />
         </filter>
     </svg>
 
@@ -129,7 +132,7 @@
         <div class="box">
             <h2 id="rules-title" style="font-family:'Bangers'; color:var(--blue); font-size: 28px; margin:0;">RULES</h2>
             <div id="rules-text" style="font-size: 16px; line-height: 1.4; margin: 10px 0; text-align: left;"></div>
-            <div class="btn" onclick="closeRules()" id="rules-ok-btn">OK!</div>
+            <div class="btn" onclick="closeRules()" id="rules-ok-btn">ตกลง!</div>
         </div>
     </div>
 
@@ -143,7 +146,7 @@
         
         <div id="viewport"></div>
 
-        <div style="position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; z-index: 1520;">
+        <div style="position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; z-index: 520;">
             <div class="image-container" id="img-box">
                 <img id="main-img" src="">
                 <div id="hazard-container"></div>
@@ -181,7 +184,7 @@
             en: { 
                 pl: "Name", id: "ID", st: "START", rb: "RULES", win: "CLEAR!", lose: "TIMEOUT!", rank: "RANK: ",
                 rt: "HOW TO PLAY", 
-                rText: "1. Find 4 hazards per image (5 levels total).<br>2. Get base score for each find + time bonus!<br>3. Careful! Wrong tap costs 10s (reduces your bonus).<br>4. Collect points to reach 'Safety Grandmaster' rank.",
+                rText: "1. Find 4 hazards per image (5 levels total).<br>2. Get base score for each find + time bonus!<br>3. Careful! Wrong tap costs 10s.<br>4. Reach 'Safety Grandmaster' rank.",
                 ok: "OK!", rotate: "PLEASE ROTATE PHONE", alert: "Please fill in all fields", replay: "PLAY AGAIN",
                 hud_lv: "LV", hud_score: "SCORE", hud_time: "TIME",
                 ranks: [
@@ -205,6 +208,7 @@
         let currentLang = 'th', currentLevel = 0, totalScore = 0, timeLeft = 60, foundInLevel = 0, isPlaying = false, isMuted = false, timerObj;
 
         function playClick() { if(!isMuted) { const s = document.getElementById('snd-click'); s.currentTime = 0; s.play().catch(()=>{}); } }
+        
         function toggleMute() { 
             playClick(); isMuted = !isMuted; 
             const b = document.getElementById('sound-toggle'); const bgm = document.getElementById('snd-bgm');
@@ -279,22 +283,17 @@
             }, 1000);
         }
 
-        /* --- คลิกผิด: เช็กเฉพาะในกรอบรูป (img-box) เท่านั้น --- */
         document.getElementById('img-box').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
-            
             if(!isMuted) { const s = document.getElementById('snd-miss'); s.currentTime = 0; s.play(); }
             timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
             document.getElementById('time-text').innerText = timeLeft;
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + '%';
-            
             if(window.navigator.vibrate) window.navigator.vibrate(100);
-            
             const p = document.createElement('div');
             p.className = 'penalty-text'; p.innerText = '-10s';
             p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
             document.body.appendChild(p); setTimeout(() => p.remove(), 800);
-            
             const gi = document.getElementById('game-interface'); gi.classList.add('shake-effect');
             setTimeout(() => gi.classList.remove('shake-effect'), 300);
             if(timeLeft <= 0) gameOver(false);
