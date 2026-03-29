@@ -66,17 +66,74 @@
         .btn:active { transform: translate(1.5px, 1.5px); box-shadow: 1px 1px 0px var(--black); }
 
         /* --- Leaderboard UI --- */
-        #rank-screen { background: var(--blue); }
-        .leaderboard-container { background: var(--white); border: 4px solid var(--black); width: 95%; max-width: 550px; max-height: 92vh; padding: 12px; border-radius: 10px; box-shadow: 6px 6px 0px var(--black); display: flex; flex-direction: column; }
-        .rank-header { font-family: 'Bangers'; font-size: 28px; color: var(--blue); margin-bottom: 8px; text-align: center; }
-        .rank-list { flex: 1; min-height: 120px; overflow-y: auto; border: 2px solid var(--black); margin-bottom: 10px; background: #eee; }
-        
-        .rank-item { display: grid; grid-template-columns: 1fr 1fr 0.6fr; gap: 5px; padding: 6px 8px; border-bottom: 1px solid #ccc; font-size: 14px; align-items: center; }
-        .rank-item:nth-child(odd) { background: #fff; }
-        .rank-item span:last-child { text-align: right; font-weight: bold; color: var(--red); }
-        .rank-item .rank-title { font-size: 12px; color: var(--blue); text-align: center; font-weight: bold; }
+    /* --- Leaderboard UI - ชุดแก้ไขใหม่ล่าสุดให้ประหยัดพื้นที่ --- */
+#rank-screen { 
+    background: var(--blue); 
+    padding: 5px; /* ลดพื้นที่ว่างขอบนอก */
+}
 
-        .my-final-rank { background: var(--yellow); padding: 5px; border: 2px solid var(--black); font-weight: bold; text-align: center; margin-bottom: 8px; font-size: 14px; }
+.leaderboard-container { 
+    background: var(--white); 
+    border: 3px solid var(--black); 
+    width: 98%; 
+    max-width: 500px; 
+    /* บล็อกความสูงให้พอดีจอมือถือแนวนอน */
+    height: 96vh; 
+    max-height: 310px; 
+    padding: 8px; 
+    border-radius: 10px; 
+    box-shadow: 4px 4px 0px var(--black); 
+    display: flex; 
+    flex-direction: column;
+}
+
+.rank-header { 
+    font-family: 'Bangers'; 
+    font-size: 20px; /* ลดขนาดหัวข้อลง */
+    color: var(--blue); 
+    margin: 0 0 5px 0; 
+    text-align: center; 
+}
+
+/* ส่วนรายชื่อ: ให้ยืดหดได้ตามพื้นที่ที่เหลือ */
+.rank-list { 
+    flex: 1; 
+    overflow-y: auto; 
+    border: 2px solid var(--black); 
+    margin-bottom: 5px; 
+    background: #eee; 
+}
+
+.rank-item { 
+    display: grid; 
+    grid-template-columns: 1.2fr 1fr 0.6fr; 
+    gap: 4px; 
+    padding: 4px 6px; 
+    border-bottom: 1px solid #ccc; 
+    font-size: 13px; /* ขนาดตัวอักษรพอดีตาบนมือถือ */
+    align-items: center; 
+}
+
+.rank-item:nth-child(odd) { background: #fff; }
+.rank-item span:last-child { text-align: right; font-weight: bold; color: var(--red); }
+.rank-item .rank-title { font-size: 11px; color: var(--blue); text-align: center; font-weight: bold; }
+
+/* ส่วนแสดงอันดับของเรา */
+.my-final-rank { 
+    background: var(--yellow); 
+    padding: 4px; 
+    border: 2px solid var(--black); 
+    font-weight: bold; 
+    text-align: center; 
+    margin-bottom: 5px; 
+    font-size: 13px; 
+}
+
+/* ปรับปุ่ม BACK ให้เล็กลงประหยัดที่ */
+#rank-screen .btn { 
+    padding: 6px; 
+    font-size: 18px; 
+}
 
         /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 500; }
