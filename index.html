@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - FINAL PRO</title>
+    <title>LCB1 HAZARD HUNTER - COMIC EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; --white: #fff; --green: #00e676; }
@@ -13,9 +13,6 @@
             margin: 0; padding: 0; width: 100%; height: 100svh; 
             font-family: 'Itim', cursive; overflow: hidden; position: fixed; 
             background-color: #1a1a1a;
-            /* เพิ่ม Halftone Dot Pattern พื้นหลังหลักของ Body ให้ดูเป็น Comic */
-            background-image: radial-gradient(rgba(255,222,3,0.1) 1px, transparent 1px);
-            background-size: 10px 10px;
         }
 
         /* --- Rotate Warning --- */
@@ -30,82 +27,72 @@
         .active-screen { display: flex; }
         
         #lang-screen { justify-content: center; padding-top: 0; }
-        /* เก็บ Mascot ตัวหลักในหน้าแรกไว้ */
         .main-mascot { width: 160px; height: auto; margin-bottom: 10px; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1)); }
-
         .comic-title { font-family: 'Bangers'; font-size: 8vh; color: var(--blue); text-shadow: 3px 3px 0px #fff, 6px 6px 0px var(--black); margin-bottom: 15px; transform: rotate(-1deg); }
         .box { background: var(--white); padding: 20px; border: 3px solid var(--black); box-shadow: 6px 6px 0px var(--black); width: 85%; max-width: 450px; text-align: center; position: relative; border-radius: 5px; outline: 4px solid var(--white); }
 
         input { width: 100%; padding: 10px; margin: 8px 0; border: 2.5px solid var(--black); font-family: 'Itim'; font-size: 18px; border-radius: 5px; }
         .btn-row { display: flex; gap: 10px; margin-top: 10px; width: 100%; justify-content: center; }
         .btn { display: inline-block; width: 100%; max-width: 200px; background: var(--red); color: var(--white); padding: 12px; font-family: 'Bangers'; font-size: 24px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; margin: 10px auto 0 auto; }
-        .btn:active { transform: translate(1.5px, 1.5px); box-shadow: 1px 1px 0px var(--black); }
 
         /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 1500; }
         
-        /* --- แก้ไขส่วนนี้: พื้นหลังเหลืองดำสไตล์ Comic --- */
+        /* --- COMIC DANGER ZONE (BACKGROUND) --- */
         #viewport { 
             position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 1510; 
-            background-color: var(--yellow); /* ใช้สีเหลืองหลัก */
-            
-            /* สร้างเลเยอร์เส้นดำแบบ Comic (Hand-drawn style) */
+            background-color: var(--yellow);
+            /* ลายเส้นเหลืองดำแบบ Comic Ink */
             background-image: 
-                /* เลเยอร์ 1: เส้นทึบดำสลับเหลือง */
-                linear-gradient(45deg, 
-                    var(--black) 25%, 
-                    transparent 25%, 
-                    transparent 50%, 
-                    var(--black) 50%, 
-                    var(--black) 75%, 
-                    transparent 75%, 
-                    transparent),
-                /* เลเยอร์ 2: เพิ่ม Texture ลายน้ำหมึก (ใช้ Halftone แบบเจือจาง) */
-                radial-gradient(var(--black) 2px, transparent 2px);
-                
-            background-size: 70px 70px, 15px 15px; /* ปรับขนาดลายเส้นให้ใหญ่ขึ้นเล็กน้อย */
-            background-position: 0 0, 7px 7px;
-            
-            /* เพิ่ม Comic Filter เล็กน้อย (ความอิ่มตัวสีสูงขึ้น) */
-            filter: saturate(1.2);
+                repeating-linear-gradient(45deg, var(--black) 0px, var(--black) 40px, transparent 40px, transparent 80px),
+                radial-gradient(rgba(0,0,0,0.3) 2px, transparent 2px);
+            background-size: 113px 113px, 12px 12px;
+            /* ทำให้ขอบลายเส้นดูหยักเหมือนวาดมือด้วย SVG Filter */
+            filter: url(#comic-ink); 
+            pointer-events: none; /* ห้ามกดโดนพื้นที่นี้ */
         }
 
+        /* --- กรอบรูปที่กดได้ --- */
         .image-container { 
             position: relative; 
             aspect-ratio: 16 / 9;
             width: auto; height: auto;
-            max-width: 92vw; max-height: 88vh; 
-            /* ขอบกล่องเกมสไตล์ Comic (เส้นหนา แข็ง) */
+            max-width: 92vw; max-height: 85vh; 
             border: 10px solid var(--white); 
             outline: 6px solid var(--black); 
-            box-shadow: 10px 10px 0px rgba(0,0,0,0.4); /* เปลี่ยนเงาให้นุ่มนวลเป็นเงา Comic */
+            box-shadow: 15px 15px 0px rgba(0,0,0,0.5); 
             background: #000; 
-            transform: rotate(0.5deg); /* เอียงเล็กน้อยเพิ่มความเป็น Comic */
+            pointer-events: auto; /* เปิดให้กดได้เฉพาะที่นี่ */
+            z-index: 1520;
         }
 
-        #main-img { width: 100%; height: 100%; display: block; object-fit: fill; }
+        #main-img { width: 100%; height: 100%; display: block; object-fit: fill; pointer-events: none; }
         #hazard-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
         /* --- HUD --- */
-        .side-bar-left { position: absolute; top: 10px; left: 10px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 6px 15px; gap: 15px; z-index: 1520; box-shadow: 4px 4px 0px var(--black); }
+        .side-bar-left { position: absolute; top: 10px; left: 10px; background: var(--white); border: 2.5px solid var(--black); border-radius: 5px; display: flex; padding: 6px 15px; gap: 15px; z-index: 1600; box-shadow: 4px 4px 0px var(--black); }
         .side-item { font-family: 'Bangers'; font-size: 16px; color: #000; }
-        .side-item span { font-size: 18px; color: #000 !important; margin-left: 2px; }
-
+        
         #timer-container { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 30%; height: 16px; background: rgba(0,0,0,0.5); border: 2.5px solid var(--black); border-radius: 10px; overflow: hidden; z-index: 2000; }
         #timer-bar { width: 100%; height: 100%; background: var(--green); transition: width 0.2s linear; }
 
         .hazard { position: absolute; width: 9vh; height: 9vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; cursor: pointer; }
         .hazard.found { border: 5px solid var(--green) !important; background: rgba(0, 255, 0, 0.3) !important; box-shadow: 0 0 20px var(--green); }
         
-        .penalty-text { position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 36px; pointer-events: none; z-index: 2000; text-shadow: 2px 2px 0px var(--black); animation: floatUp 0.8s ease-out forwards; }
+        .penalty-text { position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 36px; pointer-events: none; z-index: 3000; text-shadow: 2px 2px 0px var(--black); animation: floatUp 0.8s ease-out forwards; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
         .shake-effect { animation: shake 0.3s ease-in-out; }
         @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-4px, 4px); } 50% { transform: translate(4px, -4px); } 75% { transform: translate(-4px, -4px); } }
-
-        #rules-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; justify-content: center; align-items: center; }
     </style>
 </head>
 <body>
+
+    <svg style="position: absolute; width: 0; height: 0;">
+        <filter id="comic-ink">
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" />
+        </filter>
+    </svg>
 
     <audio id="snd-click" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
     <audio id="snd-hit" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" preload="auto"></audio>
@@ -155,7 +142,10 @@
             <div class="side-item"><span id="hud-score">SCORE</span> <span id="total-score">0</span></div>
             <div class="side-item"><span id="hud-time">TIME</span> <span id="time-text">60</span>s</div>
         </div>
-        <div id="viewport">
+        
+        <div id="viewport"></div>
+
+        <div style="position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; z-index: 1520;">
             <div class="image-container" id="img-box">
                 <img id="main-img" src="">
                 <div id="hazard-container"></div>
@@ -175,7 +165,6 @@
     </div>
 
     <script>
-        // ... (JavaScript ส่วนเดิมทั้งหมด ไม่มีการเปลี่ยนแปลงกลไก) ...
         const translations = {
             th: { 
                 pl: "ชื่อพนักงาน", id: "รหัสพนักงาน", st: "เริ่มเกม", rb: "กติกา", win: "สำเร็จ!", lose: "เวลาหมด!", rank: "ฉายา: ",
@@ -218,34 +207,22 @@
         let currentLang = 'th', currentLevel = 0, totalScore = 0, timeLeft = 60, foundInLevel = 0, isPlaying = false, isMuted = false, timerObj;
 
         function playClick() { if(!isMuted) { const s = document.getElementById('snd-click'); s.currentTime = 0; s.play().catch(()=>{}); } }
-        
         function toggleMute() { 
-            playClick(); 
-            isMuted = !isMuted; 
-            const b = document.getElementById('sound-toggle'); 
-            const bgm = document.getElementById('snd-bgm');
-            b.innerText = isMuted ? "OFF" : "ON"; 
-            b.style.background = isMuted ? "#555" : "var(--red)"; 
+            playClick(); isMuted = !isMuted; 
+            const b = document.getElementById('sound-toggle'); const bgm = document.getElementById('snd-bgm');
+            b.innerText = isMuted ? "OFF" : "ON"; b.style.background = isMuted ? "#555" : "var(--red)"; 
             if(isMuted) bgm.pause(); else if(isPlaying) bgm.play().catch(()=>{});
         }
 
         function selectLang(l) {
-            currentLang = l; const t = translations[l];
-            playClick();
-            document.getElementById('empName').placeholder = t.pl;
-            document.getElementById('empID').placeholder = t.id;
-            document.getElementById('start-btn').innerText = t.st;
-            document.getElementById('rules-btn').innerText = t.rb;
-            document.getElementById('rules-title').innerText = t.rt;
-            document.getElementById('rules-text').innerHTML = t.rText;
-            document.getElementById('rules-ok-btn').innerText = t.ok;
-            document.getElementById('rotate-text').innerText = t.rotate;
-            document.getElementById('hud-lv').innerText = t.hud_lv;
-            document.getElementById('hud-score').innerText = t.hud_score;
-            document.getElementById('hud-time').innerText = t.hud_time;
-            document.getElementById('replay-btn').innerText = t.replay;
-            document.getElementById('lang-screen').classList.remove('active-screen');
-            document.getElementById('login-screen').classList.add('active-screen');
+            currentLang = l; const t = translations[l]; playClick();
+            document.getElementById('empName').placeholder = t.pl; document.getElementById('empID').placeholder = t.id;
+            document.getElementById('start-btn').innerText = t.st; document.getElementById('rules-btn').innerText = t.rb;
+            document.getElementById('rules-title').innerText = t.rt; document.getElementById('rules-text').innerHTML = t.rText;
+            document.getElementById('rules-ok-btn').innerText = t.ok; document.getElementById('rotate-text').innerText = t.rotate;
+            document.getElementById('hud-lv').innerText = t.hud_lv; document.getElementById('hud-score').innerText = t.hud_score;
+            document.getElementById('hud-time').innerText = t.hud_time; document.getElementById('replay-btn').innerText = t.replay;
+            document.getElementById('lang-screen').classList.remove('active-screen'); document.getElementById('login-screen').classList.add('active-screen');
         }
 
         function showRules() { playClick(); document.getElementById('rules-modal').style.display = 'flex'; }
@@ -253,17 +230,12 @@
 
         function startGame() {
             playClick();
-            if(!document.getElementById('empName').value || !document.getElementById('empID').value) {
-                alert(translations[currentLang].alert); return;
-            }
-            const bgm = document.getElementById('snd-bgm');
-            bgm.volume = 0.4;
+            if(!document.getElementById('empName').value || !document.getElementById('empID').value) { alert(translations[currentLang].alert); return; }
+            const bgm = document.getElementById('snd-bgm'); bgm.volume = 0.4;
             if(!isMuted) bgm.play().catch(()=>{});
-
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'block';
-            loadLevel(0);
-            startGlobalTimer();
+            loadLevel(0); startGlobalTimer();
         }
 
         function loadLevel(lvIndex) {
@@ -287,8 +259,7 @@
 
         function hitHazard(el) {
             if(!isMuted) { const s = document.getElementById('snd-hit'); s.currentTime = 0; s.play(); }
-            el.classList.add('found'); 
-            foundInLevel++;
+            el.classList.add('found'); foundInLevel++;
             totalScore += 125 + Math.floor(timeLeft * 2); 
             document.getElementById('total-score').innerText = totalScore;
             if(foundInLevel === 4) { isPlaying = false; setTimeout(() => loadLevel(currentLevel + 1), 600); }
@@ -303,31 +274,31 @@
                     document.getElementById('time-text').innerText = timeLeft;
                     const bar = document.getElementById('timer-bar');
                     bar.style.width = (timeLeft / 60 * 100) + '%';
-                    
-                    if(timeLeft <= 15 && timeLeft > 0) {
-                        bgm.playbackRate = 1.4;
-                        bar.style.background = "var(--red)";
-                    } else {
-                        bgm.playbackRate = 1.0;
-                        bar.style.background = timeLeft > 30 ? "var(--green)" : "var(--yellow)";
-                    }
-
+                    if(timeLeft <= 15 && timeLeft > 0) { bgm.playbackRate = 1.4; bar.style.background = "var(--red)"; } 
+                    else { bgm.playbackRate = 1.0; bar.style.background = timeLeft > 30 ? "var(--green)" : "var(--yellow)"; }
                     if(timeLeft <= 0) gameOver(false);
                 }
             }, 1000);
         }
 
-        document.getElementById('viewport').onclick = (e) => {
+        /* --- ปรับปรุงการคลิกผิด: เช็กเฉพาะในกรอบรูป --- */
+        document.getElementById('img-box').onclick = (e) => {
+            // ถ้าคลิกโดนตัว Hazard ให้ฟังก์ชันของ Hazard ทำงานไป (ไม่เข้าเงื่อนไขนี้)
             if(!isPlaying || e.target.classList.contains('hazard')) return;
+            
             if(!isMuted) { const s = document.getElementById('snd-miss'); s.currentTime = 0; s.play(); }
             timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
             document.getElementById('time-text').innerText = timeLeft;
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + '%';
+            
             if(window.navigator.vibrate) window.navigator.vibrate(100);
+            
             const p = document.createElement('div');
             p.className = 'penalty-text'; p.innerText = '-10s';
+            // สุ่มตำแหน่งเล็กน้อยรอบจุดที่คลิกในกรอบ
             p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
             document.body.appendChild(p); setTimeout(() => p.remove(), 800);
+            
             const gi = document.getElementById('game-interface'); gi.classList.add('shake-effect');
             setTimeout(() => gi.classList.remove('shake-effect'), 300);
             if(timeLeft <= 0) gameOver(false);
@@ -337,7 +308,6 @@
             isPlaying = false; clearInterval(timerObj);
             const bgm = document.getElementById('snd-bgm');
             bgm.pause(); bgm.currentTime = 0; bgm.playbackRate = 1.0;
-
             if(win && !isMuted) document.getElementById('snd-win').play();
             document.getElementById('game-interface').style.display = 'none';
             document.getElementById('game-over-screen').classList.add('active-screen');
