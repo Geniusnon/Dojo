@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - COMIC PRO</title>
+    <title>LCB1 HAZARD HUNTER - SPY EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; --white: #fff; --green: #00e676; }
@@ -38,23 +38,20 @@
         /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 1500; }
         
-        /* --- COMIC DANGER ZONE (ฉากหลังที่กดไม่ได้) --- */
+        /* --- COMIC DANGER ZONE --- */
         #viewport { 
             position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 1510; 
             background-color: var(--yellow);
             background-image: 
-                /* ลายจุด Halftone แบบ Comic */
                 radial-gradient(var(--black) 15%, transparent 16%),
                 radial-gradient(var(--black) 15%, transparent 16%),
-                /* ลายเส้น Danger เฉียงแบบ Ink Style */
                 repeating-linear-gradient(45deg, rgba(0,0,0,0.8) 0px, rgba(0,0,0,0.8) 40px, transparent 40px, transparent 80px);
             background-size: 14px 14px, 14px 14px, 113px 113px;
             background-position: 0 0, 7px 7px, 0 0;
-            filter: url(#comic-ink); /* ทำให้เส้นหยักเหมือนวาดมือ */
+            filter: url(#comic-ink);
             pointer-events: none; 
         }
 
-        /* --- กรอบรูปที่กดได้ --- */
         .image-container { 
             position: relative; 
             aspect-ratio: 16 / 9;
@@ -66,7 +63,6 @@
             background: #000; 
             pointer-events: auto;
             z-index: 1520;
-            transform: rotate(0.3deg);
         }
 
         #main-img { width: 100%; height: 100%; display: block; object-fit: fill; pointer-events: none; }
@@ -278,6 +274,7 @@
                     document.getElementById('time-text').innerText = timeLeft;
                     const bar = document.getElementById('timer-bar');
                     bar.style.width = (timeLeft / 60 * 100) + '%';
+                    // เร่งจังหวะเพลง Spy เมื่อเวลาใกล้หมด
                     if(timeLeft <= 15 && timeLeft > 0) { bgm.playbackRate = 1.35; bar.style.background = "var(--red)"; } 
                     else { bgm.playbackRate = 1.0; bar.style.background = timeLeft > 30 ? "var(--green)" : "var(--yellow)"; }
                     if(timeLeft <= 0) gameOver(false);
@@ -285,7 +282,6 @@
             }, 1000);
         }
 
-        /* --- คลิกผิด: เช็กเฉพาะในกรอบรูปเท่านั้น --- */
         document.getElementById('img-box').onclick = (e) => {
             if(!isPlaying || e.target.classList.contains('hazard')) return;
             if(!isMuted) { const s = document.getElementById('snd-miss'); s.currentTime = 0; s.play(); }
