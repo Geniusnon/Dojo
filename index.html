@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LCB1 HAZARD HUNTER - COMIC EDITION</title>
+    <title>LCB1 HAZARD HUNTER - COMIC PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Itim&display=swap" rel="stylesheet">
     <style>
         :root { --yellow: #ffde03; --blue: #0336ff; --red: #ff0266; --black: #000; --white: #fff; --green: #00e676; }
@@ -38,18 +38,20 @@
         /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 1500; }
         
-        /* --- COMIC DANGER ZONE (BACKGROUND) --- */
+        /* --- COMIC DANGER ZONE (ฉากหลังที่กดไม่ได้) --- */
         #viewport { 
             position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 1510; 
             background-color: var(--yellow);
-            /* ลายเส้นเหลืองดำแบบ Comic Ink */
             background-image: 
-                repeating-linear-gradient(45deg, var(--black) 0px, var(--black) 40px, transparent 40px, transparent 80px),
-                radial-gradient(rgba(0,0,0,0.3) 2px, transparent 2px);
-            background-size: 113px 113px, 12px 12px;
-            /* ทำให้ขอบลายเส้นดูหยักเหมือนวาดมือด้วย SVG Filter */
-            filter: url(#comic-ink); 
-            pointer-events: none; /* ห้ามกดโดนพื้นที่นี้ */
+                /* ลายจุด Halftone แบบ Comic */
+                radial-gradient(var(--black) 15%, transparent 16%),
+                radial-gradient(var(--black) 15%, transparent 16%),
+                /* ลายเส้น Danger เฉียงแบบ Ink Style */
+                repeating-linear-gradient(45deg, rgba(0,0,0,0.8) 0px, rgba(0,0,0,0.8) 40px, transparent 40px, transparent 80px);
+            background-size: 14px 14px, 14px 14px, 113px 113px;
+            background-position: 0 0, 7px 7px, 0 0;
+            filter: url(#comic-ink); /* ทำให้เส้นหยักเหมือนวาดมือ */
+            pointer-events: none; 
         }
 
         /* --- กรอบรูปที่กดได้ --- */
@@ -60,10 +62,11 @@
             max-width: 92vw; max-height: 85vh; 
             border: 10px solid var(--white); 
             outline: 6px solid var(--black); 
-            box-shadow: 15px 15px 0px rgba(0,0,0,0.5); 
+            box-shadow: 20px 20px 0px rgba(0,0,0,0.6); 
             background: #000; 
-            pointer-events: auto; /* เปิดให้กดได้เฉพาะที่นี่ */
+            pointer-events: auto;
             z-index: 1520;
+            transform: rotate(0.3deg);
         }
 
         #main-img { width: 100%; height: 100%; display: block; object-fit: fill; pointer-events: none; }
@@ -79,7 +82,7 @@
         .hazard { position: absolute; width: 9vh; height: 9vh; transform: translate(-50%, -50%); z-index: 100; border-radius: 50%; cursor: pointer; }
         .hazard.found { border: 5px solid var(--green) !important; background: rgba(0, 255, 0, 0.3) !important; box-shadow: 0 0 20px var(--green); }
         
-        .penalty-text { position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 36px; pointer-events: none; z-index: 3000; text-shadow: 2px 2px 0px var(--black); animation: floatUp 0.8s ease-out forwards; }
+        .penalty-text { position: absolute; color: var(--red); font-family: 'Bangers'; font-size: 38px; pointer-events: none; z-index: 3000; text-shadow: 3px 3px 0px var(--black); animation: floatUp 0.8s ease-out forwards; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
         .shake-effect { animation: shake 0.3s ease-in-out; }
         @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-4px, 4px); } 50% { transform: translate(4px, -4px); } 75% { transform: translate(-4px, -4px); } }
@@ -89,8 +92,8 @@
 
     <svg style="position: absolute; width: 0; height: 0;">
         <filter id="comic-ink">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" />
         </filter>
     </svg>
 
@@ -98,7 +101,8 @@
     <audio id="snd-hit" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3" preload="auto"></audio>
     <audio id="snd-miss" src="https://assets.mixkit.co/active_storage/sfx/2021/2021-preview.mp3" preload="auto"></audio>
     <audio id="snd-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
-    <audio id="snd-bgm" src="https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3" loop preload="auto"></audio>
+    
+    <audio id="snd-bgm" src="spy.mp3" loop preload="auto"></audio>
 
     <div id="sound-toggle" onclick="toggleMute()">ON</div>
 
@@ -231,7 +235,7 @@
         function startGame() {
             playClick();
             if(!document.getElementById('empName').value || !document.getElementById('empID').value) { alert(translations[currentLang].alert); return; }
-            const bgm = document.getElementById('snd-bgm'); bgm.volume = 0.4;
+            const bgm = document.getElementById('snd-bgm'); bgm.volume = 0.5;
             if(!isMuted) bgm.play().catch(()=>{});
             document.getElementById('login-screen').classList.remove('active-screen');
             document.getElementById('game-interface').style.display = 'block';
@@ -274,28 +278,24 @@
                     document.getElementById('time-text').innerText = timeLeft;
                     const bar = document.getElementById('timer-bar');
                     bar.style.width = (timeLeft / 60 * 100) + '%';
-                    if(timeLeft <= 15 && timeLeft > 0) { bgm.playbackRate = 1.4; bar.style.background = "var(--red)"; } 
+                    if(timeLeft <= 15 && timeLeft > 0) { bgm.playbackRate = 1.35; bar.style.background = "var(--red)"; } 
                     else { bgm.playbackRate = 1.0; bar.style.background = timeLeft > 30 ? "var(--green)" : "var(--yellow)"; }
                     if(timeLeft <= 0) gameOver(false);
                 }
             }, 1000);
         }
 
-        /* --- ปรับปรุงการคลิกผิด: เช็กเฉพาะในกรอบรูป --- */
+        /* --- คลิกผิด: เช็กเฉพาะในกรอบรูปเท่านั้น --- */
         document.getElementById('img-box').onclick = (e) => {
-            // ถ้าคลิกโดนตัว Hazard ให้ฟังก์ชันของ Hazard ทำงานไป (ไม่เข้าเงื่อนไขนี้)
             if(!isPlaying || e.target.classList.contains('hazard')) return;
-            
             if(!isMuted) { const s = document.getElementById('snd-miss'); s.currentTime = 0; s.play(); }
             timeLeft -= 10; if(timeLeft < 0) timeLeft = 0;
             document.getElementById('time-text').innerText = timeLeft;
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + '%';
-            
             if(window.navigator.vibrate) window.navigator.vibrate(100);
             
             const p = document.createElement('div');
             p.className = 'penalty-text'; p.innerText = '-10s';
-            // สุ่มตำแหน่งเล็กน้อยรอบจุดที่คลิกในกรอบ
             p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
             document.body.appendChild(p); setTimeout(() => p.remove(), 800);
             
