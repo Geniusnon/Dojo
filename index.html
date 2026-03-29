@@ -45,34 +45,32 @@
         .main-mascot { width: 160px; height: auto; margin-bottom: 10px; filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.1)); }
         .comic-title { font-family: 'Bangers'; font-size: 8vh; color: var(--blue); text-shadow: 3px 3px 0px #fff, 6px 6px 0px var(--black); margin-bottom: 15px; transform: rotate(-1deg); }
         
-        /* แก้ไข .box ให้รองรับหน้าจอเล็กและบีบอัดได้ดีขึ้น */
         .box { 
             background: var(--white); 
-            padding: 15px; 
+            padding: 20px; 
             border: 3px solid var(--black); 
             box-shadow: 6px 6px 0px var(--black); 
             width: 85%; 
             max-width: 450px; 
-            max-height: 92svh; 
             text-align: center; 
             position: relative; 
             border-radius: 5px; 
             outline: 4px solid var(--white);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            overflow-y: auto;
         }
 
-        input { width: 100%; padding: 10px; margin: 4px 0; border: 2.5px solid var(--black); font-family: 'Itim'; font-size: 18px; border-radius: 5px; }
-        .btn-row { display: flex; gap: 10px; margin-top: 5px; width: 100%; justify-content: center; }
-        .btn { display: inline-block; width: 100%; max-width: 200px; background: var(--red); color: var(--white); padding: 10px; font-family: 'Bangers'; font-size: 22px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; margin: 5px auto 0 auto; }
+        input { width: 100%; padding: 10px; margin: 8px 0; border: 2.5px solid var(--black); font-family: 'Itim'; font-size: 18px; border-radius: 5px; }
+        .btn-row { display: flex; gap: 10px; margin-top: 10px; width: 100%; justify-content: center; }
+        .btn { display: inline-block; width: 100%; background: var(--red); color: var(--white); padding: 12px; font-family: 'Bangers'; font-size: 24px; border: 3px solid var(--black); cursor: pointer; box-shadow: 3px 3px 0px var(--black); text-align: center; border-radius: 5px; text-decoration: none; }
         .btn:active { transform: translate(1.5px, 1.5px); box-shadow: 1px 1px 0px var(--black); }
 
-        /* --- Leaderboard UI (บีบอัดพิเศษ) --- */
-        .leaderboard-box { background: #f0f0f0; border: 2px dashed var(--black); margin-top: 5px; padding: 6px; text-align: left; max-height: 110px; overflow-y: auto; font-size: 13px; }
-        .rank-item { display: flex; justify-content: space-between; border-bottom: 1px solid #ccc; padding: 3px 5px; }
-        .my-rank-info { margin-top: 4px; color: var(--red); font-weight: bold; font-size: 14px; text-align: center; }
+        /* --- Leaderboard UI --- */
+        #rank-screen { background: var(--blue); }
+        .leaderboard-container { background: var(--white); border: 4px solid var(--black); width: 90%; max-width: 500px; padding: 15px; border-radius: 10px; box-shadow: 8px 8px 0px var(--black); }
+        .rank-header { font-family: 'Bangers'; font-size: 32px; color: var(--blue); margin-bottom: 10px; text-align: center; }
+        .rank-list { max-height: 200px; overflow-y: auto; border: 2px solid #eee; margin-bottom: 15px; }
+        .rank-item { display: flex; justify-content: space-between; padding: 8px 10px; border-bottom: 1px solid #ddd; font-size: 18px; }
+        .rank-item:nth-child(odd) { background: #f9f9f9; }
+        .my-final-rank { background: var(--yellow); padding: 8px; border: 2px solid var(--black); font-weight: bold; text-align: center; margin-bottom: 10px; }
 
         /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 500; }
@@ -149,8 +147,8 @@
         <img src="images/mascot.png" class="main-mascot" alt="Mascot">
         <div class="comic-title">HAZARD HUNTER</div>
         <div class="btn-row" style="width: 100%; max-width: 320px;">
-            <div class="btn" onclick="selectLang('th')" style="margin:0">ไทย</div>
-            <div class="btn" onclick="selectLang('en')" style="margin:0; background:var(--blue);">English</div>
+            <div class="btn" onclick="selectLang('th')" style="margin:0; width: 140px;">ไทย</div>
+            <div class="btn" onclick="selectLang('en')" style="margin:0; width: 140px; background:var(--blue);">English</div>
         </div>
     </div>
 
@@ -159,8 +157,8 @@
             <input type="text" id="empName" placeholder="">
             <input type="text" id="empID" placeholder="">
             <div class="btn-row">
-                <div class="btn" onclick="startGame()" id="start-btn" style="margin:0">START</div>
-                <div class="btn" onclick="showRules()" id="rules-btn" style="margin:0; background:#666;">RULES</div>
+                <div class="btn" onclick="startGame()" id="start-btn" style="flex:1">START</div>
+                <div class="btn" onclick="showRules()" id="rules-btn" style="flex:1; background:#666;">RULES</div>
             </div>
         </div>
     </div>
@@ -193,17 +191,23 @@
 
     <div id="game-over-screen" class="screen">
         <div class="box">
-            <h2 id="go-msg" style="font-family:'Bangers'; font-size: 28px; margin:0; color:var(--red);">SUCCESS!</h2>
-            <h1 id="go-score" style="font-size: 42px; margin: 0; line-height: 1;">0</h1>
-            <div id="rank-display" style="font-family:'Bangers'; font-size: 18px; color:var(--blue); margin: 0;">RANK: -</div>
+            <h2 id="go-msg" style="font-family:'Bangers'; font-size: 32px; margin:0;">SUCCESS!</h2>
+            <h1 id="go-score" style="font-size: 60px; margin: 10px 0; line-height: 1;">0</h1>
+            <div id="rank-display" style="font-family:'Bangers'; font-size: 22px; color:var(--blue); margin-bottom: 20px;">RANK: -</div>
             
-            <div class="leaderboard-box">
-                <div style="text-align:center; font-weight:bold; border-bottom:1px solid #000; margin-bottom:4px;">🏆 TOP 5 LEADERBOARD</div>
-                <div id="leaderboard-list">Loading...</div>
-                <div id="my-rank-info" class="my-rank-info"></div>
+            <div class="btn-row">
+                <div class="btn" onclick="location.reload()" id="replay-btn" style="flex:1">HOME</div>
+                <div class="btn" onclick="showRanking()" id="rank-btn" style="flex:1; background:var(--blue);">RANKING</div>
             </div>
+        </div>
+    </div>
 
-            <div class="btn" onclick="location.reload()" id="replay-btn" style="margin-top:2px;">PLAY AGAIN</div>
+    <div id="rank-screen" class="screen">
+        <div class="leaderboard-container">
+            <div class="rank-header">🏆 TOP 10 HUNTERS</div>
+            <div id="leaderboard-list" class="rank-list">Loading...</div>
+            <div id="my-rank-info" class="my-final-rank"></div>
+            <div class="btn" onclick="hideRanking()" style="width:100%">BACK</div>
         </div>
     </div>
 
@@ -233,7 +237,7 @@
                 rt: "กติกาการเล่น", 
                 rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ (มีทั้งหมด 5 ด่าน)<br>2. รับคะแนนพื้นฐานทุกครั้งที่หาเจอ + โบนัสจากเวลาที่เหลือ<br>3. ระวัง! จิ้มผิดหักเวลา 10 วินาที<br>4. สะสมคะแนนเพื่อชิงฉายา 'ปรมาจารย์ความปลอดภัย'",
                 ok: "ตกลง!", rotate: "กรุณาหมุนโทรศัพท์", alert: "กรุณากรอกข้อมูลให้ครบถ้วน", replay: "หน้าแรก",
-                hud_lv: "ด่าน", hud_score: "คะแนน", hud_time: "เวลา",
+                hud_lv: "ด่าน", hud_score: "คะแนน", hud_time: "เวลา", ranking: "ลำดับคะแนน",
                 ranks: [
                     {m: 4500, t: "ปรมาจารย์ความปลอดภัย 👑"},
                     {m: 3800, t: "ผู้เชี่ยวชาญความปลอดภัย ✨"},
@@ -246,7 +250,7 @@
                 pl: "Name", id: "Employee ID", st: "START", rb: "RULES", win: "CLEAR!", lose: "TIMEOUT!", rank: "RANK: ",
                 rt: "HOW TO PLAY", 
                 rText: "1. Find 4 hazards per image (5 levels total).<br>2. Get base score + time bonus!<br>3. Careful! Wrong tap costs 10s.<br>4. Reach 'Safety Grandmaster' rank.",
-                ok: "OK!", rotate: "PLEASE ROTATE PHONE", alert: "Please fill in all fields", replay: "Home",
+                ok: "OK!", rotate: "PLEASE ROTATE PHONE", alert: "Please fill in all fields", replay: "HOME", ranking: "RANKING",
                 hud_lv: "LV", hud_score: "SCORE", hud_time: "TIME",
                 ranks: [
                     {m: 4500, t: "Safety Grandmaster 👑"},
@@ -291,12 +295,22 @@
             document.getElementById('hud-score').innerText = t.hud_score;
             document.getElementById('hud-time').innerText = t.hud_time;
             document.getElementById('replay-btn').innerText = t.replay;
+            document.getElementById('rank-btn').innerText = t.ranking;
             document.getElementById('lang-screen').classList.remove('active-screen');
             document.getElementById('login-screen').classList.add('active-screen');
         };
 
         window.showRules = () => { playSnd('snd-click'); document.getElementById('rules-modal').style.display = 'flex'; };
         window.closeRules = () => { playSnd('snd-click'); document.getElementById('rules-modal').style.display = 'none'; };
+
+        window.showRanking = () => {
+            playSnd('snd-click');
+            document.getElementById('rank-screen').classList.add('active-screen');
+        };
+        window.hideRanking = () => {
+            playSnd('snd-click');
+            document.getElementById('rank-screen').classList.remove('active-screen');
+        };
 
         window.startGame = () => {
             playSnd('snd-click');
@@ -404,11 +418,11 @@
             onValue(ref(db, 'rankings'), (s) => {
                 const data = s.val(); if(!data) return;
                 const sorted = Object.values(data).sort((a,b) => b.score - a.score);
-                document.getElementById('leaderboard-list').innerHTML = sorted.slice(0,5).map((p,i) => 
+                document.getElementById('leaderboard-list').innerHTML = sorted.slice(0,10).map((p,i) => 
                     `<div class="rank-item"><span>#${i+1} ${p.name}</span> <span>${p.score}</span></div>`
                 ).join('');
                 const myRank = sorted.findIndex(p => p.empId === id) + 1;
-                document.getElementById('my-rank-info').innerText = `อันดับของคุณ: #${myRank} / ${sorted.length}`;
+                document.getElementById('my-rank-info').innerText = (currentLang === 'th' ? `อันดับของคุณ: #` : `YOUR RANK: #`) + `${myRank} / ${sorted.length}`;
             });
         }
 
