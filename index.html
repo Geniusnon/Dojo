@@ -15,9 +15,19 @@
             background-color: #1a1a1a;
         }
 
-        /* --- Rotate Warning --- */
-        #rotate-warning { position: fixed; inset: 0; background: var(--blue); color: var(--white); z-index: 200000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        @media screen and (orientation: portrait) { #rotate-warning { display: flex !important; } #game-interface, .screen, #sound-toggle { display: none !important; } }
+        /* --- Rotate Warning (แก้ไขให้มี 2 ภาษา) --- */
+        #rotate-warning { 
+            position: fixed; inset: 0; background: var(--blue); color: var(--white); z-index: 200000; 
+            display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; 
+            padding: 20px;
+        }
+        #rotate-warning .icon { font-size: 80px; margin-bottom: 10px; animation: spin 2s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media screen and (orientation: portrait) { 
+            #rotate-warning { display: flex !important; } 
+            #game-interface, .screen, #sound-toggle { display: none !important; } 
+        }
 
         /* --- Sound Toggle --- */
         #sound-toggle { position: fixed; bottom: 10px; left: 10px; width: 55px; height: 40px; background: var(--red); color: var(--white); border: 3px solid var(--black); border-radius: 8px; display: flex; justify-content: center; align-items: center; z-index: 9000; cursor: pointer; font-family: 'Bangers'; font-size: 18px; box-shadow: 3px 3px 0px var(--black); outline: 3px solid var(--white); }
@@ -104,8 +114,9 @@
     <div id="sound-toggle" onclick="toggleMute()">ON</div>
 
     <div id="rotate-warning">
-        <div style="font-size: 60px;">🔄</div>
-        <h2 id="rotate-text" style="font-family:'Bangers'; margin-top:8px;">ROTATE TO PLAY</h2>
+        <div class="icon">🔄</div>
+        <h2 style="font-family:'Bangers'; font-size: 32px; margin: 0;">ROTATE TO PLAY</h2>
+        <h3 style="font-family:'Itim'; font-size: 24px; margin-top: 5px;">กรุณาหมุนหน้าจอเพื่อเล่น</h3>
     </div>
 
     <div id="lang-screen" class="screen active-screen">
@@ -221,7 +232,7 @@
             document.getElementById('empName').placeholder = t.pl; document.getElementById('empID').placeholder = t.id;
             document.getElementById('start-btn').innerText = t.st; document.getElementById('rules-btn').innerText = t.rb;
             document.getElementById('rules-title').innerText = t.rt; document.getElementById('rules-text').innerHTML = t.rText;
-            document.getElementById('rules-ok-btn').innerText = t.ok; document.getElementById('rotate-text').innerText = t.rotate;
+            document.getElementById('rules-ok-btn').innerText = t.ok;
             document.getElementById('hud-lv').innerText = t.hud_lv; document.getElementById('hud-score').innerText = t.hud_score;
             document.getElementById('hud-time').innerText = t.hud_time; document.getElementById('replay-btn').innerText = t.replay;
             document.getElementById('lang-screen').classList.remove('active-screen'); document.getElementById('login-screen').classList.add('active-screen');
