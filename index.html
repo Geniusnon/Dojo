@@ -13,7 +13,9 @@
             margin: 0; padding: 0; width: 100%; height: 100svh; 
             font-family: 'Itim', cursive; overflow: hidden; position: fixed; 
             background-color: #1a1a1a;
-            background-image: repeating-linear-gradient(45deg, rgba(255,222,3,0.05) 0px, rgba(255,222,3,0.05) 2px, transparent 2px, transparent 10px);
+            /* เพิ่ม Halftone Dot Pattern พื้นหลังหลักของ Body ให้ดูเป็น Comic */
+            background-image: radial-gradient(rgba(255,222,3,0.1) 1px, transparent 1px);
+            background-size: 10px 10px;
         }
 
         /* --- Rotate Warning --- */
@@ -42,11 +44,30 @@
         /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 1500; }
         
+        /* --- แก้ไขส่วนนี้: พื้นหลังเหลืองดำสไตล์ Comic --- */
         #viewport { 
             position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 1510; 
-            background-color: #ffde03; 
-            background-image: linear-gradient(45deg, #000 25%, transparent 25%, transparent 50%, #000 50%, #000 75%, transparent 75%, transparent);
-            background-size: 60px 60px;
+            background-color: var(--yellow); /* ใช้สีเหลืองหลัก */
+            
+            /* สร้างเลเยอร์เส้นดำแบบ Comic (Hand-drawn style) */
+            background-image: 
+                /* เลเยอร์ 1: เส้นทึบดำสลับเหลือง */
+                linear-gradient(45deg, 
+                    var(--black) 25%, 
+                    transparent 25%, 
+                    transparent 50%, 
+                    var(--black) 50%, 
+                    var(--black) 75%, 
+                    transparent 75%, 
+                    transparent),
+                /* เลเยอร์ 2: เพิ่ม Texture ลายน้ำหมึก (ใช้ Halftone แบบเจือจาง) */
+                radial-gradient(var(--black) 2px, transparent 2px);
+                
+            background-size: 70px 70px, 15px 15px; /* ปรับขนาดลายเส้นให้ใหญ่ขึ้นเล็กน้อย */
+            background-position: 0 0, 7px 7px;
+            
+            /* เพิ่ม Comic Filter เล็กน้อย (ความอิ่มตัวสีสูงขึ้น) */
+            filter: saturate(1.2);
         }
 
         .image-container { 
@@ -54,10 +75,12 @@
             aspect-ratio: 16 / 9;
             width: auto; height: auto;
             max-width: 92vw; max-height: 88vh; 
-            border: 8px solid var(--white); 
-            outline: 8px solid var(--black); 
-            box-shadow: 0 0 100px rgba(0,0,0,0.8); 
+            /* ขอบกล่องเกมสไตล์ Comic (เส้นหนา แข็ง) */
+            border: 10px solid var(--white); 
+            outline: 6px solid var(--black); 
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.4); /* เปลี่ยนเงาให้นุ่มนวลเป็นเงา Comic */
             background: #000; 
+            transform: rotate(0.5deg); /* เอียงเล็กน้อยเพิ่มความเป็น Comic */
         }
 
         #main-img { width: 100%; height: 100%; display: block; object-fit: fill; }
@@ -138,7 +161,7 @@
                 <div id="hazard-container"></div>
             </div>
         </div>
-        </div>
+    </div>
 
     <div id="game-over-screen" class="screen">
         <div class="box">
