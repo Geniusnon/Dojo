@@ -133,7 +133,6 @@
         /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 500; }
         
-        /* เพิ่ม Shake Keyframes เพื่อให้ระบบสั่นทำงาน */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
             10% { transform: translate(-1px, -2px) rotate(-1deg); }
@@ -309,6 +308,7 @@
                 ok: "ตกลง!", rotate: "ROTATE TO PLAY", rotSub: "กรุณาหมุนหน้าจอเพื่อเล่น", alert: "กรุณากรอกข้อมูลให้ครบ", replay: "หน้าแรก", ranking: "ลำดับคะแนน",
                 hud_lv: "ด่าน", hud_score: "คะแนน", hud_time: "เวลา", 
                 rank_head: "🏆 10 อันดับนักล่า", col_n: "ชื่อ", col_t: "ฉายา", col_s: "คะแนน", back: "ย้อนกลับ",
+                my_rank_txt: "อันดับของคุณ: #",
                 ranks: [
                     {m: 5000, t: "ปรมาจารย์ความปลอดภัย 🧘"}, {m: 4500, t: "ผู้เชี่ยวชาญ ✨"}, {m: 3800, t: "มือโปร 🎯"}, {m: 2500, t: "ฝึกหัด 🔰"}, {m: 0, t: "หน้าใหม่ 👷"}
                 ]
@@ -320,6 +320,7 @@
                 ok: "OK!", rotate: "ROTATE TO PLAY", rotSub: "Please rotate your screen", alert: "Please fill in all fields", replay: "HOME", ranking: "RANKING",
                 hud_lv: "LV", hud_score: "SCORE", hud_time: "TIME",
                 rank_head: "🏆 TOP 10 HUNTERS", col_n: "NAME", col_t: "TITLE", col_s: "SCORE", back: "BACK",
+                my_rank_txt: "YOUR RANK: #",
                 ranks: [
                     {m: 5000, t: "Safety Grandmaster 🧘"}, {m: 4500, t: "Hazard Expert ✨"}, {m: 3800, t: "Hazard Pro 🎯"}, {m: 2500, t: "Trainee 🔰"}, {m: 0, t: "Observer 👷"}
                 ]
@@ -336,7 +337,12 @@
 
         let currentLang = 'th', currentLevel = 0, totalScore = 0, timeLeft = 60, foundInLevel = 0, isPlaying = false, isMuted = false, timerObj;
 
-        // ฟังก์ชัน Preload รูปภาพด่าน
+        // ฟังก์ชันหาฉายาจากคะแนนตามภาษาปัจจุบัน
+        function getRankTitle(score) {
+            const list = translations[currentLang].ranks;
+            return (list.find(r => score >= r.m) || list[list.length - 1]).t;
+        }
+
         function preloadAssets() {
             levelsData.forEach(lvl => { const img = new Image(); img.src = `images/${lvl.img}`; });
         }
@@ -352,7 +358,7 @@
 
         window.selectLang = (l) => {
             currentLang = l; const t = translations[l]; playSnd('snd-click');
-            preloadAssets(); // เริ่มโหลดรูปทันทีที่เลือกภาษา
+            preloadAssets();
             document.getElementById('empName').placeholder = t.pl;
             document.getElementById('empID').placeholder = t.id;
             document.getElementById('start-btn').innerText = t.st;
@@ -370,8 +376,8 @@
             document.getElementById('col-name').innerText = t.col_n;
             document.getElementById('col-title').innerText = t.col_t;
             document.getElementById('col-score').innerText = t.col_s;
-            document.getElementById('rot-title').innerText = t.rotate;
-            document.getElementById('rot-sub').innerText = t.rotSub;
+            document.getElementById('rot-title').innerText = translations[l].rotate;
+            document.getElementById('rot-sub').innerText = translations[l].rotSub;
             document.getElementById('lang-screen').classList.remove('active-screen');
             document.getElementById('login-screen').classList.add('active-screen');
         };
@@ -478,17 +484,17 @@
             document.getElementById('go-msg').innerText = win ? t.win : t.lose;
             document.getElementById('go-score').innerText = totalScore;
             
-            const rankObj = t.ranks.find(r => totalScore >= r.m) || t.ranks[4];
-            document.getElementById('rank-display').innerText = t.rank + rankObj.t;
+            // ใช้ฟังก์ชัน getRankTitle คำนวณฉายาสดๆ ตามภาษาที่เลือก
+            document.getElementById('rank-display').innerText = t.rank + getRankTitle(totalScore);
 
             const id = document.getElementById('empID').value;
             const name = document.getElementById('empName').value;
             const userRef = ref(db, 'rankings/' + id);
             
-            // ใช้ get() เพื่อเช็คคะแนนเก่าและดึง Ranking ใหม่แบบครั้งเดียวจบ (ลดการใช้ Memory)
             const snap = await get(userRef);
             if(!snap.exists() || snap.val().score < totalScore) {
-                await set(userRef, { name, empId: id, score: totalScore, rank: rankObj.t, time: Date.now() });
+                // บันทึกเฉพาะชื่อ ID คะแนน (ไม่บันทึก Rank เป็นตัวหนังสือเพื่อแก้ปัญหาภาษา)
+                await set(userRef, { name, empId: id, score: totalScore, time: Date.now() });
             }
 
             const allSnap = await get(ref(db, 'rankings'));
@@ -498,12 +504,12 @@
                 document.getElementById('leaderboard-list').innerHTML = sorted.slice(0,10).map((p,i) => 
                     `<div class="rank-item">
                         <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">#${i+1} ${p.name}</span> 
-                        <span class="rank-title">${p.rank}</span> 
+                        <span class="rank-title">${getRankTitle(p.score)}</span> 
                         <span>${p.score}</span>
                     </div>`
                 ).join('');
                 const myRank = sorted.findIndex(p => p.empId === id) + 1;
-                document.getElementById('my-rank-info').innerText = (currentLang === 'th' ? `อันดับของคุณ: #` : `YOUR RANK: #`) + `${myRank} / ${sorted.length}`;
+                document.getElementById('my-rank-info').innerText = t.my_rank_txt + `${myRank} / ${sorted.length}`;
             }
         }
 
