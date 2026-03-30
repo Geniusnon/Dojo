@@ -52,8 +52,8 @@
             box-shadow: 5px 5px 0px var(--black); 
             width: 90%; 
             max-width: 420px; 
-            max-height: 90vh; /* ป้องกันล้นจอแนวตั้ง */
-            overflow-y: auto; /* ให้เลื่อนได้ถ้าจอสั้นมาก */
+            max-height: 90vh; 
+            overflow-y: auto; 
             text-align: center; 
             position: relative; 
             border-radius: 5px; 
@@ -66,77 +66,83 @@
         .btn:active { transform: translate(1.5px, 1.5px); box-shadow: 1px 1px 0px var(--black); }
 
         /* --- Leaderboard UI --- */
-    /* --- Leaderboard UI - ชุดแก้ไขใหม่ล่าสุดให้ประหยัดพื้นที่ --- */
-#rank-screen { 
-    background: var(--blue); 
-    padding: 5px; /* ลดพื้นที่ว่างขอบนอก */
-}
+        #rank-screen { 
+            background: var(--blue); 
+            padding: 5px; 
+        }
 
-.leaderboard-container { 
-    background: var(--white); 
-    border: 3px solid var(--black); 
-    width: 98%; 
-    max-width: 500px; 
-    /* บล็อกความสูงให้พอดีจอมือถือแนวนอน */
-    height: 96vh; 
-    max-height: 310px; 
-    padding: 8px; 
-    border-radius: 10px; 
-    box-shadow: 4px 4px 0px var(--black); 
-    display: flex; 
-    flex-direction: column;
-}
+        .leaderboard-container { 
+            background: var(--white); 
+            border: 3px solid var(--black); 
+            width: 98%; 
+            max-width: 500px; 
+            height: 96vh; 
+            max-height: 310px; 
+            padding: 8px; 
+            border-radius: 10px; 
+            box-shadow: 4px 4px 0px var(--black); 
+            display: flex; 
+            flex-direction: column;
+        }
 
-.rank-header { 
-    font-family: 'Bangers'; 
-    font-size: 20px; /* ลดขนาดหัวข้อลง */
-    color: var(--blue); 
-    margin: 0 0 5px 0; 
-    text-align: center; 
-}
+        .rank-header { 
+            font-family: 'Bangers'; 
+            font-size: 20px; 
+            color: var(--blue); 
+            margin: 0 0 5px 0; 
+            text-align: center; 
+        }
 
-/* ส่วนรายชื่อ: ให้ยืดหดได้ตามพื้นที่ที่เหลือ */
-.rank-list { 
-    flex: 1; 
-    overflow-y: auto; 
-    border: 2px solid var(--black); 
-    margin-bottom: 5px; 
-    background: #eee; 
-}
+        .rank-list { 
+            flex: 1; 
+            overflow-y: auto; 
+            border: 2px solid var(--black); 
+            margin-bottom: 5px; 
+            background: #eee; 
+        }
 
-.rank-item { 
-    display: grid; 
-    grid-template-columns: 1.2fr 1fr 0.6fr; 
-    gap: 4px; 
-    padding: 4px 6px; 
-    border-bottom: 1px solid #ccc; 
-    font-size: 13px; /* ขนาดตัวอักษรพอดีตาบนมือถือ */
-    align-items: center; 
-}
+        .rank-item { 
+            display: grid; 
+            grid-template-columns: 1.2fr 1fr 0.6fr; 
+            gap: 4px; 
+            padding: 4px 6px; 
+            border-bottom: 1px solid #ccc; 
+            font-size: 13px; 
+            align-items: center; 
+        }
 
-.rank-item:nth-child(odd) { background: #fff; }
-.rank-item span:last-child { text-align: right; font-weight: bold; color: var(--red); }
-.rank-item .rank-title { font-size: 11px; color: var(--blue); text-align: center; font-weight: bold; }
+        .rank-item:nth-child(odd) { background: #fff; }
+        .rank-item span:last-child { text-align: right; font-weight: bold; color: var(--red); }
+        .rank-item .rank-title { font-size: 11px; color: var(--blue); text-align: center; font-weight: bold; }
 
-/* ส่วนแสดงอันดับของเรา */
-.my-final-rank { 
-    background: var(--yellow); 
-    padding: 4px; 
-    border: 2px solid var(--black); 
-    font-weight: bold; 
-    text-align: center; 
-    margin-bottom: 5px; 
-    font-size: 13px; 
-}
+        .my-final-rank { 
+            background: var(--yellow); 
+            padding: 4px; 
+            border: 2px solid var(--black); 
+            font-weight: bold; 
+            text-align: center; 
+            margin-bottom: 5px; 
+            font-size: 13px; 
+        }
 
-/* ปรับปุ่ม BACK ให้เล็กลงประหยัดที่ */
-#rank-screen .btn { 
-    padding: 6px; 
-    font-size: 18px; 
-}
+        #rank-screen .btn { 
+            padding: 6px; 
+            font-size: 18px; 
+        }
 
         /* --- Game Interface --- */
         #game-interface { display: none; width: 100%; height: 100%; position: relative; z-index: 500; }
+        
+        /* เพิ่ม Shake Keyframes เพื่อให้ระบบสั่นทำงาน */
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, 1px) rotate(0deg); }
+        }
+        .shake-effect { animation: shake 0.3s; }
+
         #viewport { 
             position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; z-index: 510; 
             background-color: var(--yellow);
@@ -200,8 +206,8 @@
 
     <div id="rotate-warning">
         <div class="icon">🔄</div>
-        <h2 id="rot-title" style="font-family:'Bangers'; font-size: 28px; margin: 0;">ROTATE TO PLAY</h2>
-        <h3 id="rot-sub" style="font-family:'Itim'; font-size: 20px; margin-top: 5px;">กรุณาหมุนหน้าจอเพื่อเล่น</h3>
+        <h2 id="rot-title">ROTATE TO PLAY</h2>
+        <h3 id="rot-sub">กรุณาหมุนหน้าจอเพื่อเล่น</h3>
     </div>
 
     <div id="lang-screen" class="screen active-screen">
@@ -278,9 +284,8 @@
     </div>
 
     <script type="module">
-        /* JavaScript ส่วนนี้คงเดิมตามต้นฉบับของคุณเพื่อรักษาระบบเกม */
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCPpxX_v8Oh53FlVflGiiI9RYSAYqjlyMI",
@@ -331,6 +336,11 @@
 
         let currentLang = 'th', currentLevel = 0, totalScore = 0, timeLeft = 60, foundInLevel = 0, isPlaying = false, isMuted = false, timerObj;
 
+        // ฟังก์ชัน Preload รูปภาพด่าน
+        function preloadAssets() {
+            levelsData.forEach(lvl => { const img = new Image(); img.src = `images/${lvl.img}`; });
+        }
+
         window.toggleMute = () => {
             isMuted = !isMuted; 
             const b = document.getElementById('sound-toggle'); 
@@ -342,6 +352,7 @@
 
         window.selectLang = (l) => {
             currentLang = l; const t = translations[l]; playSnd('snd-click');
+            preloadAssets(); // เริ่มโหลดรูปทันทีที่เลือกภาษา
             document.getElementById('empName').placeholder = t.pl;
             document.getElementById('empID').placeholder = t.id;
             document.getElementById('start-btn').innerText = t.st;
@@ -474,13 +485,15 @@
             const name = document.getElementById('empName').value;
             const userRef = ref(db, 'rankings/' + id);
             
+            // ใช้ get() เพื่อเช็คคะแนนเก่าและดึง Ranking ใหม่แบบครั้งเดียวจบ (ลดการใช้ Memory)
             const snap = await get(userRef);
             if(!snap.exists() || snap.val().score < totalScore) {
                 await set(userRef, { name, empId: id, score: totalScore, rank: rankObj.t, time: Date.now() });
             }
 
-            onValue(ref(db, 'rankings'), (s) => {
-                const data = s.val(); if(!data) return;
+            const allSnap = await get(ref(db, 'rankings'));
+            const data = allSnap.val();
+            if(data) {
                 const sorted = Object.values(data).sort((a,b) => b.score - a.score);
                 document.getElementById('leaderboard-list').innerHTML = sorted.slice(0,10).map((p,i) => 
                     `<div class="rank-item">
@@ -491,7 +504,7 @@
                 ).join('');
                 const myRank = sorted.findIndex(p => p.empId === id) + 1;
                 document.getElementById('my-rank-info').innerText = (currentLang === 'th' ? `อันดับของคุณ: #` : `YOUR RANK: #`) + `${myRank} / ${sorted.length}`;
-            });
+            }
         }
 
         function playSnd(id) { if(!isMuted) { const s = document.getElementById(id); s.currentTime = 0; s.play().catch(()=>{}); } }
