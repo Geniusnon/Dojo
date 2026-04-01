@@ -324,7 +324,8 @@
             th: { 
                 pl: "ชื่อ-สกุล", id: "รหัสพนักงาน หากเป็นพนักงานA0ให้ใส่Aนำหน้า", st: "เริ่มเกม", rb: "กติกา", win: "สำเร็จ!", lose: "เวลาหมด!", rank: "ฉายา: ",
                 rt: "กติกาการเล่น", 
-                rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ (5 ด่าน)<br>2. รับคะแนน + โบนัสเวลา<br>3. จิ้มผิดหัก 10 วินาที<br>4. สะสมคะแนนชิงฉายา 'ปรมาจารย์'",
+                // ปรับปรุงกติกาภาษาไทย
+                rText: "1. ค้นหาจุดอันตราย 4 จุดต่อภาพ ทั้งหมด 5 ด่าน<br>2. ระยะเวลาจำกัด 60 วินาทีต่อด่าน<br>3. รับคะแนนพื้นฐาน + โบนัสจากเวลาที่เหลือ<br>4. จิ้มผิดตำแหน่งหัก 10 วินาที<br>5. สะสมคะแนนชิงฉายา 'ปรมาจารย์ความปลอดภัย'",
                 ok: "ตกลง!", rotate: "ROTATE TO PLAY", rotSub: "กรุณาปรับโทรศัพท์เป็นแนวนอนเพื่อเล่น", alert: "กรุณากรอกข้อมูลให้ครบ", replay: "หน้าแรก", ranking: "ลำดับคะแนน",
                 hud_lv: "ด่าน", hud_score: "คะแนน", hud_time: "เวลา", 
                 rank_head: "🏆 10 อันดับนักล่า", col_n: "ชื่อ", col_t: "ฉายา", col_s: "คะแนน", back: "ย้อนกลับ",
@@ -336,8 +337,9 @@
             en: { 
                 pl: "Name", id: "Employee ID", st: "START", rb: "RULES", win: "CLEAR!", lose: "TIMEOUT!", rank: "RANK: ",
                 rt: "HOW TO PLAY", 
-                rText: "1. Find 4 hazards per image.<br>2. Get base score + time bonus!<br>3. Careful! Wrong tap costs 10s.<br>4. Be a 'Safety Grandmaster'.",
-                ok: "OK!", rotate: "ROTATE TO PLAY", rotSub: "Please rotate your screen", alert: "Please fill in all fields", replay: "HOME", ranking: "RANKING",
+                // ปรับปรุงกติกาภาษาอังกฤษ
+                rText: "1. Find 4 hazards per image (Total 5 levels).<br>2. 60 seconds time limit per level.<br>3. Get base score + time bonus!<br>4. Careful! Wrong tap costs 10s.<br>5. Be a 'Safety Grandmaster'.",
+                ok: "OK!", rotate: "ROTATE TO PLAY", rotSub: "Please adjust phone to landscape mode", alert: "Please fill in all fields", replay: "HOME", ranking: "RANKING",
                 hud_lv: "LV", hud_score: "SCORE", hud_time: "TIME",
                 rank_head: "🏆 TOP 10 HUNTERS", col_n: "NAME", col_t: "TITLE", col_s: "SCORE", back: "BACK",
                 my_rank_txt: "YOUR RANK: #",
@@ -382,7 +384,6 @@
             document.getElementById('empName').placeholder = t.pl;
             document.getElementById('empID').placeholder = t.id;
             document.getElementById('start-btn').innerText = t.st;
-            // document.getElementById('rules-btn').innerText = t.rb; // ตัดออก
             document.getElementById('rules-ok-btn').innerText = t.ok;
             document.getElementById('replay-btn').innerText = t.replay;
             document.getElementById('rank-btn').innerText = t.ranking;
@@ -402,7 +403,7 @@
             document.getElementById('login-screen').classList.add('active-screen');
         };
 
-        // แก้ไข: กด START แล้วแสดงหน้า RULES ก่อน
+        // ปรับแก้: กด START แล้วแสดงหน้า RULES ก่อน
         window.startGame = () => {
             playSnd('snd-click');
             if(!document.getElementById('empName').value || !document.getElementById('empID').value) {
@@ -411,7 +412,7 @@
             document.getElementById('rules-modal').style.display = 'flex';
         };
 
-        // แก้ไข: ฟังก์ชันใหม่สำหรับการเริ่มเกมจริงหลังจากกด "ตกลง" ในหน้ากติกา
+        // ปรับแก้: ฟังก์ชันสำหรับเริ่มเกมจริงหลังจากกด "ตกลง" ในหน้ากติกา
         window.proceedToGame = () => {
             playSnd('snd-click');
             document.getElementById('rules-modal').style.display = 'none';
