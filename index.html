@@ -245,7 +245,6 @@
             <input type="text" id="empID" placeholder="">
             <div class="btn-row">
                 <div class="btn" onclick="startGame()" id="start-btn" style="flex:1">START</div>
-                <div class="btn" onclick="showRules()" id="rules-btn" style="flex:1; background:#666;">RULES</div>
             </div>
         </div>
     </div>
@@ -254,7 +253,7 @@
         <div class="box">
             <h2 id="rules-title" style="font-family:'Bangers'; color:var(--blue); font-size: 24px; margin:0;">RULES</h2>
             <div id="rules-text" style="font-size: 14px; line-height: 1.3; margin: 8px 0; text-align: left;"></div>
-            <div class="btn" onclick="closeRules()" id="rules-ok-btn">ตกลง!</div>
+            <div class="btn" onclick="proceedToGame()" id="rules-ok-btn">ตกลง!</div>
         </div>
     </div>
 
@@ -383,7 +382,7 @@
             document.getElementById('empName').placeholder = t.pl;
             document.getElementById('empID').placeholder = t.id;
             document.getElementById('start-btn').innerText = t.st;
-            document.getElementById('rules-btn').innerText = t.rb;
+            // document.getElementById('rules-btn').innerText = t.rb; // ตัดออก
             document.getElementById('rules-ok-btn').innerText = t.ok;
             document.getElementById('replay-btn').innerText = t.replay;
             document.getElementById('rank-btn').innerText = t.ranking;
@@ -403,7 +402,26 @@
             document.getElementById('login-screen').classList.add('active-screen');
         };
 
-        window.showRules = () => { playSnd('snd-click'); document.getElementById('rules-modal').style.display = 'flex'; };
+        // แก้ไข: กด START แล้วแสดงหน้า RULES ก่อน
+        window.startGame = () => {
+            playSnd('snd-click');
+            if(!document.getElementById('empName').value || !document.getElementById('empID').value) {
+                alert(translations[currentLang].alert); return;
+            }
+            document.getElementById('rules-modal').style.display = 'flex';
+        };
+
+        // แก้ไข: ฟังก์ชันใหม่สำหรับการเริ่มเกมจริงหลังจากกด "ตกลง" ในหน้ากติกา
+        window.proceedToGame = () => {
+            playSnd('snd-click');
+            document.getElementById('rules-modal').style.display = 'none';
+            const bgm = document.getElementById('snd-bgm'); bgm.volume = 0.4;
+            if(!isMuted) bgm.play().catch(()=>{});
+            document.getElementById('login-screen').classList.remove('active-screen');
+            document.getElementById('game-interface').style.display = 'block';
+            loadLevel(0); startGlobalTimer();
+        };
+
         window.closeRules = () => { playSnd('snd-click'); document.getElementById('rules-modal').style.display = 'none'; };
 
         window.showRanking = () => {
@@ -413,18 +431,6 @@
         window.hideRanking = () => {
             playSnd('snd-click');
             document.getElementById('rank-screen').classList.remove('active-screen');
-        };
-
-        window.startGame = () => {
-            playSnd('snd-click');
-            if(!document.getElementById('empName').value || !document.getElementById('empID').value) {
-                alert(translations[currentLang].alert); return;
-            }
-            const bgm = document.getElementById('snd-bgm'); bgm.volume = 0.4;
-            if(!isMuted) bgm.play().catch(()=>{});
-            document.getElementById('login-screen').classList.remove('active-screen');
-            document.getElementById('game-interface').style.display = 'block';
-            loadLevel(0); startGlobalTimer();
         };
 
         function loadLevel(lvIndex) {
