@@ -242,6 +242,10 @@
     <div id="login-screen" class="screen">
         <div class="box">
             <input type="text" id="empName" placeholder="">
+            <div style="display: flex; justify-content: center; gap: 20px; margin: 10px 0;">
+    <label><input type="radio" name="terminal" value="LCB1" checked onclick="handleTerminalChange('LCB1')"> LCB 1</label>
+    <label><input type="radio" name="terminal" value="LCMT" onclick="handleTerminalChange('LCMT')"> LCMT</label>
+</div>
             <input type="text" id="empID" placeholder="">
             <div class="btn-row">
                 <div class="btn" onclick="startGame()" id="start-btn" style="flex:1">START</div>
@@ -358,7 +362,14 @@
         ];
 
         let currentLang = 'th', currentLevel = 0, totalScore = 0, timeLeft = 60, foundInLevel = 0, isPlaying = false, isMuted = false, timerObj;
-
+window.handleTerminalChange = (terminal) => {
+    const idInput = document.getElementById('empID');
+    if (terminal === 'LCMT') {
+        if (!idInput.value.toUpperCase().startsWith('A')) { idInput.value = 'A' + idInput.value; }
+    } else {
+        if (idInput.value.toUpperCase().startsWith('A')) { idInput.value = idInput.value.substring(1); }
+    }
+};
         // ฟังก์ชันหาฉายาจากคะแนนตามภาษาปัจจุบัน
         function getRankTitle(score) {
             const list = translations[currentLang].ranks;
@@ -519,11 +530,14 @@
             const name = document.getElementById('empName').value;
             const userRef = ref(db, 'rankings/' + id);
             
-            const snap = await get(userRef);
-            if(!snap.exists() || snap.val().score < totalScore) {
-                // บันทึกเฉพาะชื่อ ID คะแนน (ไม่บันทึก Rank เป็นตัวหนังสือเพื่อแก้ปัญหาภาษา)
-                await set(userRef, { name, empId: id, score: totalScore, time: Date.now() });
-            }
+          const today = new Date().toISOString().split('T')[0]; // ดึงวันที่ปัจจุบัน YYYY-MM-DD
+if (snap.exists()) {
+    const data = snap.val();
+    if (data.lastDate === today) { 
+        alert("วันนี้คุณเล่นไปแล้ว พบกันใหม่พรุ่งนี้!"); 
+        return; 
+    }
+}
 
             const allSnap = await get(ref(db, 'rankings'));
             const data = allSnap.val();
